@@ -118,7 +118,7 @@ static Janet cfun_GetScreenWidth(int32_t argc, Janet *argv) {
 static Janet cfun_GetScreenHeight(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
-    return janet_wrap_integer(GetScreenWidth());
+    return janet_wrap_integer(GetScreenHeight());
 }
 
 static Janet cfun_GetMonitorCount(int32_t argc, Janet *argv) {
@@ -255,6 +255,140 @@ static Janet cfun_GetFrameTime(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
     return janet_wrap_number(GetFrameTime());
+}
+
+/* Some raylib versions don't have all of these flags */
+static const KeyDef flag_defs[] = {
+    {"fullscreen-mode", FLAG_FULLSCREEN_MODE},
+    {"window-resizable", FLAG_WINDOW_RESIZABLE},
+    {"window-undecorated", FLAG_WINDOW_UNDECORATED},
+    {"window-transparent", FLAG_WINDOW_TRANSPARENT},
+    {"window-hidden", FLAG_WINDOW_HIDDEN},
+    {"msaa-4x-hint", FLAG_MSAA_4X_HINT},
+    {"vsync-hint", FLAG_VSYNC_HINT}
+};
+
+static Janet cfun_SetConfigFlags(int32_t argc, Janet *argv) {
+    janet_arity(argc, 0, -1);
+    unsigned char flags = 0;
+    for (int32_t i = 0; i < argc; i++) {
+        const uint8_t *arg_flag = janet_getkeyword(argv, i);
+        /* Linear scan through flag_defs to find entry for arg_flag */
+        unsigned char flag = 0;
+        for (unsigned j = 0; j < (sizeof(flag_defs) / sizeof(KeyDef)); j++) {
+            if (!janet_cstrcmp(arg_flag, flag_defs[j].name)) {
+                flag = (unsigned char) flag_defs[j].key;
+                break;
+            }
+        }
+        if (0 == flag) {
+            JanetArray *available = janet_array(0);
+            for (unsigned j = 0; j < (sizeof(flag_defs) / sizeof(KeyDef)); j++) {
+                janet_array_push(available, janet_ckeywordv(flag_defs[j].name));
+            }
+            janet_panicf("unknown flag %v - available flags are %p", argv[i],
+                    janet_wrap_array(available));
+        }
+        flags |= flag;
+    }
+    SetConfigFlags(flags);
+    return janet_wrap_nil();
+}
+
+static const KeyDef log_defs[] = {
+    {"all", LOG_ALL},
+    {"trace", LOG_TRACE},
+    {"debug", LOG_DEBUG},
+    {"info", LOG_INFO},
+    {"warning", LOG_WARNING},
+    {"error", LOG_ERROR},
+    {"fatal", LOG_FATAL},
+    {"none", LOG_NONE}
+};
+
+static int jaylib_getlogtype(const Janet *argv, int32_t n) {
+    const uint8_t *kw = janet_getkeyword(argv, n);
+    for (int i = 0; i <= LOG_NONE; i++) {
+        if (!janet_cstrcmp(kw, log_defs[i].name))
+            return log_defs[i].key;
+    }
+    janet_panicf("unknown log type %v", argv[n]);
+}
+
+static Janet cfun_SetTraceLogLevel(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    int logType = jaylib_getlogtype(argv, 0);
+    SetTraceLogLevel(logType);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetTraceLogExit(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    int logType = jaylib_getlogtype(argv, 0);
+    SetTraceLogExit(logType);
+    return janet_wrap_nil();
+}
+
+/* Global C callback */
+static JanetFunction *jaylib_tracelog_closure = NULL;
+
+static void jaylib_tracelog_callback(int logType, const char *text, va_list args) {
+    Janet argv[2];
+    argv[0] = janet_ckeywordv(log_defs[logType].name);
+    char buf[256];
+    va_list args2;
+    va_copy(args2, args);
+    int len = vsnprintf(buf, sizeof(buf), text, args);
+    if (len < 0) return;
+    if (len >= 256) {
+        uint8_t *long_buf = janet_string_begin(len);
+        vsnprintf((char *) long_buf, len, text, args2);
+        argv[1] = janet_wrap_string(janet_string_end(long_buf));
+    } else {
+        argv[1] = janet_cstringv(buf);
+    }
+    Janet out = janet_wrap_nil();
+    JanetFiber *fiber = NULL;
+    int sign = janet_pcall(jaylib_tracelog_closure, 2, argv, &out, &fiber);
+    if (sign != JANET_SIGNAL_OK) {
+        janet_stacktrace(fiber, out);
+    }
+}
+
+static Janet cfun_SetTraceLogCallback(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    JanetFunction *f;
+    if (janet_checktype(argv[0], JANET_NIL)) {
+        f = NULL;
+    } else {
+        f = janet_getfunction(argv, 0);
+    }
+    if (NULL != jaylib_tracelog_closure) {
+        janet_gcunroot(janet_wrap_function(jaylib_tracelog_closure));
+    }
+    jaylib_tracelog_closure = f;
+    if (f) {
+        janet_gcroot(janet_wrap_function(jaylib_tracelog_closure));
+        SetTraceLogCallback(jaylib_tracelog_callback);
+    } else {
+        SetTraceLogCallback(NULL);
+    }
+    return janet_wrap_nil();
+}
+
+static Janet cfun_TraceLog(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    int logType = jaylib_getlogtype(argv, 0);
+    const char *s = janet_getcstring(argv, 1);
+    TraceLog(logType, "%s", s);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_TakeScreenshot(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    const char *fileName = janet_getcstring(argv, 0);
+    TakeScreenshot(fileName);
+    return janet_wrap_nil();
 }
 
 static Janet cfun_GetTime(int32_t argc, Janet *argv) {
@@ -504,6 +638,12 @@ static JanetReg core_cfuns[] = {
     {"get-fps", cfun_GetFPS, NULL},
     {"get-frame-time", cfun_GetFrameTime, NULL},
     {"get-time", cfun_GetTime, NULL},
+    {"set-config-flags", cfun_SetConfigFlags, NULL},
+    {"set-trace-log-level", cfun_SetTraceLogLevel, NULL},
+    {"set-trace-log-exit", cfun_SetTraceLogExit, NULL},
+    {"set-trace-log-callback", cfun_SetTraceLogCallback, NULL},
+    {"trace-log", cfun_TraceLog, NULL},
+    {"take-screenshot", cfun_TakeScreenshot, NULL},
     {"key-pressed?", cfun_IsKeyPressed, NULL},
     {"key-released?", cfun_IsKeyReleased, NULL},
     {"key-up?", cfun_IsKeyUp, NULL},

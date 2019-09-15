@@ -65,13 +65,12 @@
 [ ] Color Fade(Color color, float alpha)
 
 // Misc. functions
-[ ] void SetConfigFlags(unsigned char flags)
-[ ] void SetTraceLogLevel(int logType)
-[ ] void SetTraceLogExit(int logType)
-[ ] void SetTraceLogCallback(TraceLogCallback callback)
-[ ] void TraceLog(int logType, const char *text, ...)
-[ ] void TakeScreenshot(const char *fileName)
-[ ] int GetRandomValue(int min, int max)
+[x] void SetConfigFlags(unsigned char flags)
+[x] void SetTraceLogLevel(int logType)
+[x] void SetTraceLogExit(int logType)
+[x] void SetTraceLogCallback(TraceLogCallback callback)
+[x] void TraceLog(int logType, const char *text, ...)
+[x] void TakeScreenshot(const char *fileName)
 
 // Files management functions
 [ ] char **GetDroppedFiles(int *count)
