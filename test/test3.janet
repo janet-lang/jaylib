@@ -1,6 +1,6 @@
 (use ../build/jaylib)
 
-(init-window 100 100 "Game of Life")
+(init-window 800 600 "Game of Life")
 (set-target-fps 60)
 
 (def- window

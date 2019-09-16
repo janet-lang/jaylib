@@ -9,7 +9,8 @@
             "src/types.h"
             "src/audio.h"
             "src/shapes.h"]
-  :lflags ["-lraylib" "-lpthread"])
+  :cflags ["-fPIC"]
+  :lflags ["-lraylib" "-lpthread" "-lX11"])
 
 # `jpm run repl` to run a repl with access to jaylib
 (phony "repl" ["build"]

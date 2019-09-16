@@ -5,7 +5,7 @@
 (set-config-flags
   :msaa-4x-hint)
 
-(init-window 100 100 "Test Game")
+(init-window 800 600 "Test Game")
 (set-target-fps 60)
 (hide-cursor)
 

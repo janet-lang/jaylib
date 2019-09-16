@@ -40,13 +40,27 @@ for an overview of which API functions have been ported.
 
 ## Building
 
-Make sure you have raylib installed on your system, then use
+Make sure you have raylib installed on your system. I built raylib
+from source with the following commands and CMake configuration:
+
+```
+git clone https://github.com/raysan5/raylib.git raylib
+cd raylib
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/ -DWITH_PIC=ON ..
+make -j 16
+sudo make install
+```
+
+Once raylib is built and installed, build jaylib with
 
 ```
 jpm build
 ```
 
-This should compile `build\jaylib.so`, which you can import in a janet repl.
+This should compile `build\jaylib.so`, which you can import in a janet repl. Tested
+so far only on linux with Wayland, you will likely need to figure out a working configuration
+for raylib, as well as some system specific changes in project.janet for your system.
 
 ```clojure
 (use ./build/jaylib)
