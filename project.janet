@@ -8,8 +8,10 @@
   :headers ["src/core.h"
             "src/types.h"
             "src/audio.h"
+            "src/gestures.h"
             "src/shapes.h"]
-  :cflags ["-fPIC"]
+  # The exact flags needed may depend on the platform and
+  # your build of raylib.
   :lflags ["-lraylib" "-lpthread" "-lX11"])
 
 # `jpm run repl` to run a repl with access to jaylib

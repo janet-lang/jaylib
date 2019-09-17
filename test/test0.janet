@@ -11,6 +11,8 @@
 (play-music-stream m)
 (set-music-volume m 1)
 
+(def s (load-sound "test/snd1.wav"))
+
 (while (not (window-should-close))
   (begin-drawing)
 
@@ -23,6 +25,11 @@
                          (math/random)
                          (math/random)]))
 
-  (end-drawing))
+  (end-drawing)
+
+  (when (key-pressed? :space)
+    (play-sound s)
+    (take-screenshot "screenshot.png")))
+
 
 (close-window)

@@ -43,6 +43,21 @@ static Music jaylib_getmusic(const Janet *argv, int32_t n) {
     return *((Music *)janet_getabstract(argv, n, &AT_Music));
 }
 
+static const JanetAbstractType AT_AudioStream = {
+    "jaylib/audio-stream",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static AudioStream jaylib_getaudiostream(const Janet *argv, int32_t n) {
+    return *((AudioStream *)janet_getabstract(argv, n, &AT_AudioStream));
+}
+
 static Janet cfun_InitAudioDevice(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
@@ -286,6 +301,99 @@ static Janet cfun_GetMusicTimePlayed(int32_t argc, Janet *argv) {
     return janet_wrap_number((double) GetMusicTimePlayed(music));
 }
 
+static Janet cfun_InitAudioStream(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    unsigned int sampleRate = (unsigned) janet_getinteger(argv, 0);
+    unsigned int sampleSize = (unsigned) janet_getinteger(argv, 1);
+    unsigned int channels = (unsigned) janet_getinteger(argv, 2);
+    AudioStream *audioStream = janet_abstract(&AT_AudioStream, sizeof(AudioStream));
+    *audioStream = InitAudioStream(sampleRate, sampleSize, channels);
+    return janet_wrap_abstract(audioStream);
+}
+
+static Janet cfun_UpdateAudioStream(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    JanetBuffer *data = janet_getbuffer(argv, 1);
+    int samples = data->count / (stream.sampleSize >> 3);
+    UpdateAudioStream(stream, data->data, samples);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_CloseAudioStream(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    CloseAudioStream(stream);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_IsAudioStreamProcessed(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    return janet_wrap_boolean(IsAudioStreamProcessed(stream));
+}
+
+static Janet cfun_PlayAudioStream(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    PlayAudioStream(stream);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_PauseAudioStream(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    PauseAudioStream(stream);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_ResumeAudioStream(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    ResumeAudioStream(stream);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_StopAudioStream(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    StopAudioStream(stream);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_IsAudioStreamPlaying(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    return janet_wrap_boolean(IsAudioStreamPlaying(stream));
+}
+
+static Janet cfun_SetAudioStreamVolume(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    float volume = (float) janet_getnumber(argv, 1);
+    SetAudioStreamVolume(stream, volume);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetAudioStreamPitch(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    float pitch = (float) janet_getnumber(argv, 1);
+    SetAudioStreamPitch(stream, pitch);
+    return janet_wrap_nil();
+}
+
+/*
+// AudioStream management functions
+[ ] void PlayAudioStream(AudioStream stream)
+[ ] void PauseAudioStream(AudioStream stream)
+[ ] void ResumeAudioStream(AudioStream stream)
+[ ] bool IsAudioStreamPlaying(AudioStream stream)
+[ ] void StopAudioStream(AudioStream stream)
+[ ] void SetAudioStreamVolume(AudioStream stream, float volume)
+[ ] void SetAudioStreamPitch(AudioStream stream, float pitch)
+*/
+
 static JanetReg audio_cfuns[] = {
     {"init-audio-device", cfun_InitAudioDevice, NULL},
     {"close-audio-device", cfun_CloseAudioDevice, NULL},
@@ -319,5 +427,16 @@ static JanetReg audio_cfuns[] = {
     {"set-music-loop-count", cfun_SetMusicLoopCount, NULL},
     {"get-music-time-length", cfun_GetMusicTimeLength, NULL},
     {"get-music-time-played", cfun_GetMusicTimePlayed, NULL},
+    {"init-audio-stream", cfun_InitAudioStream, NULL},
+    {"update-audio-stream", cfun_UpdateAudioStream, NULL},
+    {"close-audio-stream", cfun_CloseAudioStream, NULL},
+    {"audio-stream-processed?", cfun_IsAudioStreamProcessed, NULL},
+    {"audio-stream-playing?", cfun_IsAudioStreamPlaying, NULL},
+    {"play-audio-stream", cfun_PlayAudioStream, NULL},
+    {"pause-audio-stream", cfun_PauseAudioStream, NULL},
+    {"stop-audio-stream", cfun_StopAudioStream, NULL},
+    {"resume-audio-stream", cfun_ResumeAudioStream, NULL},
+    {"set-audio-stream-volume", cfun_SetAudioStreamVolume, NULL},
+    {"set-audio-stream-pitch", cfun_SetAudioStreamPitch, NULL},
     {NULL, NULL, NULL}
 };
