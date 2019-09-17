@@ -597,6 +597,47 @@ static Janet cfun_GetTouchPosition(int32_t argc, Janet *argv) {
     return jaylib_uncastvec2(pos);
 }
 
+static Janet cfun_GetDroppedFiles(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    int count;
+    /* Do we need to free this/these? */
+    char **results = GetDroppedFiles(&count);
+    JanetArray *array = janet_array(0);
+    for (int i = 0; i < count; i++) {
+        janet_array_push(array, janet_cstringv(results[i]));
+    }
+    return janet_wrap_array(results);
+}
+
+static Janet cfun_ClearDroppedFiles(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    ClearDroppedFiles();
+    return janet_wrap_nil();
+}
+
+static Janet cfun_StorageSaveValue(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    int32_t position = janet_getinteger(argv, 0);
+    int32_t value = janet_getinteger(argv, 1);
+    StorageSaveValue(position, value);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_StorageLoadValue(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    int32_t position = janet_getinteger(argv, 0);
+    return janet_wrap_integer(StorageLoadValue(position));
+}
+
+static Janet cfun_OpenUrl(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    const char *url = janet_getcstring(argv, 0);
+    OpenURL(url);
+    return janet_wrap_nil();
+}
+
 static JanetReg core_cfuns[] = {
     {"init-window", cfun_InitWindow, NULL},
     {"window-should-close", cfun_WindowShouldClose, NULL},
@@ -674,5 +715,10 @@ static JanetReg core_cfuns[] = {
     {"get-touch-x", cfun_GetTouchX, NULL},
     {"get-touch-y", cfun_GetTouchY, NULL},
     {"get-touch-position", cfun_GetTouchPosition, NULL},
+    {"get-dropped-files", cfun_GetDroppedFiles, NULL},
+    {"clear-dropped-files", cfun_ClearDroppedFiles, NULL},
+    {"storage-save-value", cfun_StorageSaveValue, NULL},
+    {"storage-load-value", cfun_StorageLoadValue, NULL},
+    {"open-url", cfun_OpenUrl, NULL},
     {NULL, NULL, NULL}
 };

@@ -73,14 +73,14 @@
 [x] void TakeScreenshot(const char *fileName)
 
 // Files management functions
-[ ] char **GetDroppedFiles(int *count)
-[ ] void ClearDroppedFiles(void)
+[x] char **GetDroppedFiles(int *count)
+[x] void ClearDroppedFiles(void)
 
 // Persistent storage management
-[ ] void StorageSaveValue(int position, int value)
-[ ] int StorageLoadValue(int position)
+[x] void StorageSaveValue(int position, int value)
+[x] int StorageLoadValue(int position)
 
-[ ] void OpenURL(const char *url)
+[x] void OpenURL(const char *url)
 
 //------------------------------------------------------------------------------------
 // Input Handling Functions
