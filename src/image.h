@@ -262,27 +262,156 @@ static Janet cfun_ImageExtractPalette(int32_t argc, Janet *argv) {
     return janet_wrap_array(acolors);
 }
 
-/*
-// Image manipulation functions
-RLAPI Image ImageText(const char *text, int fontSize, Color color);                                      // Create an image from text (default font)
-RLAPI Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Color tint);         // Create an image from text (custom sprite font)
-RLAPI void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint);             // Draw a source image within a destination image (tint applied to source)
-RLAPI void ImageDrawRectangle(Image *dst, Rectangle rec, Color color);                                   // Draw rectangle within an image
-RLAPI void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color);                   // Draw rectangle lines within an image
-RLAPI void ImageDrawText(Image *dst, Vector2 position, const char *text, int fontSize, Color color);     // Draw text (default font) within an image (destination)
-RLAPI void ImageDrawTextEx(Image *dst, Vector2 position, Font font, const char *text, float fontSize, float spacing, Color color); // Draw text (custom sprite font) within an image (destination)
-RLAPI void ImageFlipVertical(Image *image);                                                              // Flip image vertically
-RLAPI void ImageFlipHorizontal(Image *image);                                                            // Flip image horizontally
-RLAPI void ImageRotateCW(Image *image);                                                                  // Rotate image clockwise 90deg
-RLAPI void ImageRotateCCW(Image *image);                                                                 // Rotate image counter-clockwise 90deg
-RLAPI void ImageColorTint(Image *image, Color color);                                                    // Modify image color: tint
-RLAPI void ImageColorInvert(Image *image);                                                               // Modify image color: invert
-RLAPI void ImageColorGrayscale(Image *image);                                                            // Modify image color: grayscale
-RLAPI void ImageColorContrast(Image *image, float contrast);                                             // Modify image color: contrast (-100 to 100)
-RLAPI void ImageColorBrightness(Image *image, int brightness);                                           // Modify image color: brightness (-255 to 255)
-RLAPI void ImageColorReplace(Image *image, Color color, Color replace);                                  // Modify image color: replace color
-*/
+static Janet cfun_ImageText(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    const char *text = janet_getcstring(argv, 0);
+    int fontSize = janet_getinteger(argv, 1);
+    Color color = jaylib_getcolor(argv, 2);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = ImageText(text, fontSize, color);
+    return janet_wrap_abstract(image);
+}
 
+static Janet cfun_ImageTextEx(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    Font *font  = jaylib_getfont(argv, 0);
+    const char *text = janet_getcstring(argv, 1);
+    float fontSize = (float) janet_getnumber(argv, 2);
+    float spacing = (float) janet_getnumber(argv, 3);
+    Color color = jaylib_getcolor(argv, 4);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = ImageTextEx(*font, text, fontSize, spacing, color);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_ImageDraw(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    Image *dst = jaylib_getimage(argv, 0);
+    Image *src = jaylib_getimage(argv, 1);
+    Rectangle srcRect = jaylib_getrect(argv, 2);
+    Rectangle destRect = jaylib_getrect(argv, 3);
+    Color tint = jaylib_getcolor(argv, 4);
+    ImageDraw(dst, *src, srcRect, destRect, tint);
+    return argv[0];
+}
+
+static Janet cfun_ImageDrawRectangle(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    Image *dst = jaylib_getimage(argv, 0);
+    Rectangle rec = jaylib_getrect(argv, 1);
+    Color color = jaylib_getcolor(argv, 2);
+    ImageDrawRectangle(dst, rec, color);
+    return argv[0];
+}
+
+static Janet cfun_ImageDrawRectangleLines(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    Image *dst = jaylib_getimage(argv, 0);
+    Rectangle rec = jaylib_getrect(argv, 1);
+    int thick = janet_getinteger(argv, 2);
+    Color color = jaylib_getcolor(argv, 3);
+    ImageDrawRectangleLines(dst, rec, thick, color);
+    return argv[0];
+}
+
+static Janet cfun_ImageDrawText(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    Image *dst = jaylib_getimage(argv, 0);
+    Vector2 position = jaylib_castvec2(argv[1]);
+    const char *text = janet_getcstring(argv, 2);
+    int fontSize = janet_getinteger(argv, 3);
+    Color color = jaylib_getcolor(argv, 4);
+    ImageDrawText(dst, position, text, fontSize, color);
+    return argv[0];
+}
+
+static Janet cfun_ImageDrawTextEx(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 7);
+    Image *dst = jaylib_getimage(argv, 0);
+    Vector2 position = jaylib_castvec2(argv[1]);
+    Font *font = jaylib_getfont(argv, 2);
+    const char *text = janet_getcstring(argv, 3);
+    float fontSize = (float) janet_getnumber(argv, 4);
+    float spacing = (float) janet_getnumber(argv, 5);
+    Color color = jaylib_getcolor(argv, 6);
+    ImageDrawTextEx(dst, position, *font, text, fontSize, spacing, color);
+    return argv[0];
+}
+
+static Janet cfun_ImageFlipVertical(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image *image = jaylib_getimage(argv, 0);
+    ImageFlipVertical(image);
+    return argv[0];
+}
+
+static Janet cfun_ImageFlipHorizontal(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image *image = jaylib_getimage(argv, 0);
+    ImageFlipHorizontal(image);
+    return argv[0];
+}
+
+static Janet cfun_ImageRotateCW(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image *image = jaylib_getimage(argv, 0);
+    ImageRotateCCW(image);
+    return argv[0];
+}
+
+static Janet cfun_ImageRotateCCW(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image *image = jaylib_getimage(argv, 0);
+    ImageRotateCCW(image);
+    return argv[0];
+}
+
+static Janet cfun_ImageColorTint(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Image *image = jaylib_getimage(argv, 0);
+    Color tint = jaylib_getcolor(argv, 1);
+    ImageColorTint(image, tint);
+    return argv[0];
+}
+
+static Janet cfun_ImageColorInvert(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image *image = jaylib_getimage(argv, 0);
+    ImageColorInvert(image);
+    return argv[0];
+}
+
+static Janet cfun_ImageColorGrayscale(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image *image = jaylib_getimage(argv, 0);
+    ImageColorGrayscale(image);
+    return argv[0];
+}
+
+static Janet cfun_ImageColorContrast(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Image *image = jaylib_getimage(argv, 0);
+    float contrast = (float) janet_getnumber(argv, 1);
+    ImageColorContrast(image, contrast);
+    return argv[0];
+}
+
+static Janet cfun_ImageColorBrightness(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Image *image = jaylib_getimage(argv, 0);
+    int brightness = janet_getinteger(argv, 1);
+    ImageColorBrightness(image, brightness);
+    return argv[0];
+}
+
+static Janet cfun_ImageColorReplace(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    Image *image = jaylib_getimage(argv, 0);
+    Color color = jaylib_getcolor(argv, 1);
+    Color replace = jaylib_getcolor(argv, 2);
+    ImageColorReplace(image, color, replace);
+    return argv[0];
+}
 
 static Janet cfun_DrawTexture(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 4);
@@ -405,6 +534,23 @@ static const JanetReg image_cfuns[] = {
     {"image-mipmaps", cfun_ImageMipmaps, NULL},
     {"image-dither", cfun_ImageDither, NULL},
     {"image-extract-pallete", cfun_ImageExtractPalette, NULL},
+    {"image-text", cfun_ImageText, NULL},
+    {"image-text-ex", cfun_ImageTextEx, NULL},
+    {"image-draw", cfun_ImageDraw, NULL},
+    {"image-draw-rectangle", cfun_ImageDrawRectangle, NULL},
+    {"image-draw-rectangle-lines", cfun_ImageDrawRectangleLines, NULL},
+    {"image-draw-text", cfun_ImageDrawText, NULL},
+    {"image-draw-text-ex", cfun_ImageDrawTextEx, NULL},
+    {"image-flip-vertical", cfun_ImageFlipVertical, NULL},
+    {"image-flip-horizontal", cfun_ImageFlipHorizontal, NULL},
+    {"image-rotate-cw", cfun_ImageRotateCW, NULL},
+    {"image-rotate-ccw", cfun_ImageRotateCCW, NULL},
+    {"image-color-tint", cfun_ImageColorTint, NULL},
+    {"image-color-invert", cfun_ImageColorInvert, NULL},
+    {"image-color-grayscale", cfun_ImageColorGrayscale, NULL},
+    {"image-color-brightness", cfun_ImageColorBrightness, NULL},
+    {"image-color-contrast", cfun_ImageColorContrast, NULL},
+    {"image-color-replace", cfun_ImageColorReplace, NULL},
     {"draw-texture", cfun_DrawTexture, NULL},
     {"draw-texture-v", cfun_DrawTextureV, NULL},
     {"draw-texture-ex", cfun_DrawTextureEx, NULL},
