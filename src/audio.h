@@ -1,63 +1,3 @@
-static const JanetAbstractType AT_Wave = {
-    "jaylib/wave",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
-static Wave jaylib_getwave(const Janet *argv, int32_t n) {
-    return *((Wave *)janet_getabstract(argv, n, &AT_Wave));
-}
-
-static const JanetAbstractType AT_Sound = {
-    "jaylib/sound",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
-static Sound jaylib_getsound(const Janet *argv, int32_t n) {
-    return *((Sound *)janet_getabstract(argv, n, &AT_Sound));
-}
-
-static const JanetAbstractType AT_Music = {
-    "jaylib/music",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
-static Music jaylib_getmusic(const Janet *argv, int32_t n) {
-    return *((Music *)janet_getabstract(argv, n, &AT_Music));
-}
-
-static const JanetAbstractType AT_AudioStream = {
-    "jaylib/audio-stream",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
-static AudioStream jaylib_getaudiostream(const Janet *argv, int32_t n) {
-    return *((AudioStream *)janet_getabstract(argv, n, &AT_AudioStream));
-}
-
 static Janet cfun_InitAudioDevice(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
@@ -115,7 +55,7 @@ static Janet cfun_LoadSound(int32_t argc, Janet *argv) {
 
 static Janet cfun_LoadSoundFromWave(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Wave wave = jaylib_getwave(argv, 0);
+    Wave wave = *jaylib_getwave(argv, 0);
     Sound *sound = janet_abstract(&AT_Sound, sizeof(Sound));
     *sound = LoadSoundFromWave(wave);
     return janet_wrap_abstract(sound);
@@ -123,21 +63,21 @@ static Janet cfun_LoadSoundFromWave(int32_t argc, Janet *argv) {
 
 static Janet cfun_UnloadWave(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Wave wave = jaylib_getwave(argv, 0);
+    Wave wave = *jaylib_getwave(argv, 0);
     UnloadWave(wave);
     return janet_wrap_nil();
 }
 
 static Janet cfun_UnloadSound(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Sound sound = jaylib_getsound(argv, 0);
+    Sound sound = *jaylib_getsound(argv, 0);
     UnloadSound(sound);
     return janet_wrap_nil();
 }
 
 static Janet cfun_ExportWave(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    Wave wave = jaylib_getwave(argv, 0);
+    Wave wave = *jaylib_getwave(argv, 0);
     const char *fileName = janet_getcstring(argv, 1);
     ExportWave(wave, fileName);
     return janet_wrap_nil();
@@ -145,7 +85,7 @@ static Janet cfun_ExportWave(int32_t argc, Janet *argv) {
 
 static Janet cfun_ExportWaveAsCode(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    Wave wave = jaylib_getwave(argv, 0);
+    Wave wave = *jaylib_getwave(argv, 0);
     const char *fileName = janet_getcstring(argv, 1);
     ExportWaveAsCode(wave, fileName);
     return janet_wrap_nil();
@@ -153,41 +93,41 @@ static Janet cfun_ExportWaveAsCode(int32_t argc, Janet *argv) {
 
 static Janet cfun_PlaySound(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Sound sound = jaylib_getsound(argv, 0);
+    Sound sound = *jaylib_getsound(argv, 0);
     PlaySound(sound);
     return janet_wrap_nil();
 }
 
 static Janet cfun_PauseSound(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Sound sound = jaylib_getsound(argv, 0);
+    Sound sound = *jaylib_getsound(argv, 0);
     PauseSound(sound);
     return janet_wrap_nil();
 }
 
 static Janet cfun_StopSound(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Sound sound = jaylib_getsound(argv, 0);
+    Sound sound = *jaylib_getsound(argv, 0);
     StopSound(sound);
     return janet_wrap_nil();
 }
 
 static Janet cfun_ResumeSound(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Sound sound = jaylib_getsound(argv, 0);
+    Sound sound = *jaylib_getsound(argv, 0);
     ResumeSound(sound);
     return janet_wrap_nil();
 }
 
 static Janet cfun_IsSoundPlaying(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Sound sound = jaylib_getsound(argv, 0);
+    Sound sound = *jaylib_getsound(argv, 0);
     return janet_wrap_boolean(IsSoundPlaying(sound));
 }
 
 static Janet cfun_SetSoundVolume(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    Sound sound = jaylib_getsound(argv, 0);
+    Sound sound = *jaylib_getsound(argv, 0);
     float volume = (float) janet_getnumber(argv, 1);
     SetSoundVolume(sound, volume);
     return janet_wrap_nil();
@@ -195,7 +135,7 @@ static Janet cfun_SetSoundVolume(int32_t argc, Janet *argv) {
 
 static Janet cfun_SetSoundPitch(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    Sound sound = jaylib_getsound(argv, 0);
+    Sound sound = *jaylib_getsound(argv, 0);
     float pitch = (float) janet_getnumber(argv, 1);
     SetSoundPitch(sound, pitch);
     return janet_wrap_nil();
@@ -203,7 +143,7 @@ static Janet cfun_SetSoundPitch(int32_t argc, Janet *argv) {
 
 static Janet cfun_WaveCopy(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Wave wave = jaylib_getwave(argv, 0);
+    Wave wave = *jaylib_getwave(argv, 0);
     Wave *copy = janet_abstract(&AT_Wave, sizeof(Wave));
     *copy = WaveCopy(wave);
     return janet_wrap_abstract(copy);
@@ -219,55 +159,55 @@ static Janet cfun_LoadMusicStream(int32_t argc, Janet *argv) {
 
 static Janet cfun_UnloadMusicStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     UnloadMusicStream(music);
     return janet_wrap_nil();
 }
 
 static Janet cfun_PlayMusicStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     PlayMusicStream(music);
     return janet_wrap_nil();
 }
 
 static Janet cfun_UpdateMusicStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     UpdateMusicStream(music);
     return janet_wrap_nil();
 }
 
 static Janet cfun_StopMusicStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     StopMusicStream(music);
     return janet_wrap_nil();
 }
 
 static Janet cfun_PauseMusicStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     PauseMusicStream(music);
     return janet_wrap_nil();
 }
 
 static Janet cfun_ResumeMusicStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     ResumeMusicStream(music);
     return janet_wrap_nil();
 }
 
 static Janet cfun_IsMusicPlaying(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     return janet_wrap_boolean(IsMusicPlaying(music));
 }
 
 static Janet cfun_SetMusicVolume(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     float volume = (float) janet_getnumber(argv, 1);
     SetMusicVolume(music, volume);
     return janet_wrap_nil();
@@ -275,7 +215,7 @@ static Janet cfun_SetMusicVolume(int32_t argc, Janet *argv) {
 
 static Janet cfun_SetMusicPitch(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     float pitch = (float) janet_getnumber(argv, 1);
     SetMusicPitch(music, pitch);
     return janet_wrap_nil();
@@ -283,7 +223,7 @@ static Janet cfun_SetMusicPitch(int32_t argc, Janet *argv) {
 
 static Janet cfun_SetMusicLoopCount(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     int loopCount = janet_getinteger(argv, 1);
     SetMusicLoopCount(music, loopCount);
     return janet_wrap_nil();
@@ -291,13 +231,13 @@ static Janet cfun_SetMusicLoopCount(int32_t argc, Janet *argv) {
 
 static Janet cfun_GetMusicTimeLength(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     return janet_wrap_number((double) GetMusicTimeLength(music));
 }
 
 static Janet cfun_GetMusicTimePlayed(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    Music music = jaylib_getmusic(argv, 0);
+    Music music = *jaylib_getmusic(argv, 0);
     return janet_wrap_number((double) GetMusicTimePlayed(music));
 }
 
@@ -313,7 +253,7 @@ static Janet cfun_InitAudioStream(int32_t argc, Janet *argv) {
 
 static Janet cfun_UpdateAudioStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     JanetBuffer *data = janet_getbuffer(argv, 1);
     int samples = data->count / (stream.sampleSize >> 3);
     UpdateAudioStream(stream, data->data, samples);
@@ -322,54 +262,54 @@ static Janet cfun_UpdateAudioStream(int32_t argc, Janet *argv) {
 
 static Janet cfun_CloseAudioStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     CloseAudioStream(stream);
     return janet_wrap_nil();
 }
 
 static Janet cfun_IsAudioStreamProcessed(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     return janet_wrap_boolean(IsAudioStreamProcessed(stream));
 }
 
 static Janet cfun_PlayAudioStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     PlayAudioStream(stream);
     return janet_wrap_nil();
 }
 
 static Janet cfun_PauseAudioStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     PauseAudioStream(stream);
     return janet_wrap_nil();
 }
 
 static Janet cfun_ResumeAudioStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     ResumeAudioStream(stream);
     return janet_wrap_nil();
 }
 
 static Janet cfun_StopAudioStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     StopAudioStream(stream);
     return janet_wrap_nil();
 }
 
 static Janet cfun_IsAudioStreamPlaying(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     return janet_wrap_boolean(IsAudioStreamPlaying(stream));
 }
 
 static Janet cfun_SetAudioStreamVolume(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     float volume = (float) janet_getnumber(argv, 1);
     SetAudioStreamVolume(stream, volume);
     return janet_wrap_nil();
@@ -377,7 +317,7 @@ static Janet cfun_SetAudioStreamVolume(int32_t argc, Janet *argv) {
 
 static Janet cfun_SetAudioStreamPitch(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    AudioStream stream = jaylib_getaudiostream(argv, 0);
+    AudioStream stream = *jaylib_getaudiostream(argv, 0);
     float pitch = (float) janet_getnumber(argv, 1);
     SetAudioStreamPitch(stream, pitch);
     return janet_wrap_nil();

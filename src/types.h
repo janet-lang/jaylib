@@ -324,6 +324,34 @@ static Rectangle jaylib_getrect(const Janet *argv, int32_t n) {
     };
 }
 
+static const KeyDef pixel_format_defs[] = {
+    {"astc-4x4-rgba", COMPRESSED_ASTC_4x4_RGBA},
+    {"astc-8x8-rgba", COMPRESSED_ASTC_8x8_RGBA},
+    {"dxt1-rgb", COMPRESSED_DXT1_RGB},
+    {"dxt1-rgba", COMPRESSED_DXT1_RGBA},
+    {"dxt3-rgba", COMPRESSED_DXT3_RGBA},
+    {"dxt5-rgba", COMPRESSED_DXT5_RGBA},
+    {"etc1-rgb", COMPRESSED_ETC1_RGB},
+    {"etc2-eac_rgba", COMPRESSED_ETC2_EAC_RGBA},
+    {"etc2-rgb", COMPRESSED_ETC2_RGB},
+    {"gray-alpha", UNCOMPRESSED_GRAY_ALPHA},
+    {"grayscale", UNCOMPRESSED_GRAYSCALE},
+    {"pvrt-rgb", COMPRESSED_PVRT_RGB},
+    {"pvrt-rgba", COMPRESSED_PVRT_RGBA},
+    {"r32", UNCOMPRESSED_R32},
+    {"r32g32b32", UNCOMPRESSED_R32G32B32},
+    {"r32g32b32a32", UNCOMPRESSED_R32G32B32A32},
+    {"r4g4b4a4", UNCOMPRESSED_R4G4B4A4},
+    {"r5g5b5a1", UNCOMPRESSED_R5G5B5A1},
+    {"r5g6b5", UNCOMPRESSED_R5G6B5},
+    {"r8g8b8", UNCOMPRESSED_R8G8B8},
+    {"r8g8b8a8", UNCOMPRESSED_R8G8B8A8}
+};
+
+static int jaylib_getpixelformat(const Janet *argv, int32_t n) {
+    return jaylib_castdef(argv, n, pixel_format_defs, sizeof(pixel_format_defs) / sizeof(KeyDef));
+}
+
 /*
 static Vector3 jaylib_castvec3(Janet x) {
     JanetView idx;
@@ -374,3 +402,139 @@ static Janet jaylib_uncastvec2(Vector2 x) {
     return janet_wrap_tuple(janet_tuple_end(tup));
 }
 
+static const JanetAbstractType AT_TextureCubemap = {
+    "jaylib/texture-cubemap",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+/*
+static TextureCubemap *jaylib_gettexturecubemap(const Janet *argv, int32_t n) {
+    return ((TextureCubemap *)janet_getabstract(argv, n, &AT_TextureCubemap));
+}
+*/
+
+static const JanetAbstractType AT_Texture2D = {
+    "jaylib/texture2d",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static Texture2D *jaylib_gettexture2d(const Janet *argv, int32_t n) {
+    return ((Texture2D *)janet_getabstract(argv, n, &AT_Texture2D));
+}
+
+static const JanetAbstractType AT_Image = {
+    "jaylib/image",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static Image *jaylib_getimage(const Janet *argv, int32_t n) {
+    return ((Image *)janet_getabstract(argv, n, &AT_Image));
+}
+
+static const JanetAbstractType AT_Wave = {
+    "jaylib/wave",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static Wave *jaylib_getwave(const Janet *argv, int32_t n) {
+    return ((Wave *)janet_getabstract(argv, n, &AT_Wave));
+}
+
+static const JanetAbstractType AT_Sound = {
+    "jaylib/sound",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static Sound *jaylib_getsound(const Janet *argv, int32_t n) {
+    return ((Sound *)janet_getabstract(argv, n, &AT_Sound));
+}
+
+static const JanetAbstractType AT_Music = {
+    "jaylib/music",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static Music *jaylib_getmusic(const Janet *argv, int32_t n) {
+    return ((Music *)janet_getabstract(argv, n, &AT_Music));
+}
+
+static const JanetAbstractType AT_AudioStream = {
+    "jaylib/audio-stream",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static AudioStream *jaylib_getaudiostream(const Janet *argv, int32_t n) {
+    return ((AudioStream *)janet_getabstract(argv, n, &AT_AudioStream));
+}
+
+static const JanetAbstractType AT_Font = {
+    "jaylib/font",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static Font *jaylib_getfont(const Janet *argv, int32_t n) {
+    return ((Font *)janet_getabstract(argv, n, &AT_Font));
+}
+
+static const JanetAbstractType AT_RenderTexture = {
+    "jaylib/render-texture",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static RenderTexture *jaylib_getrendertexture(const Janet *argv, int32_t n) {
+    return ((RenderTexture *)janet_getabstract(argv, n, &AT_RenderTexture));
+}

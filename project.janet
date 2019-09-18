@@ -9,6 +9,8 @@
             "src/types.h"
             "src/audio.h"
             "src/gestures.h"
+            "src/text.h"
+            "src/image.h"
             "src/shapes.h"]
   # The exact flags needed may depend on the platform and
   # your build of raylib.
