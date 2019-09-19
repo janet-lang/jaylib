@@ -9,11 +9,15 @@
 (image-dither lenna 4 4 4 4)
 (def lenna-t (load-texture-from-image lenna))
 
+(def cells (gen-image-cellular 100 100 10))
+(def cells-t (load-texture-from-image cells))
+
 (while (not (window-should-close))
   (begin-drawing)
   (clear-background :green)
   
   (draw-texture lenna-t 100 100 :white)
+  (draw-texture cells-t 600 0 :white)
 
   (end-drawing))
 

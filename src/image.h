@@ -476,6 +476,95 @@ static Janet cfun_DrawTexturePro(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_GenImageColor(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    Color color = jaylib_getcolor(argv, 2);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImageColor(width, height, color);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_GenImageGradientV(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    Color c1 = jaylib_getcolor(argv, 2);
+    Color c2 = jaylib_getcolor(argv, 3);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImageGradientV(width, height, c1, c2);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_GenImageGradientH(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    Color c1 = jaylib_getcolor(argv, 2);
+    Color c2 = jaylib_getcolor(argv, 3);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImageGradientH(width, height, c1, c2);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_GenImageGradientRadial(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    float density = (float) janet_getnumber(argv, 2);
+    Color inner = jaylib_getcolor(argv, 3);
+    Color outer = jaylib_getcolor(argv, 4);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImageGradientRadial(width, height, density, inner, outer);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_GenImageChecked(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    int checksX = janet_getinteger(argv, 2);
+    int checksY = janet_getinteger(argv, 3);
+    Color col1 = jaylib_getcolor(argv, 4);
+    Color col2 = jaylib_getcolor(argv, 5);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImageChecked(width, height, checksX, checksY, col1, col2);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_GenImageWhiteNoise(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    float factor = (float) janet_getnumber(argv, 2);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImageWhiteNoise(width, height, factor);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_GenImagePerlinNoise(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    int offsetX = janet_getinteger(argv, 2);
+    int offsetY = janet_getinteger(argv, 3);
+    float factor = (float) janet_getnumber(argv, 4);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImagePerlinNoise(width, height, offsetX, offsetY, factor);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_GenImageCellular(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    int tileSize = janet_getinteger(argv, 2);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImageCellular(width, height, tileSize);
+    return janet_wrap_abstract(image);
+}
+
 /*
 // Image/Texture2D data loading/unloading/saving functions
 RLAPI Image LoadImagePro(void *data, int width, int height, int format);                                 // Load image from raw data with parameters
@@ -485,16 +574,6 @@ RLAPI Vector4 *GetImageDataNormalized(Image image);                             
 RLAPI Rectangle GetImageAlphaBorder(Image image, float threshold);                                       // Get image alpha border rectangle
 RLAPI int GetPixelDataSize(int width, int height, int format);                                           // Get pixel data size in bytes (image or texture)
 RLAPI void UpdateTexture(Texture2D texture, const void *pixels);                                         // Update GPU texture with new data
-
-// Image generation functions
-RLAPI Image GenImageColor(int width, int height, Color color);                                           // Generate image: plain color
-RLAPI Image GenImageGradientV(int width, int height, Color top, Color bottom);                           // Generate image: vertical gradient
-RLAPI Image GenImageGradientH(int width, int height, Color left, Color right);                           // Generate image: horizontal gradient
-RLAPI Image GenImageGradientRadial(int width, int height, float density, Color inner, Color outer);      // Generate image: radial gradient
-RLAPI Image GenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2);    // Generate image: checked
-RLAPI Image GenImageWhiteNoise(int width, int height, float factor);                                     // Generate image: white noise
-RLAPI Image GenImagePerlinNoise(int width, int height, int offsetX, int offsetY, float scale);           // Generate image: perlin noise
-RLAPI Image GenImageCellular(int width, int height, int tileSize);                                       // Generate image: cellular algorithm. Bigger tileSize means bigger cells
 
 // Texture2D configuration functions
 RLAPI void GenTextureMipmaps(Texture2D *texture);                                                        // Generate GPU mipmaps for a texture
@@ -557,5 +636,13 @@ static const JanetReg image_cfuns[] = {
     {"draw-texture-pro", cfun_DrawTexturePro, NULL},
     {"draw-texture-quad", cfun_DrawTextureQuad, NULL},
     {"draw-texture-rec", cfun_DrawTextureRec, NULL},
+    {"gen-image-color", cfun_GenImageColor, NULL},
+    {"gen-image-gradient-v", cfun_GenImageGradientV, NULL},
+    {"gen-image-gradient-h", cfun_GenImageGradientH, NULL},
+    {"gen-image-gradient-radial", cfun_GenImageGradientRadial, NULL},
+    {"gen-image-checked", cfun_GenImageChecked, NULL},
+    {"gen-image-white-noise", cfun_GenImageWhiteNoise, NULL},
+    {"gen-image-perlin-noise", cfun_GenImagePerlinNoise, NULL},
+    {"gen-image-cellular", cfun_GenImageCellular, NULL},
     {NULL, NULL, NULL}
 };

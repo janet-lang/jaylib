@@ -247,14 +247,14 @@
 [x] void ImageColorReplace(Image *image, Color color, Color replace)
 
 // Image generation functions
-[ ] Image GenImageColor(int width, int height, Color color)
-[ ] Image GenImageGradientV(int width, int height, Color top, Color bottom)
-[ ] Image GenImageGradientH(int width, int height, Color left, Color right)
-[ ] Image GenImageGradientRadial(int width, int height, float density, Color inner, Color outer)
-[ ] Image GenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2)
-[ ] Image GenImageWhiteNoise(int width, int height, float factor)
-[ ] Image GenImagePerlinNoise(int width, int height, int offsetX, int offsetY, float scale)
-[ ] Image GenImageCellular(int width, int height, int tileSize)
+[x] Image GenImageColor(int width, int height, Color color)
+[x] Image GenImageGradientV(int width, int height, Color top, Color bottom)
+[x] Image GenImageGradientH(int width, int height, Color left, Color right)
+[x] Image GenImageGradientRadial(int width, int height, float density, Color inner, Color outer)
+[x] Image GenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2)
+[x] Image GenImageWhiteNoise(int width, int height, float factor)
+[x] Image GenImagePerlinNoise(int width, int height, int offsetX, int offsetY, float scale)
+[x] Image GenImageCellular(int width, int height, int tileSize)
 
 // Texture2D configuration functions
 [ ] void GenTextureMipmaps(Texture2D *texture)
