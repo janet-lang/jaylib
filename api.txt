@@ -257,9 +257,9 @@
 [x] Image GenImageCellular(int width, int height, int tileSize)
 
 // Texture2D configuration functions
-[ ] void GenTextureMipmaps(Texture2D *texture)
-[ ] void SetTextureFilter(Texture2D texture, int filterMode)
-[ ] void SetTextureWrap(Texture2D texture, int wrapMode)
+[x] void GenTextureMipmaps(Texture2D *texture)
+[x] void SetTextureFilter(Texture2D texture, int filterMode)
+[x] void SetTextureWrap(Texture2D texture, int wrapMode)
 
 // Texture2D drawing functions
 [x] void DrawTexture(Texture2D texture, int posX, int posY, Color tint)

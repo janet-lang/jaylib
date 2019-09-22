@@ -565,6 +565,57 @@ static Janet cfun_GenImageCellular(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(image);
 }
 
+static Janet cfun_GenTextureMipmaps(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Texture2D *texture = jaylib_gettexture2d(argv, 0);
+    GenTextureMipmaps(texture);
+    return argv[0];
+}
+
+static Janet cfun_SetTextureFilter(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Texture2D *texture = jaylib_gettexture2d(argv, 0);
+    const uint8_t *kw = janet_getkeyword(argv, 1);
+    int filter = 0;
+    if (!janet_cstrcmp(kw, "point")) {
+        filter = FILTER_POINT;
+    } else if (!janet_cstrcmp(kw, "bilinear")) {
+        filter = FILTER_BILINEAR;
+    } else if (!janet_cstrcmp(kw, "trilinear")) {
+        filter = FILTER_TRILINEAR;
+    } else if (!janet_cstrcmp(kw, "ansiotropic-4x")) {
+        filter = FILTER_ANISOTROPIC_4X;
+    } else if (!janet_cstrcmp(kw, "ansiotropic-8x")) {
+        filter = FILTER_ANISOTROPIC_8X;
+    } else if (!janet_cstrcmp(kw, "ansiotropic-16x")) {
+        filter = FILTER_ANISOTROPIC_16X;
+    } else {
+        janet_panicf("unknown filter %v", argv[1]);
+    }
+    SetTextureFilter(*texture, filter);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetTextureWrap(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Texture2D *texture = jaylib_gettexture2d(argv, 0);
+    const uint8_t *kw = janet_getkeyword(argv, 1);
+    int wrap = 0;
+    if (!janet_cstrcmp(kw, "repeat")) {
+        wrap = WRAP_REPEAT;
+    } else if (!janet_cstrcmp(kw, "clamp")) {
+        wrap = WRAP_CLAMP;
+    } else if (!janet_cstrcmp(kw, "mirror-repeat")) {
+        wrap = WRAP_MIRROR_REPEAT;
+    } else if (!janet_cstrcmp(kw, "mirror-clamp")) {
+        wrap = WRAP_MIRROR_CLAMP;
+    } else {
+        janet_panicf("unknown wrap-mode %v", argv[1]);
+    }
+    SetTextureWrap(*texture, wrap);
+    return janet_wrap_nil();
+}
+
 /*
 // Image/Texture2D data loading/unloading/saving functions
 RLAPI Image LoadImagePro(void *data, int width, int height, int format);                                 // Load image from raw data with parameters
@@ -574,11 +625,6 @@ RLAPI Vector4 *GetImageDataNormalized(Image image);                             
 RLAPI Rectangle GetImageAlphaBorder(Image image, float threshold);                                       // Get image alpha border rectangle
 RLAPI int GetPixelDataSize(int width, int height, int format);                                           // Get pixel data size in bytes (image or texture)
 RLAPI void UpdateTexture(Texture2D texture, const void *pixels);                                         // Update GPU texture with new data
-
-// Texture2D configuration functions
-RLAPI void GenTextureMipmaps(Texture2D *texture);                                                        // Generate GPU mipmaps for a texture
-RLAPI void SetTextureFilter(Texture2D texture, int filterMode);                                          // Set texture scaling filter mode
-RLAPI void SetTextureWrap(Texture2D texture, int wrapMode);                                              // Set texture wrapping mode
 
 // Texture2D drawing functions
 RLAPI void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle destRec, Vector2 origin, float rotation, Color tint);  // Draws a texture (or part of it) that stretches or shrinks nicely
@@ -644,5 +690,8 @@ static const JanetReg image_cfuns[] = {
     {"gen-image-white-noise", cfun_GenImageWhiteNoise, NULL},
     {"gen-image-perlin-noise", cfun_GenImagePerlinNoise, NULL},
     {"gen-image-cellular", cfun_GenImageCellular, NULL},
+    {"gen-texture-mipmaps", cfun_GenTextureMipmaps, NULL},
+    {"set-texture-filter", cfun_SetTextureFilter, NULL},
+    {"set-texture-wrap", cfun_SetTextureWrap, NULL},
     {NULL, NULL, NULL}
 };

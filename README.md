@@ -40,19 +40,7 @@ for an overview of which API functions have been ported.
 
 ## Building
 
-Make sure you have raylib installed on your system. I built raylib
-from source with the following commands and CMake configuration:
-
-```
-git clone https://github.com/raysan5/raylib.git raylib
-cd raylib
-mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/ -DWITH_PIC=ON ..
-make -j 16
-sudo make install
-```
-
-Once raylib is built and installed, build jaylib with
+Clone the repo with submodules, or use `git submodule update --init --recursive`.
 
 ```
 jpm build
@@ -68,7 +56,8 @@ for raylib, as well as some system specific changes in project.janet for your sy
 
 ## Install
 
-As with building from source, you will need raylib on your system.
+You no longer need to put any dependencies on your system to get jaylib, it
+should autodetect and build right out of the box.
 
 ```
 [sudo] jpm install https://github.com/janet-lang/jaylib.git
