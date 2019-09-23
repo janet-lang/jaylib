@@ -84,7 +84,7 @@ static Janet cfun_GetGestureHoldDuration(int32_t argc, Janet *argv) {
 static Janet cfun_GetGestureDragVector(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
-    return jaylib_uncastvec2(GetGestureDragVector());
+    return jaylib_wrap_vec2(GetGestureDragVector());
 }
 
 static Janet cfun_GetGestureDragAngle(int32_t argc, Janet *argv) {
@@ -96,7 +96,7 @@ static Janet cfun_GetGestureDragAngle(int32_t argc, Janet *argv) {
 static Janet cfun_GetGesturePinchVector(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
-    return jaylib_uncastvec2(GetGesturePinchVector());
+    return jaylib_wrap_vec2(GetGesturePinchVector());
 }
 
 static Janet cfun_GetGesturePinchAngle(int32_t argc, Janet *argv) {

@@ -227,7 +227,7 @@ static Janet cfun_EndDrawing(int32_t argc, Janet *argv) {
 
 static Janet cfun_BeginMode2D(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    BeginMode2D(jaylib_getcamera2d(argv, 0));
+    BeginMode2D(*jaylib_getcamera2d(argv, 0));
     return  janet_wrap_nil();
 }
 
@@ -399,25 +399,25 @@ static Janet cfun_GetTime(int32_t argc, Janet *argv) {
 
 static Janet cfun_IsKeyPressed(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int key = jaylib_castkey(argv, 0);
+    int key = jaylib_getkey(argv, 0);
     return janet_wrap_boolean(IsKeyPressed(key));
 }
 
 static Janet cfun_IsKeyDown(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int key = jaylib_castkey(argv, 0);
+    int key = jaylib_getkey(argv, 0);
     return janet_wrap_boolean(IsKeyDown(key));
 }
 
 static Janet cfun_IsKeyUp(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int key = jaylib_castkey(argv, 0);
+    int key = jaylib_getkey(argv, 0);
     return janet_wrap_boolean(IsKeyUp(key));
 }
 
 static Janet cfun_IsKeyReleased(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int key = jaylib_castkey(argv, 0);
+    int key = jaylib_getkey(argv, 0);
     return janet_wrap_boolean(IsKeyReleased(key));
 }
 
@@ -434,7 +434,7 @@ static Janet cfun_GetKeyPressed(int32_t argc, Janet *argv) {
 
 static Janet cfun_SetExitKey(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int key = jaylib_castkey(argv, 0);
+    int key = jaylib_getkey(argv, 0);
     SetExitKey(key);
     return janet_wrap_nil();
 }
@@ -461,28 +461,28 @@ static Janet cfun_GetGamepadName(int32_t argc, Janet *argv) {
 static Janet cfun_IsGamepadButtonDown(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int gamepad = janet_getinteger(argv, 0);
-    int button = jaylib_castbutton(argv, 1);
+    int button = jaylib_getbutton(argv, 1);
     return janet_wrap_boolean(IsGamepadButtonDown(gamepad, button));
 }
 
 static Janet cfun_IsGamepadButtonReleased(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int gamepad = janet_getinteger(argv, 0);
-    int button = jaylib_castbutton(argv, 1);
+    int button = jaylib_getbutton(argv, 1);
     return janet_wrap_boolean(IsGamepadButtonReleased(gamepad, button));
 }
 
 static Janet cfun_IsGamepadButtonUp(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int gamepad = janet_getinteger(argv, 0);
-    int button = jaylib_castbutton(argv, 1);
+    int button = jaylib_getbutton(argv, 1);
     return janet_wrap_boolean(IsGamepadButtonUp(gamepad, button));
 }
 
 static Janet cfun_IsGamepadButtonPressed(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int gamepad = janet_getinteger(argv, 0);
-    int button = jaylib_castbutton(argv, 1);
+    int button = jaylib_getbutton(argv, 1);
     return janet_wrap_boolean(IsGamepadButtonPressed(gamepad, button));
 }
 
@@ -501,31 +501,31 @@ static Janet cfun_GetGamepadAxisCount(int32_t argc, Janet *argv) {
 static Janet cfun_GetGamepadAxisMovement(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int gamepad = janet_getinteger(argv, 0);
-    int axis = jaylib_castaxis(argv, 1);
+    int axis = jaylib_getaxis(argv, 1);
     return janet_wrap_number((double) GetGamepadAxisMovement(gamepad, axis));
 }
 
 static Janet cfun_IsMouseButtonPressed(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int button = jaylib_castmouse(argv, 0);
+    int button = jaylib_getmouse(argv, 0);
     return janet_wrap_boolean(IsMouseButtonPressed(button));
 }
 
 static Janet cfun_IsMouseButtonDown(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int button = jaylib_castmouse(argv, 0);
+    int button = jaylib_getmouse(argv, 0);
     return janet_wrap_boolean(IsMouseButtonDown(button));
 }
 
 static Janet cfun_IsMouseButtonReleased(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int button = jaylib_castmouse(argv, 0);
+    int button = jaylib_getmouse(argv, 0);
     return janet_wrap_boolean(IsMouseButtonReleased(button));
 }
 
 static Janet cfun_IsMouseButtonUp(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int button = jaylib_castmouse(argv, 0);
+    int button = jaylib_getmouse(argv, 0);
     return janet_wrap_boolean(IsMouseButtonUp(button));
 }
 
@@ -545,7 +545,7 @@ static Janet cfun_GetMousePosition(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
     Vector2 pos = GetMousePosition();
-    return jaylib_uncastvec2(pos);
+    return jaylib_wrap_vec2(pos);
 }
 
 static Janet cfun_SetMousePosition(int32_t argc, Janet *argv) {
@@ -594,7 +594,7 @@ static Janet cfun_GetTouchPosition(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     int index = janet_getinteger(argv, 0);
     Vector2 pos = GetTouchPosition(index);
-    return jaylib_uncastvec2(pos);
+    return jaylib_wrap_vec2(pos);
 }
 
 static Janet cfun_GetDroppedFiles(int32_t argc, Janet *argv) {
@@ -635,6 +635,96 @@ static Janet cfun_OpenUrl(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     const char *url = janet_getcstring(argv, 0);
     OpenURL(url);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetWindowIcon(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image *image = jaylib_getimage(argv, 0);
+    SetWindowIcon(*image);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_Camera2D(int32_t argc, Janet *argv) {
+    if (argc & 1 != 0) {
+        janet_panicf("expected even number of arguments, got %d", argc);
+    }
+    Camera2D *camera = janet_abstract(&AT_Camera2D, sizeof(Camera2D));
+    memset(camera, 0, sizeof(Camera2D));
+    for (int32_t i = 0; i < argc; i += 2) {
+        const uint8_t *kw = janet_getkeyword(argv, i);
+        if (!janet_cstrcmp(kw, "target")) {
+            camera->target = jaylib_getvec2(argv, i + 1);
+        } else if (!janet_cstrcmp(kw, "offset")) {
+            camera->offset = jaylib_getvec2(argv, i + 1);
+        } else if (!janet_cstrcmp(kw, "rotation")) {
+            camera->rotation = (float) janet_getnumber(argv, i + 1);
+        } else if (!janet_cstrcmp(kw, "zoom")) {
+            camera->zoom = (float) janet_getnumber(argv, i + 1);
+        } else {
+            janet_panicf("unknown key %v", argv[i]);
+        }
+    }
+    return janet_wrap_abstract(camera);
+}
+
+static Janet cfun_Camera3D(int32_t argc, Janet *argv) {
+    if (argc & 1 != 0) {
+        janet_panicf("expected even number of arguments, got %d", argc);
+    }
+    Camera3D *camera = janet_abstract(&AT_Camera3D, sizeof(Camera3D));
+    memset(camera, 0, sizeof(Camera3D));
+    for (int32_t i = 0; i < argc; i += 2) {
+        const uint8_t *kw = janet_getkeyword(argv, i);
+        if (!janet_cstrcmp(kw, "target")) {
+            camera->target = jaylib_getvec3(argv, i + 1);
+        } else if (!janet_cstrcmp(kw, "position")) {
+            camera->position = jaylib_getvec3(argv, i + 1);
+        } else if (!janet_cstrcmp(kw, "up")) {
+            camera->up = jaylib_getvec3(argv, i + 1);
+        } else if (!janet_cstrcmp(kw, "fovy")) {
+            camera->fovy = (float) janet_getnumber(argv, i + 1);
+        } else if (!janet_cstrcmp(kw, "type")) {
+            const uint8_t *cameraType = janet_getkeyword(argv, i + 1);
+            if (!janet_cstrcmp(cameraType, "perspective")) {
+                camera->type = CAMERA_PERSPECTIVE;
+            } else if (!janet_cstrcmp(cameraType, "orthographic")) {
+                camera->type = CAMERA_ORTHOGRAPHIC;
+            } else {
+                janet_panicf("unknown camera type %v", argv[i + 1]);
+            }
+        } else {
+            janet_panicf("unknown key %v", argv[i]);
+        }
+    }
+    return janet_wrap_abstract(camera);
+}
+
+static Janet cfun_BeginMode3D(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Camera3D *camera = jaylib_getcamera3d(argv, 0);
+    BeginMode3D(*camera);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_EndMode3D(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    EndMode3D();
+    return janet_wrap_nil();
+}
+
+static Janet cfun_BeginTextureMode(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    RenderTexture2D *texture = jaylib_getrendertexture(argv, 0);
+    BeginTextureMode(*texture);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_EndTextureMode(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    EndTextureMode();
     return janet_wrap_nil();
 }
 
@@ -720,5 +810,12 @@ static JanetReg core_cfuns[] = {
     {"storage-save-value", cfun_StorageSaveValue, NULL},
     {"storage-load-value", cfun_StorageLoadValue, NULL},
     {"open-url", cfun_OpenUrl, NULL},
+    {"set-window-icon", cfun_SetWindowIcon, NULL},
+    {"begin-mode-3d", cfun_BeginMode3D, NULL},
+    {"end-mode-3d", cfun_EndMode3D, NULL},
+    {"begin-texture-mode", cfun_BeginTextureMode, NULL},
+    {"end-texture-mode", cfun_EndTextureMode, NULL},
+    {"camera-2d", cfun_Camera2D, NULL},
+    {"camera-3d", cfun_Camera3D, NULL},
     {NULL, NULL, NULL}
 };

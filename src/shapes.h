@@ -59,7 +59,7 @@ static Vector2 *jaylib_getvec2s(const Janet *argv, int32_t n, int32_t *len) {
     JanetView view = janet_getindexed(argv, n);
     Vector2 *mem = janet_smalloc(sizeof(Vector2) * view.len);
     for (int32_t i = 0; i < view.len; i++) {
-        mem[i] = jaylib_castvec2(view.items[i]);
+        mem[i] = jaylib_getvec2(view.items, i);
     }
     *len = view.len;
     return mem;

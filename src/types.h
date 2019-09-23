@@ -178,19 +178,19 @@ static int jaylib_castdef(const Janet *argv, int32_t n, const KeyDef *defs, int 
     janet_panicf("unknown key :%s", name);
 }
 
-static int jaylib_castkey(const Janet *argv, int32_t n) {
+static int jaylib_getkey(const Janet *argv, int32_t n) {
     return jaylib_castdef(argv, n, key_defs, sizeof(key_defs) / sizeof(KeyDef));
 }
 
-static int jaylib_castbutton(const Janet *argv, int32_t n) {
+static int jaylib_getbutton(const Janet *argv, int32_t n) {
     return jaylib_castdef(argv, n, button_defs, sizeof(button_defs) / sizeof(KeyDef));
 }
 
-static int jaylib_castaxis(const Janet *argv, int32_t n) {
+static int jaylib_getaxis(const Janet *argv, int32_t n) {
     return jaylib_castdef(argv, n, axis_defs, sizeof(axis_defs) / sizeof(KeyDef));
 }
 
-static int jaylib_castmouse(const Janet *argv, int32_t n) {
+static int jaylib_getmouse(const Janet *argv, int32_t n) {
     return jaylib_castdef(argv, n, mouse_defs, sizeof(mouse_defs) / sizeof(KeyDef));
 }
 
@@ -273,17 +273,6 @@ static Color jaylib_getcolor(const Janet *argv, int32_t n) {
     }
 }
 
-static float dict_getfloat(Janet dict, const char *key, float dflt) {
-    Janet v = janet_get(dict, janet_ckeywordv(key));
-    if (janet_checktype(v, JANET_NIL)) {
-        return dflt;
-    }
-    if (!janet_checktype(v, JANET_NUMBER)) {
-        janet_panicf("expected number, got %v for key :%s", v, key);
-    }
-    return (float) janet_unwrap_number(v);
-}
-
 static float idx_getfloat(JanetView idx, int index) {
     if (index >= idx.len) {
         janet_panicf("index %d outside of range [0, %d)", idx.len);
@@ -294,23 +283,20 @@ static float idx_getfloat(JanetView idx, int index) {
     return (float) janet_unwrap_number(idx.items[index]);
 }
 
-static Vector2 jaylib_castvec2(Janet x) {
-    JanetView idx;
-    if (!janet_indexed_view(x, &idx.items, &idx.len)) {
-        if (janet_checktype(x, JANET_NIL)) return (Vector2) {0};
-        janet_panicf("expected tuple|array, got %v", x);
-    }
+static Vector2 jaylib_getvec2(const Janet *argv, int32_t n) {
+    JanetView idx = janet_getindexed(argv, n);
     return (Vector2) {
         idx_getfloat(idx, 0),
         idx_getfloat(idx, 1)
     };
 }
 
-static Vector2 jaylib_getvec2(const Janet *argv, int32_t n) {
+static Vector3 jaylib_getvec3(const Janet *argv, int32_t n) {
     JanetView idx = janet_getindexed(argv, n);
-    return (Vector2) {
+    return (Vector3) {
         idx_getfloat(idx, 0),
-        idx_getfloat(idx, 1)
+        idx_getfloat(idx, 1),
+        idx_getfloat(idx, 2)
     };
 }
 
@@ -352,50 +338,7 @@ static int jaylib_getpixelformat(const Janet *argv, int32_t n) {
     return jaylib_castdef(argv, n, pixel_format_defs, sizeof(pixel_format_defs) / sizeof(KeyDef));
 }
 
-/*
-static Vector3 jaylib_castvec3(Janet x) {
-    JanetView idx;
-    if (!janet_indexed_view(x, &idx.items, &idx.len)) {
-        if (janet_checktype(x, JANET_NIL)) return (Vector3) {0};
-        janet_panicf("expected tuple|array, got %v", x);
-    }
-    return (Vector3) {
-        idx_getfloat(idx, 0),
-        idx_getfloat(idx, 1),
-        idx_getfloat(idx, 2)
-    };
-}
-
-static Vector4 jaylib_castvec4(Janet x) {
-    JanetView idx;
-    if (!janet_indexed_view(x, &idx.items, &idx.len)) {
-        if (janet_checktype(x, JANET_NIL)) return (Vector4) {0};
-        janet_panicf("expected tuple|array, got %v", x);
-    }
-    return (Vector4) {
-        idx_getfloat(idx, 0),
-        idx_getfloat(idx, 1),
-        idx_getfloat(idx, 2),
-        idx_getfloat(idx, 3)
-    };
-}
-*/
-
-static Janet jget(Janet dict, const char *key) {
-    return janet_get(dict, janet_ckeywordv(key));
-}
-
-static Camera2D jaylib_getcamera2d(const Janet *argv, int32_t n) {
-    Camera2D ret = {0};
-    Janet dict = argv[n];
-    ret.target = jaylib_castvec2(jget(dict, "target"));
-    ret.offset = jaylib_castvec2(jget(dict, "offset"));
-    ret.rotation = dict_getfloat(dict, "rotation", 0.0f);
-    ret.zoom = dict_getfloat(dict, "zoom", 1.0f);
-    return ret;
-}
-
-static Janet jaylib_uncastvec2(Vector2 x) {
+static Janet jaylib_wrap_vec2(Vector2 x) {
     Janet *tup = janet_tuple_begin(2);
     tup[0] = janet_wrap_integer(x.x);
     tup[1] = janet_wrap_integer(x.y);
@@ -537,4 +480,34 @@ static const JanetAbstractType AT_RenderTexture = {
 
 static RenderTexture *jaylib_getrendertexture(const Janet *argv, int32_t n) {
     return ((RenderTexture *)janet_getabstract(argv, n, &AT_RenderTexture));
+}
+
+static const JanetAbstractType AT_Camera2D = {
+    "jaylib/camera-2d",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static Camera2D *jaylib_getcamera2d(const Janet *argv, int32_t n) {
+    return ((Camera2D *)janet_getabstract(argv, n, &AT_Camera2D));
+}
+
+static const JanetAbstractType AT_Camera3D = {
+    "jaylib/camera-3d",
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static Camera3D *jaylib_getcamera3d(const Janet *argv, int32_t n) {
+    return ((Camera3D *)janet_getabstract(argv, n, &AT_Camera3D));
 }

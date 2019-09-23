@@ -9,7 +9,7 @@
 [x] void ToggleFullscreen(void)
 [x] void UnhideWindow(void)
 [x] void HideWindow(void)
-[ ] void SetWindowIcon(Image image)
+[x] void SetWindowIcon(Image image)
 [x] void SetWindowTitle(const char *title)
 [x] void SetWindowPosition(int x, int y)
 [x] void SetWindowMonitor(int monitor)
@@ -40,10 +40,10 @@
 [x] void EndDrawing(void)
 [x] void BeginMode2D(Camera2D camera)
 [x] void EndMode2D(void)
-[ ] void BeginMode3D(Camera3D camera)
-[ ] void EndMode3D(void)
-[ ] void BeginTextureMode(RenderTexture2D target)
-[ ] void EndTextureMode(void)
+[x] void BeginMode3D(Camera3D camera)
+[x] void EndMode3D(void)
+[x] void BeginTextureMode(RenderTexture2D target)
+[x] void EndTextureMode(void)
 
 // Screen-space-related functions
 [ ] Ray GetMouseRay(Vector2 mousePosition, Camera camera)

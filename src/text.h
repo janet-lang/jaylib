@@ -65,7 +65,7 @@ static Janet cfun_DrawTextEx(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 6);
     Font font = *jaylib_getfont(argv, 0);
     const char *text = janet_getcstring(argv, 1);
-    Vector2 position = jaylib_castvec2(argv[2]);
+    Vector2 position = jaylib_getvec2(argv, 2);
     float fontSize = (float) janet_getnumber(argv, 3);
     float spacing = (float) janet_getnumber(argv, 4);
     Color color = jaylib_getcolor(argv, 5);
@@ -117,7 +117,7 @@ static Janet cfun_MeasureTextEx(int32_t argc, Janet *argv) {
     const char *text = janet_getcstring(argv, 1);
     float fontSize = (float) janet_getnumber(argv, 2);
     float spacing = (float) janet_getnumber(argv, 3);
-    return jaylib_uncastvec2(MeasureTextEx(font, text, fontSize, spacing));
+    return jaylib_wrap_vec2(MeasureTextEx(font, text, fontSize, spacing));
 }
 
 static Janet cfun_GetGlyphIndex(int32_t argc, Janet *argv) {

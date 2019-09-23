@@ -317,7 +317,7 @@ static Janet cfun_ImageDrawRectangleLines(int32_t argc, Janet *argv) {
 static Janet cfun_ImageDrawText(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 5);
     Image *dst = jaylib_getimage(argv, 0);
-    Vector2 position = jaylib_castvec2(argv[1]);
+    Vector2 position = jaylib_getvec2(argv, 1);
     const char *text = janet_getcstring(argv, 2);
     int fontSize = janet_getinteger(argv, 3);
     Color color = jaylib_getcolor(argv, 4);
@@ -328,7 +328,7 @@ static Janet cfun_ImageDrawText(int32_t argc, Janet *argv) {
 static Janet cfun_ImageDrawTextEx(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 7);
     Image *dst = jaylib_getimage(argv, 0);
-    Vector2 position = jaylib_castvec2(argv[1]);
+    Vector2 position = jaylib_getvec2(argv, 1);
     Font *font = jaylib_getfont(argv, 2);
     const char *text = janet_getcstring(argv, 3);
     float fontSize = (float) janet_getnumber(argv, 4);
@@ -426,7 +426,7 @@ static Janet cfun_DrawTexture(int32_t argc, Janet *argv) {
 static Janet cfun_DrawTextureV(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
-    Vector2 position = jaylib_castvec2(argv[1]);
+    Vector2 position = jaylib_getvec2(argv, 1);
     Color color = jaylib_getcolor(argv, 2);
     DrawTextureV(texture, position, color);
     return janet_wrap_nil();
@@ -435,7 +435,7 @@ static Janet cfun_DrawTextureV(int32_t argc, Janet *argv) {
 static Janet cfun_DrawTextureEx(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 5);
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
-    Vector2 position = jaylib_castvec2(argv[1]);
+    Vector2 position = jaylib_getvec2(argv, 1);
     float rotation = (float) janet_getnumber(argv, 2);
     float scale = (float) janet_getnumber(argv, 3);
     Color color = jaylib_getcolor(argv, 4);
@@ -447,7 +447,7 @@ static Janet cfun_DrawTextureRec(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 4);
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
     Rectangle rect = jaylib_getrect(argv, 1);
-    Vector2 position = jaylib_castvec2(argv[2]);
+    Vector2 position = jaylib_getvec2(argv, 2);
     Color color = jaylib_getcolor(argv, 3);
     DrawTextureRec(texture, rect, position, color);
     return janet_wrap_nil();
@@ -456,8 +456,8 @@ static Janet cfun_DrawTextureRec(int32_t argc, Janet *argv) {
 static Janet cfun_DrawTextureQuad(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 5);
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
-    Vector2 tiling = jaylib_castvec2(argv[1]);
-    Vector2 offset = jaylib_castvec2(argv[2]);
+    Vector2 tiling = jaylib_getvec2(argv, 1);
+    Vector2 offset = jaylib_getvec2(argv, 2);
     Rectangle quad = jaylib_getrect(argv, 3);
     Color color = jaylib_getcolor(argv, 3);
     DrawTextureQuad(texture, tiling, offset, quad, color);
@@ -469,7 +469,7 @@ static Janet cfun_DrawTexturePro(int32_t argc, Janet *argv) {
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
     Rectangle rect = jaylib_getrect(argv, 1);
     Rectangle dest = jaylib_getrect(argv, 2);
-    Vector2 position = jaylib_castvec2(argv[3]);
+    Vector2 position = jaylib_getvec2(argv, 3);
     float rotation = janet_getnumber(argv, 4);
     Color color = jaylib_getcolor(argv, 5);
     DrawTexturePro(texture, rect, dest, position, rotation, color);
