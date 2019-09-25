@@ -264,6 +264,7 @@ static const KeyDef flag_defs[] = {
     {"window-undecorated", FLAG_WINDOW_UNDECORATED},
     {"window-transparent", FLAG_WINDOW_TRANSPARENT},
     {"window-hidden", FLAG_WINDOW_HIDDEN},
+    {"window-always-run", FLAG_WINDOW_ALWAYS_RUN},
     {"msaa-4x-hint", FLAG_MSAA_4X_HINT},
     {"vsync-hint", FLAG_VSYNC_HINT}
 };
@@ -728,6 +729,68 @@ static Janet cfun_EndTextureMode(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_SetCameraMode(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Camera3D *camera = jaylib_getcamera3d(argv, 0);
+    const uint8_t *kw = janet_getkeyword(argv, 1);
+    int mode;
+    if (!janet_cstrcmp(kw, "first-person")) {
+        mode = CAMERA_FIRST_PERSON;
+    } else if (!janet_cstrcmp(kw, "third-person")) {
+        mode = CAMERA_THIRD_PERSON;
+    } else if (!janet_cstrcmp(kw, "free")) {
+        mode = CAMERA_FREE;
+    } else if (!janet_cstrcmp(kw, "orbital")) {
+        mode = CAMERA_ORBITAL;
+    } else if (!janet_cstrcmp(kw, "custom")) {
+        mode = CAMERA_CUSTOM;
+    } else {
+        janet_panicf("unknown camera mode %v", kw);
+    }
+    SetCameraMode(*camera, mode);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_UpdateCamera(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Camera3D *camera = jaylib_getcamera3d(argv, 0);
+    UpdateCamera(camera);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetCameraPanControl(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    int key = jaylib_getkey(argv, 0);
+    SetCameraPanControl(key);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetCameraAltControl(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    int key = jaylib_getkey(argv, 0);
+    SetCameraAltControl(key);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetCameraSmoothZoomControl(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    int key = jaylib_getkey(argv, 0);
+    SetCameraSmoothZoomControl(key);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetCameraMoveControls(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    int k1 = jaylib_getkey(argv, 0);
+    int k2 = jaylib_getkey(argv, 1);
+    int k3 = jaylib_getkey(argv, 2);
+    int k4 = jaylib_getkey(argv, 3);
+    int k5 = jaylib_getkey(argv, 4);
+    int k6 = jaylib_getkey(argv, 5);
+    SetCameraMoveControls(k1, k2, k3, k4, k5, k6);
+    return janet_wrap_nil();
+}
+
 static JanetReg core_cfuns[] = {
     {"init-window", cfun_InitWindow, NULL},
     {"window-should-close", cfun_WindowShouldClose, NULL},
@@ -817,5 +880,11 @@ static JanetReg core_cfuns[] = {
     {"end-texture-mode", cfun_EndTextureMode, NULL},
     {"camera-2d", cfun_Camera2D, NULL},
     {"camera-3d", cfun_Camera3D, NULL},
+    {"set-camera-mode", cfun_SetCameraMode, NULL},
+    {"update-camera", cfun_UpdateCamera, NULL},
+    {"set-camera-pan-control", cfun_SetCameraPanControl, NULL},
+    {"set-camera-alt-control", cfun_SetCameraAltControl, NULL},
+    {"set-camera-smooth-zoom-control", cfun_SetCameraSmoothZoomControl, NULL},
+    {"set-camera-move-controls", cfun_SetCameraMoveControls, NULL},
     {NULL, NULL, NULL}
 };

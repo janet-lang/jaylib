@@ -37,7 +37,8 @@
             "src/gestures.h"
             "src/text.h"
             "src/image.h"
-            "src/shapes.h"]
+            "src/shapes.h"
+            "src/3d.h"]
 
   :lflags lflags)
 

@@ -140,12 +140,12 @@
 //------------------------------------------------------------------------------------
 // Camera System Functions (Module: camera)
 //------------------------------------------------------------------------------------
-[ ] void SetCameraMode(Camera camera, int mode)
-[ ] void UpdateCamera(Camera *camera)
-[ ] void SetCameraPanControl(int panKey)
-[ ] void SetCameraAltControl(int altKey)
-[ ] void SetCameraSmoothZoomControl(int szKey)
-[ ] void SetCameraMoveControls(int frontKey, int backKey,
+[x] void SetCameraMode(Camera camera, int mode)
+[x] void UpdateCamera(Camera *camera)
+[x] void SetCameraPanControl(int panKey)
+[x] void SetCameraAltControl(int altKey)
+[x] void SetCameraSmoothZoomControl(int szKey)
+[x] void SetCameraMoveControls(int frontKey, int backKey,
                             int rightKey, int leftKey,
                             int upKey, int downKey)
 
