@@ -4,23 +4,29 @@
 
 (def o (os/which))
 
+(def cflags
+  (case o
+    :macos '["-Iraylib/src" "-ObjC"]
+    #default
+    '["-Iraylib/src"]))
+
 (def lflags
   (case o
     :windows '[]
-    :macos '["-lpthread"]
+    :macos '["-lpthread" "-framework" "Cocoa" "-framework" "CoreVideo" "-framework" "IOKit" "-framework" "OpenGL"]
     :linux '["-lpthread" "-lX11"]
     #default
     '["-lpthread"]))
-  
+
 (declare-native
   :name "jaylib"
 
-  :cflags ["-Iraylib/src"]
+  :cflags cflags
 
   :defines {"PLATFORM_DESKTOP" true}
 
   :source ["src/main.c"
-           
+
            # raylib sources
            "raylib/src/core.c"
            "raylib/src/models.c"
