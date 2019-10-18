@@ -310,6 +310,16 @@ static Rectangle jaylib_getrect(const Janet *argv, int32_t n) {
     };
 }
 
+static Ray jaylib_getray(const Janet *argv, int32_t n) {
+    JanetView idx = janet_getindexed(argv, n);
+    if (idx.len < 2) {
+        janet_panicf("ray needs a position and direction, got %v", argv[n]);
+    }
+    Vector3 p = jaylib_getvec3(idx.items, 0);
+    Vector3 d = jaylib_getvec3(idx.items, 1);
+    return (Ray){ p, d };
+}
+
 static const KeyDef pixel_format_defs[] = {
     {"astc-4x4-rgba", COMPRESSED_ASTC_4x4_RGBA},
     {"astc-8x8-rgba", COMPRESSED_ASTC_8x8_RGBA},

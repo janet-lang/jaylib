@@ -424,11 +424,13 @@ static Janet cfun_IsKeyReleased(int32_t argc, Janet *argv) {
 
 static Janet cfun_GetKeyPressed(int32_t argc, Janet *argv) {
     (void) argv;
-    janet_fixarity(argc, 0);
+    janet_arity(argc, 0, 1);
     int key = GetKeyPressed();
-    for (unsigned i = 0; i < (sizeof(key_defs) / sizeof(KeyDef)); i++) {
-        if (key_defs[i].key == key)
-            return janet_ckeywordv(key_defs[i].name);
+    if (argc == 0 || !janet_truthy(argv[1])) {
+        for (unsigned i = 0; i < (sizeof(key_defs) / sizeof(KeyDef)); i++) {
+            if (key_defs[i].key == key)
+                return janet_ckeywordv(key_defs[i].name);
+        }
     }
     return janet_wrap_integer(key);
 }

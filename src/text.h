@@ -4,6 +4,17 @@ CharInfo *LoadFontData(const char *fileName, int fontSize, int *fontChars, int c
 Image GenImageFontAtlas(CharInfo *chars, int charsCount, int fontSize, int padding, int packMethod);  // Generate image font atlas using chars info
 */
 
+/* Get a c like string, but also works with buffers. */
+static const char *jaylib_getcstring(const Janet *argv, int32_t n) {
+    if (janet_checktype(argv[n], JANET_BUFFER)) {
+        JanetBuffer *buf = janet_unwrap_buffer(argv[n]);
+        janet_buffer_push_u8(buf, 0);
+        buf->count--;
+        return (const char *)buf->data;
+    }
+    return janet_getcstring(argv, n);
+}
+
 static Janet cfun_GetFontDefault(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
@@ -52,7 +63,7 @@ static Janet cfun_DrawFPS(int32_t argc, Janet *argv) {
 
 static Janet cfun_DrawText(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 5);
-    const char *text = janet_getcstring(argv, 0);
+    const char *text = jaylib_getcstring(argv, 0);
     int x = janet_getinteger(argv, 1);
     int y = janet_getinteger(argv, 2);
     int fontSize = janet_getinteger(argv, 3);
@@ -64,7 +75,7 @@ static Janet cfun_DrawText(int32_t argc, Janet *argv) {
 static Janet cfun_DrawTextEx(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 6);
     Font font = *jaylib_getfont(argv, 0);
-    const char *text = janet_getcstring(argv, 1);
+    const char *text = jaylib_getcstring(argv, 1);
     Vector2 position = jaylib_getvec2(argv, 2);
     float fontSize = (float) janet_getnumber(argv, 3);
     float spacing = (float) janet_getnumber(argv, 4);
@@ -76,7 +87,7 @@ static Janet cfun_DrawTextEx(int32_t argc, Janet *argv) {
 static Janet cfun_DrawTextRec(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 7);
     Font font = *jaylib_getfont(argv, 0);
-    const char *text = janet_getcstring(argv, 1);
+    const char *text = jaylib_getcstring(argv, 1);
     Rectangle rect = jaylib_getrect(argv, 2);
     float fontSize = (float) janet_getnumber(argv, 3);
     float spacing = (float) janet_getnumber(argv, 4);
@@ -89,7 +100,7 @@ static Janet cfun_DrawTextRec(int32_t argc, Janet *argv) {
 static Janet cfun_DrawTextRecEx(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 11);
     Font font = *jaylib_getfont(argv, 0);
-    const char *text = janet_getcstring(argv, 1);
+    const char *text = jaylib_getcstring(argv, 1);
     Rectangle rect = jaylib_getrect(argv, 2);
     float fontSize = (float) janet_getnumber(argv, 3);
     float spacing = (float) janet_getnumber(argv, 4);
@@ -106,7 +117,7 @@ static Janet cfun_DrawTextRecEx(int32_t argc, Janet *argv) {
 
 static Janet cfun_MeasureText(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    const char *text = janet_getcstring(argv, 0);
+    const char *text = jaylib_getcstring(argv, 0);
     int fontSize = janet_getinteger(argv, 1);
     return janet_wrap_integer(MeasureText(text, fontSize));
 }
@@ -114,7 +125,7 @@ static Janet cfun_MeasureText(int32_t argc, Janet *argv) {
 static Janet cfun_MeasureTextEx(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 4);
     Font font = *jaylib_getfont(argv, 0);
-    const char *text = janet_getcstring(argv, 1);
+    const char *text = jaylib_getcstring(argv, 1);
     float fontSize = (float) janet_getnumber(argv, 2);
     float spacing = (float) janet_getnumber(argv, 3);
     return jaylib_wrap_vec2(MeasureTextEx(font, text, fontSize, spacing));
