@@ -119,4 +119,16 @@ will have a fallback to sensible defaults, such as 0.
                     :position [6 3 6]))
 ```
 
+### Additional functions
+
+In addition to the functions mapping directly to Raylib functions, the following
+have been implemented in Jaylib:
+
+#### Images
+
+#### get-image-dimensions
+`Image -> Vector2`
+
+Extract width and height from an `Image`.
+
 ###
