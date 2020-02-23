@@ -616,6 +616,16 @@ static Janet cfun_SetTextureWrap(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_GetImageDimensions(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image *src = jaylib_getimage(argv, 0);
+    Vector2 dim = {
+      src->width,
+      src->height
+    };
+    return jaylib_wrap_vec2(dim);
+}
+
 /*
 // Image/Texture2D data loading/unloading/saving functions
 RLAPI Image LoadImagePro(void *data, int width, int height, int format);                                 // Load image from raw data with parameters
@@ -642,6 +652,7 @@ static const JanetReg image_cfuns[] = {
     {"unload-image", cfun_UnloadImage, NULL},
     {"unload-texture", cfun_UnloadTexture, NULL},
     {"unload-render-texture", cfun_UnloadRenderTexture, NULL},
+    {"get-image-dimensions", cfun_GetImageDimensions, NULL},
     {"get-texture-data", cfun_GetTextureData, NULL},
     {"get-screen-data", cfun_GetScreenData, NULL},
     {"image-copy", cfun_ImageCopy, NULL},
