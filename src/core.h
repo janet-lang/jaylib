@@ -620,18 +620,18 @@ static Janet cfun_ClearDroppedFiles(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_StorageSaveValue(int32_t argc, Janet *argv) {
+static Janet cfun_SaveStorageValue(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int32_t position = janet_getinteger(argv, 0);
     int32_t value = janet_getinteger(argv, 1);
-    StorageSaveValue(position, value);
+    SaveStorageValue(position, value);
     return janet_wrap_nil();
 }
 
-static Janet cfun_StorageLoadValue(int32_t argc, Janet *argv) {
+static Janet cfun_LoadStorageValue(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     int32_t position = janet_getinteger(argv, 0);
-    return janet_wrap_integer(StorageLoadValue(position));
+    return janet_wrap_integer(LoadStorageValue(position));
 }
 
 static Janet cfun_OpenUrl(int32_t argc, Janet *argv) {
@@ -872,8 +872,8 @@ static JanetReg core_cfuns[] = {
     {"get-touch-position", cfun_GetTouchPosition, NULL},
     {"get-dropped-files", cfun_GetDroppedFiles, NULL},
     {"clear-dropped-files", cfun_ClearDroppedFiles, NULL},
-    {"storage-save-value", cfun_StorageSaveValue, NULL},
-    {"storage-load-value", cfun_StorageLoadValue, NULL},
+    {"save-storage-value", cfun_SaveStorageValue, NULL},
+    {"load-storage-value", cfun_LoadStorageValue, NULL},
     {"open-url", cfun_OpenUrl, NULL},
     {"set-window-icon", cfun_SetWindowIcon, NULL},
     {"begin-mode-3d", cfun_BeginMode3D, NULL},
