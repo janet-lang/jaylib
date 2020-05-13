@@ -295,12 +295,12 @@ static Janet cfun_ImageDraw(int32_t argc, Janet *argv) {
     return argv[0];
 }
 
-static Janet cfun_ImageDrawRectangle(int32_t argc, Janet *argv) {
+static Janet cfun_ImageDrawRectangleRec(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     Image *dst = jaylib_getimage(argv, 0);
     Rectangle rec = jaylib_getrect(argv, 1);
     Color color = jaylib_getcolor(argv, 2);
-    ImageDrawRectangle(dst, rec, color);
+    ImageDrawRectangleRec(dst, rec, color);
     return argv[0];
 }
 
@@ -673,7 +673,7 @@ static const JanetReg image_cfuns[] = {
     {"image-text", cfun_ImageText, NULL},
     {"image-text-ex", cfun_ImageTextEx, NULL},
     {"image-draw", cfun_ImageDraw, NULL},
-    {"image-draw-rectangle", cfun_ImageDrawRectangle, NULL},
+    {"image-draw-rectangle-rec", cfun_ImageDrawRectangleRec, NULL},
     {"image-draw-rectangle-lines", cfun_ImageDrawRectangleLines, NULL},
     {"image-draw-text", cfun_ImageDrawText, NULL},
     {"image-draw-text-ex", cfun_ImageDrawTextEx, NULL},

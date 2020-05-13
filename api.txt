@@ -77,8 +77,8 @@
 [x] void ClearDroppedFiles(void)
 
 // Persistent storage management
-[x] void StorageSaveValue(int position, int value)
-[x] int StorageLoadValue(int position)
+[x] void SaveStorageValue(int position, int value)
+[x] int LoadStorageValue(int position)
 
 [x] void OpenURL(const char *url)
 
@@ -231,7 +231,7 @@
 [x] Image ImageText(const char *text, int fontSize, Color color)
 [x] Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Color tint)
 [x] void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec)
-[x] void ImageDrawRectangle(Image *dst, Rectangle rec, Color color)
+[x] void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
 [x] void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color)
 [x] void ImageDrawText(Image *dst, Vector2 position, const char *text, int fontSize, Color color)
 [x] void ImageDrawTextEx(Image *dst, Vector2 position, Font font, const char *text, float fontSize, float spacing, Color color)
