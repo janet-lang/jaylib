@@ -12,7 +12,7 @@
 
 (def lflags
   (case o
-    :windows '[]
+    :windows '["user32.lib" "gdi32.lib" "winmm.lib" "shell32.lib"]
     :macos '["-lpthread" "-framework" "Cocoa" "-framework" "CoreVideo" "-framework" "IOKit" "-framework" "OpenGL"]
     :linux '["-lpthread" "-lX11"]
     #default

@@ -3,6 +3,38 @@
  * as well as coercing standard Janet datastructures to types. This
  * lets us make an API that interacts well with Janet code. */
 
+
+// Some Basic Colors
+// NOTE: Custom raylib color palette for amazing visuals on WHITE background
+#define _LIGHTGRAY_  { 200, 200, 200, 255 }   // Light Gray
+#define _GRAY_       { 130, 130, 130, 255 }   // Gray
+#define _DARKGRAY_   { 80, 80, 80, 255 }      // Dark Gray
+#define _YELLOW_     { 253, 249, 0, 255 }     // Yellow
+#define _GOLD_       { 255, 203, 0, 255 }     // Gold
+#define _ORANGE_     { 255, 161, 0, 255 }     // Orange
+#define _PINK_       { 255, 109, 194, 255 }   // Pink
+#define _RED_        { 230, 41, 55, 255 }     // Red
+#define _MAROON_     { 190, 33, 55, 255 }     // Maroon
+#define _GREEN_      { 0, 228, 48, 255 }      // Green
+#define _LIME_       { 0, 158, 47, 255 }      // Lime
+#define _DARKGREEN_  { 0, 117, 44, 255 }      // Dark Green
+#define _SKYBLUE_    { 102, 191, 255, 255 }   // Sky Blue
+#define _BLUE_       { 0, 121, 241, 255 }     // Blue
+#define _DARKBLUE_   { 0, 82, 172, 255 }      // Dark Blue
+#define _PURPLE_     { 200, 122, 255, 255 }   // Purple
+#define _VIOLET_     { 135, 60, 190, 255 }    // Violet
+#define _DARKPURPLE_ { 112, 31, 126, 255 }    // Dark Purple
+#define _BEIGE_      { 211, 176, 131, 255 }   // Beige
+#define _BROWN_      { 127, 106, 79, 255 }    // Brown
+#define _DARKBROWN_  { 76, 63, 47, 255 }      // Dark Brown
+
+#define _WHITE_      { 255, 255, 255, 255 }   // White
+#define _BLACK_      { 0, 0, 0, 255 }         // Black
+#define _BLANK_      { 0, 0, 0, 0 }           // Blank (Transparent)
+#define _MAGENTA_    { 255, 0, 255, 255 }     // Magenta
+#define _RAYWHITE_   { 245, 245, 245, 255 }   // My own White (raylib logo)
+
+
 /* Key map */
 typedef struct {
     const char *name;
@@ -200,33 +232,33 @@ struct named_color {
 };
 
 const struct named_color named_colors[] = {
-    {"beige", BEIGE},
-    {"black", BLACK},
-    {"blank", BLANK},
-    {"blue", BLUE},
-    {"brown", BROWN},
-    {"dark-blue", DARKBLUE},
-    {"dark-brown", DARKBROWN},
-    {"dark-gray", DARKGRAY},
-    {"dark-green", DARKGREEN},
-    {"dark-purple", DARKPURPLE},
-    {"gold", GOLD},
-    {"gray", GRAY},
-    {"green", GREEN},
-    {"light-gray", LIGHTGRAY},
-    {"lime", LIME},
-    {"magenta", MAGENTA},
-    {"maroon", MAROON},
-    {"orange", ORANGE},
-    {"pink", PINK},
-    {"purple", PURPLE},
-    {"ray-white", RAYWHITE},
-    {"ray-white", RAYWHITE},
-    {"red", RED},
-    {"sky-blue", SKYBLUE},
-    {"violet", VIOLET},
-    {"white", WHITE},
-    {"yellow",YELLOW},
+    {"beige", _BEIGE_},
+    {"black", _BLACK_},
+    {"blank", _BLANK_},
+    {"blue", _BLUE_},
+    {"brown", _BROWN_},
+    {"dark-blue", _DARKBLUE_},
+    {"dark-brown", _DARKBROWN_},
+    {"dark-gray", _DARKGRAY_},
+    {"dark-green", _DARKGREEN_},
+    {"dark-purple", _DARKPURPLE_},
+    {"gold", _GOLD_},
+    {"gray", _GRAY_},
+    {"green", _GREEN_},
+    {"light-gray", _LIGHTGRAY_},
+    {"lime", _LIME_},
+    {"magenta", _MAGENTA_},
+    {"maroon", _MAROON_},
+    {"orange", _ORANGE_},
+    {"pink", _PINK_},
+    {"purple", _PURPLE_},
+    {"ray-white", _RAYWHITE_},
+    {"ray-white", _RAYWHITE_},
+    {"red", _RED_},
+    {"sky-blue", _SKYBLUE_},
+    {"violet", _VIOLET_},
+    {"white", _WHITE_},
+    {"yellow",_YELLOW_},
 };
 
 static Color jaylib_getcolor(const Janet *argv, int32_t n) {
