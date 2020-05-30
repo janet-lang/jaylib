@@ -66,7 +66,7 @@
           (buffer/push-string buf (history historyi)))
 
         # Default, key entered
-        (when (not= -1 kcode)
+        (when (not= 0 kcode)
           (set counter 0)
           (buffer/push-byte buf kcode)))
 
