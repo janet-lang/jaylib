@@ -90,6 +90,7 @@ static Janet cfun_DrawSphere(int32_t argc, Janet *argv) {
     Vector3 centerPos = jaylib_getvec3(argv, 0);
     float radius = (float) janet_getnumber(argv, 1);
     Color color = jaylib_getcolor(argv, 2);
+    DrawSphere(centerPos, radius, color);
     return janet_wrap_nil();
 }
 
@@ -173,5 +174,6 @@ static JanetReg threed_cfuns[] = {
     {"draw-cylinder-wires", cfun_DrawCylinderWires, NULL},
     {"draw-plane", cfun_DrawPlane, NULL},
     {"draw-ray", cfun_DrawRay, NULL},
+    {"draw-grid", cfun_DrawGrid, NULL},
     {NULL, NULL, NULL}
 };

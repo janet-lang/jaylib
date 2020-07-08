@@ -6,6 +6,13 @@ static Janet cfun_LoadImage(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(image);
 }
 
+static Janet cfun_ImageDimensions(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image image = *jaylib_getimage(argv, 0);
+    Janet dim[2] = { janet_wrap_integer(image.width), janet_wrap_integer(image.height) };
+    return janet_wrap_tuple(janet_tuple_n(dim, 2));
+}
+
 static Janet cfun_LoadImageEx(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     JanetView pixels = janet_getindexed(argv, 0);
@@ -668,6 +675,7 @@ static const JanetReg image_cfuns[] = {
     {"image-resize-nn", cfun_ImageResizeNN, NULL},
     {"image-resize-canvas", cfun_ImageResizeCanvas, NULL},
     {"image-mipmaps", cfun_ImageMipmaps, NULL},
+    {"image-dimensions", cfun_ImageDimensions, NULL},
     {"image-dither", cfun_ImageDither, NULL},
     {"image-extract-pallete", cfun_ImageExtractPalette, NULL},
     {"image-text", cfun_ImageText, NULL},

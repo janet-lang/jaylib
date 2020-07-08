@@ -649,7 +649,7 @@ static Janet cfun_SetWindowIcon(int32_t argc, Janet *argv) {
 }
 
 static Janet cfun_Camera2D(int32_t argc, Janet *argv) {
-    if (argc & 1 != 0) {
+    if ((argc & 1) != 0) {
         janet_panicf("expected even number of arguments, got %d", argc);
     }
     Camera2D *camera = janet_abstract(&AT_Camera2D, sizeof(Camera2D));
@@ -672,7 +672,7 @@ static Janet cfun_Camera2D(int32_t argc, Janet *argv) {
 }
 
 static Janet cfun_Camera3D(int32_t argc, Janet *argv) {
-    if (argc & 1 != 0) {
+    if ((argc & 1) != 0) {
         janet_panicf("expected even number of arguments, got %d", argc);
     }
     Camera3D *camera = janet_abstract(&AT_Camera3D, sizeof(Camera3D));

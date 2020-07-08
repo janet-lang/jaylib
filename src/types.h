@@ -179,7 +179,7 @@ static const KeyDef axis_defs[] = {
     {"right-trigger", GAMEPAD_AXIS_RIGHT_TRIGGER},
     {"right-x", GAMEPAD_AXIS_RIGHT_X},
     {"right-y", GAMEPAD_AXIS_RIGHT_Y},
-    {"unknown", GAMEPAD_AXIS_UNKNOWN},
+    {"unknown", GAMEPAD_BUTTON_UNKNOWN},
 };
 
 static const KeyDef mouse_defs[] = {
@@ -389,13 +389,7 @@ static Janet jaylib_wrap_vec2(Vector2 x) {
 
 static const JanetAbstractType AT_TextureCubemap = {
     "jaylib/texture-cubemap",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 /*
@@ -406,13 +400,7 @@ static TextureCubemap *jaylib_gettexturecubemap(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_Texture2D = {
     "jaylib/texture2d",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static Texture2D *jaylib_gettexture2d(const Janet *argv, int32_t n) {
@@ -421,13 +409,7 @@ static Texture2D *jaylib_gettexture2d(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_Image = {
     "jaylib/image",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static Image *jaylib_getimage(const Janet *argv, int32_t n) {
@@ -436,13 +418,7 @@ static Image *jaylib_getimage(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_Wave = {
     "jaylib/wave",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static Wave *jaylib_getwave(const Janet *argv, int32_t n) {
@@ -451,13 +427,7 @@ static Wave *jaylib_getwave(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_Sound = {
     "jaylib/sound",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static Sound *jaylib_getsound(const Janet *argv, int32_t n) {
@@ -466,13 +436,7 @@ static Sound *jaylib_getsound(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_Music = {
     "jaylib/music",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static Music *jaylib_getmusic(const Janet *argv, int32_t n) {
@@ -481,13 +445,7 @@ static Music *jaylib_getmusic(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_AudioStream = {
     "jaylib/audio-stream",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static AudioStream *jaylib_getaudiostream(const Janet *argv, int32_t n) {
@@ -496,13 +454,7 @@ static AudioStream *jaylib_getaudiostream(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_Font = {
     "jaylib/font",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static Font *jaylib_getfont(const Janet *argv, int32_t n) {
@@ -511,13 +463,7 @@ static Font *jaylib_getfont(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_RenderTexture = {
     "jaylib/render-texture",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static RenderTexture *jaylib_getrendertexture(const Janet *argv, int32_t n) {
@@ -526,13 +472,7 @@ static RenderTexture *jaylib_getrendertexture(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_Camera2D = {
     "jaylib/camera-2d",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static Camera2D *jaylib_getcamera2d(const Janet *argv, int32_t n) {
@@ -541,13 +481,7 @@ static Camera2D *jaylib_getcamera2d(const Janet *argv, int32_t n) {
 
 static const JanetAbstractType AT_Camera3D = {
     "jaylib/camera-3d",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    JANET_ATEND_NAME
 };
 
 static Camera3D *jaylib_getcamera3d(const Janet *argv, int32_t n) {
