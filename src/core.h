@@ -855,7 +855,7 @@ static JanetReg core_cfuns[] = {
     {"get-gamepad-button-pressed", cfun_GetGamepadButtonPressed, NULL},
     {"get-gamepad-name", cfun_GetGamepadName, NULL},
     {"get-gamepad-axis-count", cfun_GetGamepadAxisCount, NULL},
-    {"get-gamepad-axix-movement", cfun_GetGamepadAxisMovement, NULL},
+    {"get-gamepad-axis-movement", cfun_GetGamepadAxisMovement, NULL},
     {"mouse-button-pressed?", cfun_IsMouseButtonPressed, NULL},
     {"mouse-button-up?", cfun_IsMouseButtonUp, NULL},
     {"mouse-button-released?", cfun_IsMouseButtonReleased, NULL},
