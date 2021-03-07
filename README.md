@@ -131,4 +131,9 @@ have been implemented in Jaylib:
 
 Extract width and height from an `Image`.
 
+#### get-font-texture
+'Font -> Texture2D'
+
+Extracts the 'Texture2D' of a given 'Font'.
+
 ###

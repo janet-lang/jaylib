@@ -138,6 +138,14 @@ static Janet cfun_GetGlyphIndex(int32_t argc, Janet *argv) {
     return janet_wrap_integer(GetGlyphIndex(font, character));
 }
 
+static Janet cfun_GetFontTexture(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Font font = *jaylib_getfont(argv, 0);
+    Texture2D *texture = janet_abstract(&AT_Texture2D, sizeof(Texture2D));
+    *texture = font.texture;
+    return janet_wrap_abstract(texture);
+}
+
 static JanetReg text_cfuns[] = {
     {"get-font-default", cfun_GetFontDefault, NULL},
     {"load-font", cfun_LoadFont, NULL},
@@ -151,5 +159,6 @@ static JanetReg text_cfuns[] = {
     {"measure-text", cfun_MeasureText, NULL},
     {"measure-text-ex", cfun_MeasureTextEx, NULL},
     {"get-glyph-index", cfun_GetGlyphIndex, NULL},
+    {"get-font-texture", cfun_GetFontTexture, NULL},
     {NULL, NULL, NULL}
 };
