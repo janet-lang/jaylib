@@ -320,6 +320,17 @@ static Janet cfun_DrawPoly(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_CheckCollisionRecs(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Rectangle rec1 = jaylib_getrect(argv, 0);
+    Rectangle rec2 = jaylib_getrect(argv, 1);
+    if (CheckCollisionRecs(rec1, rec2)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
+}
+
 static JanetReg shapes_cfuns[] = {
     {"draw-pixel", cfun_DrawPixel, NULL},
     {"draw-pixel-v", cfun_DrawPixelV, NULL},
@@ -351,5 +362,6 @@ static JanetReg shapes_cfuns[] = {
     {"draw-triangle-lines", cfun_DrawTriangleLines, NULL},
     {"draw-triangle-fan", cfun_DrawTriangleFan, NULL},
     {"draw-poly", cfun_DrawPoly, NULL},
+    {"check-collision-recs", cfun_CheckCollisionRecs, NULL},
     {NULL, NULL, NULL}
 };
