@@ -117,7 +117,7 @@
 [x] void SetMousePosition(int x, int y)
 [x] void SetMouseOffset(int offsetX, int offsetY)
 [x] void SetMouseScale(float scaleX, float scaleY)
-[x] int GetMouseWheelMove(void)
+[x] float GetMouseWheelMove(void)
 
 // Input-related functions: touch
 [x] int GetTouchX(void)

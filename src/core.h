@@ -646,7 +646,7 @@ static Janet cfun_SetMouseScale(int32_t argc, Janet *argv) {
 static Janet cfun_GetMouseWheelMove(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
-    return janet_wrap_integer(GetMouseWheelMove());
+    return janet_wrap_number(GetMouseWheelMove());
 }
 
 static Janet cfun_GetTouchX(int32_t argc, Janet *argv) {
