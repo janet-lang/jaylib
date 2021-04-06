@@ -13,19 +13,6 @@ static Janet cfun_ImageDimensions(int32_t argc, Janet *argv) {
     return janet_wrap_tuple(janet_tuple_n(dim, 2));
 }
 
-static Janet cfun_LoadImageEx(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 3);
-    JanetView pixels = janet_getindexed(argv, 0);
-    Color *raw_pixels = janet_smalloc(sizeof(Color) * pixels.len);
-    for (int32_t i = 0; i < pixels.len; i++) {
-        raw_pixels[i] = jaylib_getcolor(pixels.items, i);
-    }
-    int width = janet_getinteger(argv, 1);
-    int height = janet_getinteger(argv, 2);
-    LoadImageEx(raw_pixels, width, height);
-    return janet_wrap_nil();
-}
-
 static Janet cfun_ExportImage(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     Image image = *jaylib_getimage(argv, 0);
@@ -64,17 +51,17 @@ static Janet cfun_LoadTextureCubemap(int32_t argc, Janet *argv) {
     const uint8_t *kw = janet_getkeyword(argv, 1);
     int layoutType = 0;
     if (!janet_cstrcmp(kw, "auto-detect")) {
-        layoutType = CUBEMAP_AUTO_DETECT;
+        layoutType = CUBEMAP_LAYOUT_AUTO_DETECT;
     } else if (!janet_cstrcmp(kw, "line-vertical")) {
-        layoutType = CUBEMAP_LINE_VERTICAL;
+        layoutType = CUBEMAP_LAYOUT_LINE_VERTICAL;
     } else if (!janet_cstrcmp(kw, "line-horizontal")) {
-        layoutType = CUBEMAP_LINE_HORIZONTAL;
+        layoutType = CUBEMAP_LAYOUT_LINE_HORIZONTAL;
     } else if (!janet_cstrcmp(kw, "3x4")) {
-        layoutType = CUBEMAP_CROSS_THREE_BY_FOUR;
+        layoutType = CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR;
     } else if (!janet_cstrcmp(kw,  "4x3")) {
-        layoutType = CUBEMAP_CROSS_FOUR_BY_THREE;
+        layoutType = CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE;
     } else if (!janet_cstrcmp(kw, "panorama")) {
-        layoutType = CUBEMAP_PANORAMA;
+        layoutType = CUBEMAP_LAYOUT_PANORAMA;
     } else {
         janet_panicf("unknown layout type %v", argv[1]);
     }
@@ -250,12 +237,12 @@ static Janet cfun_ImageDither(int32_t argc, Janet *argv) {
     return argv[0];
 }
 
-static Janet cfun_ImageExtractPalette(int32_t argc, Janet *argv) {
+static Janet cfun_LoadImagePalette(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     Image *image = jaylib_getimage(argv, 0);
     int maxPaletteSize = janet_getinteger(argv, 1);
     int extractCount = 0;
-    Color *colors = ImageExtractPalette(*image, maxPaletteSize, &extractCount);
+    Color *colors = LoadImagePalette(*image, maxPaletteSize, &extractCount);
     JanetArray *acolors = janet_array(extractCount);
     for (int i = 0; i < extractCount; i++) {
         Color c = colors[i];
@@ -322,26 +309,27 @@ static Janet cfun_ImageDrawRectangleLines(int32_t argc, Janet *argv) {
 }
 
 static Janet cfun_ImageDrawText(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 5);
+    janet_fixarity(argc, 6);
     Image *dst = jaylib_getimage(argv, 0);
-    Vector2 position = jaylib_getvec2(argv, 1);
-    const char *text = janet_getcstring(argv, 2);
-    int fontSize = janet_getinteger(argv, 3);
-    Color color = jaylib_getcolor(argv, 4);
-    ImageDrawText(dst, position, text, fontSize, color);
+    const char *text = janet_getcstring(argv, 1);
+    int posX = janet_getinteger(argv, 2);
+    int posY = janet_getinteger(argv, 3);
+    int fontSize = janet_getinteger(argv, 4);
+    Color color = jaylib_getcolor(argv, 5);
+    ImageDrawText(dst, text, posX, posY, fontSize, color);
     return argv[0];
 }
 
 static Janet cfun_ImageDrawTextEx(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 7);
     Image *dst = jaylib_getimage(argv, 0);
-    Vector2 position = jaylib_getvec2(argv, 1);
-    Font *font = jaylib_getfont(argv, 2);
-    const char *text = janet_getcstring(argv, 3);
+    Font *font = jaylib_getfont(argv, 1);
+    const char *text = janet_getcstring(argv, 2);
+    Vector2 position = jaylib_getvec2(argv, 3);
     float fontSize = (float) janet_getnumber(argv, 4);
     float spacing = (float) janet_getnumber(argv, 5);
     Color color = jaylib_getcolor(argv, 6);
-    ImageDrawTextEx(dst, position, *font, text, fontSize, spacing, color);
+    ImageDrawTextEx(dst, *font, text, position, fontSize, spacing, color);
     return argv[0];
 }
 
@@ -585,17 +573,17 @@ static Janet cfun_SetTextureFilter(int32_t argc, Janet *argv) {
     const uint8_t *kw = janet_getkeyword(argv, 1);
     int filter = 0;
     if (!janet_cstrcmp(kw, "point")) {
-        filter = FILTER_POINT;
+        filter = TEXTURE_FILTER_POINT;
     } else if (!janet_cstrcmp(kw, "bilinear")) {
-        filter = FILTER_BILINEAR;
+        filter = TEXTURE_FILTER_BILINEAR;
     } else if (!janet_cstrcmp(kw, "trilinear")) {
-        filter = FILTER_TRILINEAR;
+        filter = TEXTURE_FILTER_TRILINEAR;
     } else if (!janet_cstrcmp(kw, "ansiotropic-4x")) {
-        filter = FILTER_ANISOTROPIC_4X;
+        filter = TEXTURE_FILTER_ANISOTROPIC_4X;
     } else if (!janet_cstrcmp(kw, "ansiotropic-8x")) {
-        filter = FILTER_ANISOTROPIC_8X;
+        filter = TEXTURE_FILTER_ANISOTROPIC_8X;
     } else if (!janet_cstrcmp(kw, "ansiotropic-16x")) {
-        filter = FILTER_ANISOTROPIC_16X;
+        filter = TEXTURE_FILTER_ANISOTROPIC_16X;
     } else {
         janet_panicf("unknown filter %v", argv[1]);
     }
@@ -609,13 +597,13 @@ static Janet cfun_SetTextureWrap(int32_t argc, Janet *argv) {
     const uint8_t *kw = janet_getkeyword(argv, 1);
     int wrap = 0;
     if (!janet_cstrcmp(kw, "repeat")) {
-        wrap = WRAP_REPEAT;
+        wrap = TEXTURE_WRAP_REPEAT;
     } else if (!janet_cstrcmp(kw, "clamp")) {
-        wrap = WRAP_CLAMP;
+        wrap = TEXTURE_WRAP_CLAMP;
     } else if (!janet_cstrcmp(kw, "mirror-repeat")) {
-        wrap = WRAP_MIRROR_REPEAT;
+        wrap = TEXTURE_WRAP_MIRROR_REPEAT;
     } else if (!janet_cstrcmp(kw, "mirror-clamp")) {
-        wrap = WRAP_MIRROR_CLAMP;
+        wrap = TEXTURE_WRAP_MIRROR_CLAMP;
     } else {
         janet_panicf("unknown wrap-mode %v", argv[1]);
     }
@@ -649,7 +637,6 @@ RLAPI void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle
 
 static const JanetReg image_cfuns[] = {
     {"load-image-1", cfun_LoadImage, NULL}, // load-image is janet core function, don't want to overwrite if we use (use jaylib)
-    {"load-image-ex", cfun_LoadImageEx, NULL},
     {"export-image", cfun_ExportImage, NULL},
     {"export-image-as-code", cfun_ExportImageAsCode, NULL},
     {"load-texture", cfun_LoadTexture, NULL},
@@ -677,7 +664,7 @@ static const JanetReg image_cfuns[] = {
     {"image-mipmaps", cfun_ImageMipmaps, NULL},
     {"image-dimensions", cfun_ImageDimensions, NULL},
     {"image-dither", cfun_ImageDither, NULL},
-    {"image-extract-pallete", cfun_ImageExtractPalette, NULL},
+    {"load-image-pallete", cfun_LoadImagePalette, NULL},
     {"image-text", cfun_ImageText, NULL},
     {"image-text-ex", cfun_ImageTextEx, NULL},
     {"image-draw", cfun_ImageDraw, NULL},

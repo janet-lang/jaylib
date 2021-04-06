@@ -41,13 +41,6 @@ static Janet cfun_DrawCubeTexture(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_DrawGizmo(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    Vector3 position = jaylib_getvec3(argv, 0);
-    DrawGizmo(position);
-    return janet_wrap_nil();
-}
-
 static Janet cfun_DrawGrid(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int slices = janet_getinteger(argv, 0);
@@ -165,8 +158,7 @@ static JanetReg threed_cfuns[] = {
     {"draw-cube-wires", cfun_DrawCubeWires, NULL},
     {"draw-cube-wires-v", cfun_DrawCubeWiresV, NULL},
     {"draw-cube-texture", cfun_DrawCubeTexture, NULL},
-    {"draw-gizmo", cfun_DrawGizmo, NULL},
-    {"draw-grid", cfun_DrawGizmo, NULL},
+    {"draw-grid", cfun_DrawGrid, NULL},
     {"draw-sphere", cfun_DrawSphere, NULL},
     {"draw-sphere-ex", cfun_DrawSphereEx, NULL},
     {"draw-sphere-wires", cfun_DrawSphereWires, NULL},

@@ -38,30 +38,99 @@ static Janet cfun_IsWindowResized(int32_t argc, Janet *argv) {
     return janet_wrap_boolean(IsWindowResized());
 }
 
-static Janet cfun_IsWindowHidden(int32_t argc, Janet *argv) {
-    (void) argv;
-    janet_fixarity(argc, 0);
-    return janet_wrap_boolean(IsWindowHidden());
+static const KeyDef after_init_flag_defs[] = {
+    {"vsync-hint", FLAG_VSYNC_HINT},
+    {"fullscreen-mode", FLAG_FULLSCREEN_MODE},
+    {"window-resizable", FLAG_WINDOW_RESIZABLE},
+    {"window-undecorated", FLAG_WINDOW_UNDECORATED},
+    {"window-hidden", FLAG_WINDOW_HIDDEN},
+    {"window-minimized", FLAG_WINDOW_MINIMIZED},
+    {"window-maximized", FLAG_WINDOW_MAXIMIZED},
+    {"window-unfocused", FLAG_WINDOW_UNFOCUSED},
+    {"window-topmost", FLAG_WINDOW_TOPMOST},
+    {"window-always-run", FLAG_WINDOW_ALWAYS_RUN}
+};
+
+static Janet cfun_IsWindowState(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    const uint8_t *arg_flag = janet_getkeyword(argv, 0);
+    int flag = 0;
+    for (unsigned j = 0; j < (sizeof(after_init_flag_defs) / sizeof(KeyDef)); j++) {
+      if (!janet_cstrcmp(arg_flag, after_init_flag_defs[j].name)) {
+	flag = after_init_flag_defs[j].key;
+	break;
+      }
+    }
+    if (0 == flag) {
+      JanetArray *available = janet_array(0);
+      for (unsigned j = 0; j < (sizeof(after_init_flag_defs) / sizeof(KeyDef)); j++) {
+	janet_array_push(available, janet_ckeywordv(after_init_flag_defs[j].name));
+      }
+      janet_panicf("unknown flag %v - available flags are %p", argv[0],
+		   janet_wrap_array(available));
+    }
+
+    return janet_wrap_boolean(IsWindowState(flag));
+}
+
+static Janet cfun_SetWindowState(int32_t argc, Janet *argv) {
+    janet_arity(argc, 0, -1);
+    unsigned int flags = 0;
+    for (int32_t i = 0; i < argc; i++) {
+        const uint8_t *arg_flag = janet_getkeyword(argv, i);
+        /* Linear scan through after_init_flag_defs to find entry for arg_flag */
+        unsigned int flag = 0;
+        for (unsigned j = 0; j < (sizeof(after_init_flag_defs) / sizeof(KeyDef)); j++) {
+	  if (!janet_cstrcmp(arg_flag, after_init_flag_defs[j].name)) {
+	    flag = (unsigned int) after_init_flag_defs[j].key;
+                break;
+            }
+        }
+        if (0 == flag) {
+            JanetArray *available = janet_array(0);
+            for (unsigned j = 0; j < (sizeof(after_init_flag_defs) / sizeof(KeyDef)); j++) {
+                janet_array_push(available, janet_ckeywordv(after_init_flag_defs[j].name));
+            }
+            janet_panicf("unknown flag %v - available flags are %p", argv[i],
+                    janet_wrap_array(available));
+        }
+        flags |= flag;
+    }
+    SetWindowState(flags);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_ClearWindowState(int32_t argc, Janet *argv) {
+    janet_arity(argc, 0, -1);
+    unsigned int flags = 0;
+    for (int32_t i = 0; i < argc; i++) {
+        const uint8_t *arg_flag = janet_getkeyword(argv, i);
+        /* Linear scan through after_init_flag_defs to find entry for arg_flag */
+        unsigned int flag = 0;
+        for (unsigned j = 0; j < (sizeof(after_init_flag_defs) / sizeof(KeyDef)); j++) {
+            if (!janet_cstrcmp(arg_flag, after_init_flag_defs[j].name)) {
+                flag = (unsigned int) after_init_flag_defs[j].key;
+                break;
+            }
+        }
+        if (0 == flag) {
+            JanetArray *available = janet_array(0);
+            for (unsigned j = 0; j < (sizeof(after_init_flag_defs) / sizeof(KeyDef)); j++) {
+                janet_array_push(available, janet_ckeywordv(after_init_flag_defs[j].name));
+            }
+            janet_panicf("unknown flag %v - available flags are %p", argv[i],
+                    janet_wrap_array(available));
+        }
+        flags |= flag;
+    }
+    ClearWindowState(flags);
+    return janet_wrap_nil();
 }
 
 static Janet cfun_ToggleFullscreen(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
     ToggleFullscreen();
-    return janet_wrap_nil();
-}
-
-static Janet cfun_UnhideWindow(int32_t argc, Janet *argv) {
-    (void) argv;
-    janet_fixarity(argc, 0);
-    UnhideWindow();
-    return janet_wrap_nil();
-}
-
-static Janet cfun_HideWindow(int32_t argc, Janet *argv) {
-    (void) argv;
-    janet_fixarity(argc, 0);
-    HideWindow();
     return janet_wrap_nil();
 }
 
@@ -259,26 +328,32 @@ static Janet cfun_GetFrameTime(int32_t argc, Janet *argv) {
 
 /* Some raylib versions don't have all of these flags */
 static const KeyDef flag_defs[] = {
+    {"vsync-hint", FLAG_VSYNC_HINT},
     {"fullscreen-mode", FLAG_FULLSCREEN_MODE},
     {"window-resizable", FLAG_WINDOW_RESIZABLE},
     {"window-undecorated", FLAG_WINDOW_UNDECORATED},
-    {"window-transparent", FLAG_WINDOW_TRANSPARENT},
     {"window-hidden", FLAG_WINDOW_HIDDEN},
+    {"window-minimized", FLAG_WINDOW_MINIMIZED},
+    {"window-maximized", FLAG_WINDOW_MAXIMIZED},
+    {"window-unfocused", FLAG_WINDOW_UNFOCUSED},
+    {"window-topmost", FLAG_WINDOW_TOPMOST},
     {"window-always-run", FLAG_WINDOW_ALWAYS_RUN},
-    {"msaa-4x-hint", FLAG_MSAA_4X_HINT},
-    {"vsync-hint", FLAG_VSYNC_HINT}
+    {"window-transparent", FLAG_WINDOW_TRANSPARENT},
+    {"window-highdpi", FLAG_WINDOW_HIGHDPI},
+    {"interlaced-hint", FLAG_INTERLACED_HINT},
+    {"msaa-4x-hint", FLAG_MSAA_4X_HINT}
 };
 
 static Janet cfun_SetConfigFlags(int32_t argc, Janet *argv) {
     janet_arity(argc, 0, -1);
-    unsigned char flags = 0;
+    unsigned int flags = 0;
     for (int32_t i = 0; i < argc; i++) {
         const uint8_t *arg_flag = janet_getkeyword(argv, i);
         /* Linear scan through flag_defs to find entry for arg_flag */
-        unsigned char flag = 0;
+        unsigned int flag = 0;
         for (unsigned j = 0; j < (sizeof(flag_defs) / sizeof(KeyDef)); j++) {
             if (!janet_cstrcmp(arg_flag, flag_defs[j].name)) {
-                flag = (unsigned char) flag_defs[j].key;
+                flag = (unsigned int) flag_defs[j].key;
                 break;
             }
         }
@@ -320,13 +395,6 @@ static Janet cfun_SetTraceLogLevel(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     int logType = jaylib_getlogtype(argv, 0);
     SetTraceLogLevel(logType);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetTraceLogExit(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    int logType = jaylib_getlogtype(argv, 0);
-    SetTraceLogExit(logType);
     return janet_wrap_nil();
 }
 
@@ -690,9 +758,9 @@ static Janet cfun_Camera3D(int32_t argc, Janet *argv) {
         } else if (!janet_cstrcmp(kw, "type")) {
             const uint8_t *cameraType = janet_getkeyword(argv, i + 1);
             if (!janet_cstrcmp(cameraType, "perspective")) {
-                camera->type = CAMERA_PERSPECTIVE;
+                camera->projection = CAMERA_PERSPECTIVE;
             } else if (!janet_cstrcmp(cameraType, "orthographic")) {
-                camera->type = CAMERA_ORTHOGRAPHIC;
+                camera->projection = CAMERA_ORTHOGRAPHIC;
             } else {
                 janet_panicf("unknown camera type %v", argv[i + 1]);
             }
@@ -800,10 +868,10 @@ static JanetReg core_cfuns[] = {
     {"window-ready?", cfun_IsWindowReady, NULL},
     {"window-minimized?", cfun_IsWindowMinimized, NULL},
     {"window-resized?", cfun_IsWindowResized, NULL},
-    {"window-hidden?", cfun_IsWindowHidden, NULL},
+    {"window-state?", cfun_IsWindowState, NULL},
+    {"set-window-state", cfun_SetWindowState, NULL},
+    {"clear-window-state", cfun_ClearWindowState, NULL},
     {"toggle-fullscreen", cfun_ToggleFullscreen, NULL},
-    {"unhide-window", cfun_UnhideWindow, NULL},
-    {"hide-window", cfun_HideWindow, NULL},
     {"set-window-title", cfun_SetWindowTitle, NULL},
     {"set-window-position", cfun_SetWindowPosition, NULL},
     {"set-window-monitor", cfun_SetWindowMonitor, NULL},
@@ -836,7 +904,6 @@ static JanetReg core_cfuns[] = {
     {"get-time", cfun_GetTime, NULL},
     {"set-config-flags", cfun_SetConfigFlags, NULL},
     {"set-trace-log-level", cfun_SetTraceLogLevel, NULL},
-    {"set-trace-log-exit", cfun_SetTraceLogExit, NULL},
     {"set-trace-log-callback", cfun_SetTraceLogCallback, NULL},
     {"trace-log", cfun_TraceLog, NULL},
     {"take-screenshot", cfun_TakeScreenshot, NULL},

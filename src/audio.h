@@ -221,14 +221,6 @@ static Janet cfun_SetMusicPitch(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_SetMusicLoopCount(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 2);
-    Music music = *jaylib_getmusic(argv, 0);
-    int loopCount = janet_getinteger(argv, 1);
-    SetMusicLoopCount(music, loopCount);
-    return janet_wrap_nil();
-}
-
 static Janet cfun_GetMusicTimeLength(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Music music = *jaylib_getmusic(argv, 0);
@@ -364,7 +356,6 @@ static JanetReg audio_cfuns[] = {
     {"music-playing?", cfun_IsMusicPlaying, NULL},
     {"set-music-volume", cfun_SetMusicVolume, NULL},
     {"set-music-pitch", cfun_SetMusicPitch, NULL},
-    {"set-music-loop-count", cfun_SetMusicLoopCount, NULL},
     {"get-music-time-length", cfun_GetMusicTimeLength, NULL},
     {"get-music-time-played", cfun_GetMusicTimePlayed, NULL},
     {"init-audio-stream", cfun_InitAudioStream, NULL},

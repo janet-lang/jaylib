@@ -5,10 +5,11 @@
 [x] bool IsWindowReady(void)
 [x] bool IsWindowMinimized(void)
 [x] bool IsWindowResized(void)
-[x] bool IsWindowHidden(void)
+
+[x] bool IsWindowState(unsigned int flag)
+[x] void SetWindowState(unsigned int flags)
+[x] void ClearWindowState(unsigned int flags)
 [x] void ToggleFullscreen(void)
-[x] void UnhideWindow(void)
-[x] void HideWindow(void)
 [x] void SetWindowIcon(Image image)
 [x] void SetWindowTitle(const char *title)
 [x] void SetWindowPosition(int x, int y)
@@ -65,9 +66,8 @@
 [ ] Color Fade(Color color, float alpha)
 
 // Misc. functions
-[x] void SetConfigFlags(unsigned char flags)
+[x] void SetConfigFlags(unsigned int flags)
 [x] void SetTraceLogLevel(int logType)
-[x] void SetTraceLogExit(int logType)
 [x] void SetTraceLogCallback(TraceLogCallback callback)
 [x] void TraceLog(int logType, const char *text, ...)
 [x] void TakeScreenshot(const char *fileName)
@@ -194,7 +194,6 @@
 
 // Image/Texture2D data loading/unloading/saving functions
 [x] Image LoadImage(const char *fileName)
-[x] Image LoadImageEx(Color *pixels, int width, int height)
 [x] Image LoadImagePro(void *data, int width, int height, int format)
 [ ] Image LoadImageRaw(const char *fileName, int width, int height, int format, int headerSize)
 [x] void ExportImage(Image image, const char *fileName)
@@ -308,7 +307,6 @@
 [x] void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
 [x] void DrawRay(Ray ray, Color color)
 [x] void DrawGrid(int slices, float spacing)
-[x] void DrawGizmo(Vector3 position)
 
 // Model loading/unloading functions
 [ ] Model LoadModel(const char *fileName)
@@ -448,7 +446,6 @@
 [x] bool IsMusicPlaying(Music music)
 [x] void SetMusicVolume(Music music, float volume)
 [x] void SetMusicPitch(Music music, float pitch)
-[x] void SetMusicLoopCount(Music music, int count)
 [x] float GetMusicTimeLength(Music music)
 [x] float GetMusicTimePlayed(Music music)
 
