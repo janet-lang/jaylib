@@ -18,11 +18,28 @@
 
 (set-camera-mode c :orbital)
 
+(set-window-state :window-undecorated)
+
+(print "window unfocused? " (window-state? :window-unfocused))
+(print "window undecorated? " (window-state? :window-undecorated))
+
+(var i 0)
+
 (while (not (window-should-close))
+  (++ i)
+
+  (when (and (window-state? :window-undecorated)
+             (> i 200))
+    (print "decorate!")
+    (clear-window-state :window-undecorated))
+
+  (draw-text (string "Unocused? "
+                     (window-state? :window-unfocused)) 100 100 26 :blue)
+
   (update-camera c)
   (begin-drawing)
   (clear-background :black)
-  
+
   (begin-mode-3d c)
   (each x [1 2.4 3.3 3.9 4.4 5]
     (def s (/ 2 x))
