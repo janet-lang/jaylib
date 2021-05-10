@@ -670,7 +670,7 @@ static const JanetReg image_cfuns[] = {
     {"get-image-dimensions", cfun_GetImageDimensions, NULL},
     {"get-texture-data", cfun_GetTextureData, NULL},
     {"get-screen-data", cfun_GetScreenData, NULL},
-    {"get-rendertexture-texture", cfun_GetRenderTextureTexture2d, NULL},
+    {"get-render-texture-texture2d", cfun_GetRenderTextureTexture2d, NULL},
     {"image-copy", cfun_ImageCopy, NULL},
     {"image-from-image", cfun_ImageFromImage, NULL},
     {"image-to-pot", cfun_ImageToPOT, NULL},
