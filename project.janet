@@ -6,7 +6,7 @@
 
 (def cflags
   (case o
-    :macos '["-Iraylib/src" "-ObjC"]
+    :macos '["-Iraylib/src" "-ObjC" "-Iraylib/src/external/glfw/include"]
     :windows ["-Iraylib/src" "-Iraylib/src/external/glfw/include" ]
     #default
     '["-Iraylib/src"]))
