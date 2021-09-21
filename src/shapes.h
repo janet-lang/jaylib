@@ -309,6 +309,16 @@ static Janet cfun_DrawTriangleFan(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawTriangleStrip(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    int32_t len;
+    Vector2 *points = jaylib_getvec2s(argv, 0, &len);
+    Color color = jaylib_getcolor(argv, 1);
+    DrawTriangleStrip(points, len, color);
+    janet_sfree(points);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_DrawPoly(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 5);
     Vector2 center = jaylib_getvec2(argv, 0);
@@ -361,6 +371,7 @@ static JanetReg shapes_cfuns[] = {
     {"draw-triangle", cfun_DrawTriangle, NULL},
     {"draw-triangle-lines", cfun_DrawTriangleLines, NULL},
     {"draw-triangle-fan", cfun_DrawTriangleFan, NULL},
+    {"draw-triangle-strip", cfun_DrawTriangleStrip, NULL},
     {"draw-poly", cfun_DrawPoly, NULL},
     {"check-collision-recs", cfun_CheckCollisionRecs, NULL},
     {NULL, NULL, NULL}
