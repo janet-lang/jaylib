@@ -382,8 +382,8 @@ static int jaylib_getpixelformat(const Janet *argv, int32_t n) {
 
 static Janet jaylib_wrap_vec2(Vector2 x) {
     Janet *tup = janet_tuple_begin(2);
-    tup[0] = janet_wrap_integer(x.x);
-    tup[1] = janet_wrap_integer(x.y);
+    tup[0] = janet_wrap_number(x.x);
+    tup[1] = janet_wrap_number(x.y);
     return janet_wrap_tuple(janet_tuple_end(tup));
 }
 
