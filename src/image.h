@@ -578,11 +578,11 @@ static Janet cfun_SetTextureFilter(int32_t argc, Janet *argv) {
         filter = TEXTURE_FILTER_BILINEAR;
     } else if (!janet_cstrcmp(kw, "trilinear")) {
         filter = TEXTURE_FILTER_TRILINEAR;
-    } else if (!janet_cstrcmp(kw, "ansiotropic-4x")) {
+    } else if (!janet_cstrcmp(kw, "anisotropic-4x")) {
         filter = TEXTURE_FILTER_ANISOTROPIC_4X;
-    } else if (!janet_cstrcmp(kw, "ansiotropic-8x")) {
+    } else if (!janet_cstrcmp(kw, "anisotropic-8x")) {
         filter = TEXTURE_FILTER_ANISOTROPIC_8X;
-    } else if (!janet_cstrcmp(kw, "ansiotropic-16x")) {
+    } else if (!janet_cstrcmp(kw, "anisotropic-16x")) {
         filter = TEXTURE_FILTER_ANISOTROPIC_16X;
     } else {
         janet_panicf("unknown filter %v", argv[1]);
