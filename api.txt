@@ -34,6 +34,7 @@
 [x] bool IsCursorHidden(void)
 [x] void EnableCursor(void)
 [x] void DisableCursor(void)
+[x] bool IsCursorOnScreen(void)
 
 // Drawing-related functions
 [x] void ClearBackground(Color color)
