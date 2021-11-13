@@ -19,7 +19,7 @@ for an overview of which API functions have been ported.
 
   (clear-background [0 0 0])
   (let [[x y] (get-mouse-position)]
-    (draw-circle-gradient x y 31.4 :lime :red)
+    (draw-circle-gradient (math/floor x) (math/floor y) 31.4 :lime :red)
     (draw-poly [500 200] 5 40 0 :magenta)
     (draw-line-bezier
       [(- x 100) y]
