@@ -280,10 +280,10 @@ static Color jaylib_getcolor(const Janet *argv, int32_t n) {
     } else if (janet_checktype(x, JANET_NUMBER)) {
         int64_t value = janet_getinteger64(argv, n);
         return (Color) {
-            ((value >> 0)  & 0xFF),
+            ((value >> 24)  & 0xFF),
+            ((value >> 16)  & 0xFF),
             ((value >> 8)  & 0xFF),
-            ((value >> 16) & 0xFF),
-            ((value >> 24) & 0xFF)
+            ((value >> 0)  & 0xFF)
         };
     } else {
         const uint8_t *nameu = janet_getkeyword(argv, n);
