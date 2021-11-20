@@ -33,7 +33,7 @@
     (print "decorate!")
     (clear-window-state :window-undecorated))
 
-  (draw-text (string "Unocused? "
+  (draw-text (string "Unfocused? "
                      (window-state? :window-unfocused)) 100 100 26 :blue)
 
   (update-camera c)
