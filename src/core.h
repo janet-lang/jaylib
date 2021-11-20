@@ -273,6 +273,12 @@ static Janet cfun_DisableCursor(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_IsCursorOnScreen(int32_t argc, Janet *argv) {
+	(void) argv;
+	janet_fixarity(argc, 0);
+	return janet_wrap_boolean(IsCursorOnScreen());
+}
+
 static Janet cfun_ClearBackground(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Color color = jaylib_getcolor(argv, 0);
@@ -893,6 +899,7 @@ static JanetReg core_cfuns[] = {
     {"cursor-hidden?", cfun_IsCursorHidden, NULL},
     {"enable-cursor", cfun_EnableCursor, NULL},
     {"disable-cursor", cfun_DisableCursor, NULL},
+    {"cursor-on-screen?", cfun_IsCursorOnScreen, NULL},
     {"clear-background", cfun_ClearBackground, NULL},
     {"begin-drawing", cfun_BeginDrawing, NULL},
     {"end-drawing", cfun_EndDrawing, NULL},
