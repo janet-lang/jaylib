@@ -522,13 +522,6 @@ static Janet cfun_IsGamepadAvailable(int32_t argc, Janet *argv) {
     return janet_wrap_boolean(IsGamepadAvailable(gamepad));
 }
 
-static Janet cfun_IsGamepadName(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 2);
-    int gamepad = janet_getinteger(argv, 0);
-    const char *name = janet_getcstring(argv, 1);
-    return janet_wrap_boolean(IsGamepadName(gamepad, name));
-}
-
 static Janet cfun_GetGamepadName(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     int gamepad = janet_getinteger(argv, 0);
@@ -921,7 +914,6 @@ static JanetReg core_cfuns[] = {
     {"get-key-pressed", cfun_GetKeyPressed, NULL},
     {"set-exit-key", cfun_SetExitKey, NULL},
     {"gamepad-available?", cfun_IsGamepadAvailable, NULL},
-    {"gamepad-name?", cfun_IsGamepadName, NULL},
     {"gamepad-button-down?", cfun_IsGamepadButtonDown, NULL},
     {"gamepad-button-up?", cfun_IsGamepadButtonUp, NULL},
     {"gamepad-button-pressed?", cfun_IsGamepadButtonPressed, NULL},

@@ -100,19 +100,19 @@ static Janet cfun_UnloadRenderTexture(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_GetTextureData(int32_t argc, Janet *argv) {
+static Janet cfun_LoadImageFromTexture(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
     Image *image = janet_abstract(&AT_Image, sizeof(Image));
-    *image = GetTextureData(texture);
+    *image = LoadImageFromTexture(texture);
     return janet_wrap_abstract(image);
 }
 
-static Janet cfun_GetScreenData(int32_t argc, Janet *argv) {
+static Janet cfun_LoadImageFromScreen(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
     Image *image = janet_abstract(&AT_Image, sizeof(Image));
-    *image = GetScreenData();
+    *image = LoadImageFromScreen();
     return janet_wrap_abstract(image);
 }
 
@@ -546,18 +546,6 @@ static Janet cfun_GenImageWhiteNoise(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(image);
 }
 
-static Janet cfun_GenImagePerlinNoise(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 5);
-    int width = janet_getinteger(argv, 0);
-    int height = janet_getinteger(argv, 1);
-    int offsetX = janet_getinteger(argv, 2);
-    int offsetY = janet_getinteger(argv, 3);
-    float factor = (float) janet_getnumber(argv, 4);
-    Image *image = janet_abstract(&AT_Image, sizeof(Image));
-    *image = GenImagePerlinNoise(width, height, offsetX, offsetY, factor);
-    return janet_wrap_abstract(image);
-}
-
 static Janet cfun_GenImageCellular(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     int width = janet_getinteger(argv, 0);
@@ -655,8 +643,8 @@ static const JanetReg image_cfuns[] = {
     {"unload-texture", cfun_UnloadTexture, NULL},
     {"unload-render-texture", cfun_UnloadRenderTexture, NULL},
     {"get-image-dimensions", cfun_GetImageDimensions, NULL},
-    {"get-texture-data", cfun_GetTextureData, NULL},
-    {"get-screen-data", cfun_GetScreenData, NULL},
+    {"load-image-from-texture", cfun_LoadImageFromTexture, NULL},
+    {"load-image-from-screen", cfun_LoadImageFromScreen, NULL},
     {"get-render-texture-texture2d", cfun_GetRenderTextureTexture2d, NULL},
     {"image-copy", cfun_ImageCopy, NULL},
     {"image-from-image", cfun_ImageFromImage, NULL},
@@ -703,7 +691,6 @@ static const JanetReg image_cfuns[] = {
     {"gen-image-gradient-radial", cfun_GenImageGradientRadial, NULL},
     {"gen-image-checked", cfun_GenImageChecked, NULL},
     {"gen-image-white-noise", cfun_GenImageWhiteNoise, NULL},
-    {"gen-image-perlin-noise", cfun_GenImagePerlinNoise, NULL},
     {"gen-image-cellular", cfun_GenImageCellular, NULL},
     {"gen-texture-mipmaps", cfun_GenTextureMipmaps, NULL},
     {"set-texture-filter", cfun_SetTextureFilter, NULL},

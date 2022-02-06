@@ -29,13 +29,13 @@
   :source ["src/main.c"
 
            # raylib sources
-           "raylib/src/core.c"
-           "raylib/src/models.c"
+           "raylib/src/rcore.c"
+           "raylib/src/rmodels.c"
            "raylib/src/raudio.c"
            "raylib/src/rglfw.c"
-           "raylib/src/shapes.c"
-           "raylib/src/text.c"
-           "raylib/src/textures.c"
+           "raylib/src/rshapes.c"
+           "raylib/src/rtext.c"
+           "raylib/src/rtextures.c"
            "raylib/src/utils.c"]
 
   :headers ["src/core.h"
