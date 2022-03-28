@@ -1,4 +1,4 @@
-(use ../build/freja-jaylib)
+(use ../build/jaylib)
 
 (assert (check-collision-recs [0 0 100 100]
                               [50 50 100 100]))
