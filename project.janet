@@ -1,5 +1,6 @@
 ( declare-project
   :name "jaylib"
+  :description "Janet bindings to Raylib"
   :author "Calvin Rose <calsrose@gmail.com>")
 
 (def o (os/which))
