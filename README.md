@@ -7,7 +7,7 @@ for an overview of which API functions have been ported.
 
 ## Example
 
-```clojure
+```janet
 (use jaylib)
 
 (init-window 100 100 "Test Game")
@@ -51,7 +51,7 @@ on Windows with jpm because jpm expects MSVC, but Raylib requires gcc or clang
 for C99 features that MSVC does not support. A long term goal is to be able to install jaylib on windows
 with minimal dependencies on the external build system.
 
-```clojure
+```janet
 (use ./build/jaylib)
 ```
 
@@ -111,7 +111,7 @@ are expected to constructed manually in the C API, Jaylib provides functions for
 They take a variable number of keyword arguments that correspond to the structure arguments. Missing arguments
 will have a fallback to sensible defaults, such as 0.
 
-```
+```janet
 (def cam (camera-3d :target [0 3 0]
                     :up [0 1 0]
                     :fovy 60
@@ -127,11 +127,13 @@ have been implemented in Jaylib:
 #### Images
 
 #### get-image-dimensions
+
 `Image -> Vector2`
 
 Extract width and height from an `Image`.
 
 #### get-font-texture
+
 'Font -> Texture2D'
 
 Extracts the 'Texture2D' of a given 'Font'.
