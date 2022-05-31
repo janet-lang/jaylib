@@ -9,11 +9,6 @@
 (set-target-fps 60)
 (hide-cursor)
 
-(def lorem-ipsum
-  ```
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  ```)
-
 (var rot 0)
 
 (while (not (window-should-close))
@@ -41,8 +36,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
   (draw-fps 10 10)
   (draw-text "Hello, world!" 100 100 (math/floor (+ 20 (* 5 (math/random)))) :blue)
-
-  (draw-text-rec (get-font-default) lorem-ipsum [100 100 1000 600] 20 2 true :red)
 
   (end-drawing))
 

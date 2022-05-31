@@ -199,10 +199,10 @@ static Janet cfun_ResumeMusicStream(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_IsMusicPlaying(int32_t argc, Janet *argv) {
+static Janet cfun_IsMusicStreamPlaying(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Music music = *jaylib_getmusic(argv, 0);
-    return janet_wrap_boolean(IsMusicPlaying(music));
+    return janet_wrap_boolean(IsMusicStreamPlaying(music));
 }
 
 static Janet cfun_SetMusicVolume(int32_t argc, Janet *argv) {
@@ -233,13 +233,13 @@ static Janet cfun_GetMusicTimePlayed(int32_t argc, Janet *argv) {
     return janet_wrap_number((double) GetMusicTimePlayed(music));
 }
 
-static Janet cfun_InitAudioStream(int32_t argc, Janet *argv) {
+static Janet cfun_LoadAudioStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     unsigned int sampleRate = (unsigned) janet_getinteger(argv, 0);
     unsigned int sampleSize = (unsigned) janet_getinteger(argv, 1);
     unsigned int channels = (unsigned) janet_getinteger(argv, 2);
     AudioStream *audioStream = janet_abstract(&AT_AudioStream, sizeof(AudioStream));
-    *audioStream = InitAudioStream(sampleRate, sampleSize, channels);
+    *audioStream = LoadAudioStream(sampleRate, sampleSize, channels);
     return janet_wrap_abstract(audioStream);
 }
 
@@ -252,10 +252,10 @@ static Janet cfun_UpdateAudioStream(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_CloseAudioStream(int32_t argc, Janet *argv) {
+static Janet cfun_UnloadAudioStream(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     AudioStream stream = *jaylib_getaudiostream(argv, 0);
-    CloseAudioStream(stream);
+    UnloadAudioStream(stream);
     return janet_wrap_nil();
 }
 
@@ -353,14 +353,14 @@ static JanetReg audio_cfuns[] = {
     {"pause-music-stream", cfun_PauseMusicStream, NULL},
     {"stop-music-stream", cfun_StopMusicStream, NULL},
     {"resume-music-stream", cfun_ResumeMusicStream, NULL},
-    {"music-playing?", cfun_IsMusicPlaying, NULL},
+    {"music-stream-playing?", cfun_IsMusicStreamPlaying, NULL},
     {"set-music-volume", cfun_SetMusicVolume, NULL},
     {"set-music-pitch", cfun_SetMusicPitch, NULL},
     {"get-music-time-length", cfun_GetMusicTimeLength, NULL},
     {"get-music-time-played", cfun_GetMusicTimePlayed, NULL},
-    {"init-audio-stream", cfun_InitAudioStream, NULL},
+    {"load-audio-stream", cfun_LoadAudioStream, NULL},
     {"update-audio-stream", cfun_UpdateAudioStream, NULL},
-    {"close-audio-stream", cfun_CloseAudioStream, NULL},
+    {"unload-audio-stream", cfun_UnloadAudioStream, NULL},
     {"audio-stream-processed?", cfun_IsAudioStreamProcessed, NULL},
     {"audio-stream-playing?", cfun_IsAudioStreamPlaying, NULL},
     {"play-audio-stream", cfun_PlayAudioStream, NULL},

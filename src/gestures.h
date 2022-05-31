@@ -69,10 +69,10 @@ static Janet cfun_GetGestureDetected(int32_t argc, Janet *argv) {
     }
 }
 
-static Janet cfun_GetTouchPointsCount(int32_t argc, Janet *argv) {
+static Janet cfun_GetTouchPointCount(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
-    return janet_wrap_integer(GetTouchPointsCount());
+    return janet_wrap_integer(GetTouchPointCount());
 }
 
 static Janet cfun_GetGestureHoldDuration(int32_t argc, Janet *argv) {
@@ -109,7 +109,7 @@ static JanetReg gesture_cfuns[] = {
     {"set-gestures-enabled", cfun_SetGesturesEnabled, NULL},
     {"gesture-detected?", cfun_IsGestureDetected, NULL},
     {"get-gesture-detected", cfun_GetGestureDetected, NULL},
-    {"get-touch-points-count", cfun_GetTouchPointsCount, NULL},
+    {"get-touch-point-count", cfun_GetTouchPointCount, NULL},
     {"get-gesture-hold-duration", cfun_GetGestureHoldDuration, NULL},
     {"get-gesture-drag-vector", cfun_GetGestureDragVector, NULL},
     {"get-gesture-drag-angle", cfun_GetGestureDragAngle, NULL},

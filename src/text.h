@@ -84,37 +84,6 @@ static Janet cfun_DrawTextEx(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_DrawTextRec(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 7);
-    Font font = *jaylib_getfont(argv, 0);
-    const char *text = jaylib_getcstring(argv, 1);
-    Rectangle rect = jaylib_getrect(argv, 2);
-    float fontSize = (float) janet_getnumber(argv, 3);
-    float spacing = (float) janet_getnumber(argv, 4);
-    bool wordWrap = janet_truthy(argv[5]);
-    Color color = jaylib_getcolor(argv, 6);
-    DrawTextRec(font, text, rect, fontSize, spacing, wordWrap, color);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_DrawTextRecEx(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 11);
-    Font font = *jaylib_getfont(argv, 0);
-    const char *text = jaylib_getcstring(argv, 1);
-    Rectangle rect = jaylib_getrect(argv, 2);
-    float fontSize = (float) janet_getnumber(argv, 3);
-    float spacing = (float) janet_getnumber(argv, 4);
-    bool wordWrap = janet_truthy(argv[5]);
-    Color color = jaylib_getcolor(argv, 6);
-    int selectStart = janet_getinteger(argv, 7);
-    int selectLength = janet_getinteger(argv, 8);
-    Color selectText = jaylib_getcolor(argv, 9);
-    Color selectBack = jaylib_getcolor(argv, 10);
-    DrawTextRecEx(font, text, rect, fontSize, spacing, wordWrap, color,
-            selectStart, selectLength, selectText, selectBack);
-    return janet_wrap_nil();
-}
-
 static Janet cfun_MeasureText(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     const char *text = jaylib_getcstring(argv, 0);
@@ -154,8 +123,6 @@ static JanetReg text_cfuns[] = {
     {"draw-fps", cfun_DrawFPS, NULL},
     {"draw-text", cfun_DrawText, NULL},
     {"draw-text-ex", cfun_DrawTextEx, NULL},
-    {"draw-text-rec", cfun_DrawTextRec, NULL},
-    {"draw-text-rec-ex", cfun_DrawTextRecEx, NULL},
     {"measure-text", cfun_MeasureText, NULL},
     {"measure-text-ex", cfun_MeasureTextEx, NULL},
     {"get-glyph-index", cfun_GetGlyphIndex, NULL},

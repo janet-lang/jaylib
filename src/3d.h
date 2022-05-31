@@ -166,6 +166,5 @@ static JanetReg threed_cfuns[] = {
     {"draw-cylinder-wires", cfun_DrawCylinderWires, NULL},
     {"draw-plane", cfun_DrawPlane, NULL},
     {"draw-ray", cfun_DrawRay, NULL},
-    {"draw-grid", cfun_DrawGrid, NULL},
     {NULL, NULL, NULL}
 };
