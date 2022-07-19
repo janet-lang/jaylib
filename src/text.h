@@ -116,16 +116,16 @@ static Janet cfun_GetFontTexture(int32_t argc, Janet *argv) {
 }
 
 static JanetReg text_cfuns[] = {
-    {"get-font-default", cfun_GetFontDefault, NULL},
-    {"load-font", cfun_LoadFont, NULL},
-    {"load-font-ex", cfun_LoadFontEx, NULL},
-    {"unload-font", cfun_UnloadFont, NULL},
-    {"draw-fps", cfun_DrawFPS, NULL},
-    {"draw-text", cfun_DrawText, NULL},
-    {"draw-text-ex", cfun_DrawTextEx, NULL},
-    {"measure-text", cfun_MeasureText, NULL},
-    {"measure-text-ex", cfun_MeasureTextEx, NULL},
-    {"get-glyph-index", cfun_GetGlyphIndex, NULL},
-    {"get-font-texture", cfun_GetFontTexture, NULL},
+    {"get-font-default", cfun_GetFontDefault, "(get-font-default)\n\n" "Get the default Font"},
+    {"load-font", cfun_LoadFont, "(load-font file-name)\n\n" "Load font from file into GPU memory (VRAM)"},
+    {"load-font-ex", cfun_LoadFontEx, "(load-font-ex file-name font-size font-chars glyph-count)\n\n" "Load font from file with extended parameters"},
+    {"unload-font", cfun_UnloadFont, "(unload-font font)\n\n" "Unload Font from GPU memory (VRAM)"},
+    {"draw-fps", cfun_DrawFPS, "(draw-fps pos-x pos-y)\n\n" "Draw current FPS"},
+    {"draw-text", cfun_DrawText, "(draw-text text pos-x pos-y font-size color)\n\n" "Draw text (using default font)"},
+    {"draw-text-ex", cfun_DrawTextEx, "(draw-text-ex font text [pos-x pos-y] font-size spacing tint)\n\n" "Draw text using font and additional parameters"},
+    {"measure-text", cfun_MeasureText, "(measure-text text font-size)\n\n" "Measure string width for default font"},
+    {"measure-text-ex", cfun_MeasureTextEx, "(measure-text-ex font text font-size spacing)\n\n" "Measure string size for Font"},
+    {"get-glyph-index", cfun_GetGlyphIndex, "(get-glyph-index font codepoint)\n\n" "Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found"},
+    {"get-font-texture", cfun_GetFontTexture, "(get-font-texture font)\n\n" ""},
     {NULL, NULL, NULL}
 };
