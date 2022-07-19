@@ -151,20 +151,65 @@ static Janet cfun_DrawRay(int32_t argc, Janet *argv) {
 }
 
 static JanetReg threed_cfuns[] = {
-    {"draw-line-3d", cfun_DrawLine3D, NULL},
-    {"draw-circle-3d", cfun_DrawCircle3D, NULL},
-    {"draw-cube", cfun_DrawCube, NULL},
-    {"draw-cube-v", cfun_DrawCubeV, NULL},
-    {"draw-cube-wires", cfun_DrawCubeWires, NULL},
-    {"draw-cube-wires-v", cfun_DrawCubeWiresV, NULL},
-    {"draw-cube-texture", cfun_DrawCubeTexture, NULL},
-    {"draw-grid", cfun_DrawGrid, NULL},
-    {"draw-sphere", cfun_DrawSphere, NULL},
-    {"draw-sphere-ex", cfun_DrawSphereEx, NULL},
-    {"draw-sphere-wires", cfun_DrawSphereWires, NULL},
-    {"draw-cylinder", cfun_DrawCylinder, NULL},
-    {"draw-cylinder-wires", cfun_DrawCylinderWires, NULL},
-    {"draw-plane", cfun_DrawPlane, NULL},
-    {"draw-ray", cfun_DrawRay, NULL},
+    {"draw-line-3d", cfun_DrawLine3D, 
+        "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
+        "Draw a line in 3D world space"
+    },
+    {"draw-circle-3d", cfun_DrawCircle3D, 
+        "(draw-circle-3d [center-x center-y center-z] radius [rot-x rot-y rot-z] rotation-angle color)\n\n"
+        "Draw a circle in 3D world space"
+    },
+    {"draw-cube", cfun_DrawCube, 
+        "(draw-cube [center-x center-y center-z] width height length color)\n\n"
+        "Draw cube"
+    },
+    {"draw-cube-v", cfun_DrawCubeV, 
+        "(draw-cube-v [center-x center-y center-z] [width height length] color)\n\n"
+        "Draw cube (Vector version)"
+    },
+    {"draw-cube-wires", cfun_DrawCubeWires, 
+        "(draw-cube-wires [center-x center-y center-z] width height length color)\n\n"
+        "Draw cube wires"
+    },
+    {"draw-cube-wires-v", cfun_DrawCubeWiresV, 
+        "(draw-cube-wires-v [center-x center-y center-z] [width height length] color)\n\n"
+        "Draw cube wires (Vector version)"
+    },
+    {"draw-cube-texture", cfun_DrawCubeTexture, 
+        "(draw-cube-texture texture [center-x center-y center-z] width height length color)\n\n"
+        "Draw cube textured"
+    },
+    {"draw-grid", cfun_DrawGrid, 
+        "(draw-grid slices spacing)\n\n"
+        "Draw a grid (centered at (0, 0, 0))"
+    },
+    {"draw-sphere", cfun_DrawSphere, 
+        "(draw-sphere [center-x center-y center-z] radius color)\n\n"
+        "Draw sphere"
+    },
+    {"draw-sphere-ex", cfun_DrawSphereEx, 
+        "(draw-sphere-ex [center-x center-y center-z] radius rings slices color)\n\n"
+        "Draw sphere with extended parameters"
+    },
+    {"draw-sphere-wires", cfun_DrawSphereWires, 
+        "(draw-sphere-wires [center-x center-y center-z] radius rings slices color)\n\n"
+        "Draw sphere wires"
+    },
+    {"draw-cylinder", cfun_DrawCylinder, 
+        "(draw-cylinder [center-x center-y center-z] radius-top radius-bottom height slices color)\n\n"
+        "Draw a cylinder/cone"
+    },
+    {"draw-cylinder-wires", cfun_DrawCylinderWires, 
+        "(draw-cylinder-wires [center-x center-y center-z] radius-top radius-bottom height slices color)\n\n"
+        "Draw a cylinder/cone wires"
+    },
+    {"draw-plane", cfun_DrawPlane, 
+        "(draw-plane [center-x center-y center-z] [height width] color)\n\n"
+        "Draw a plane XZ"
+    },
+    {"draw-ray", cfun_DrawRay, 
+        "(draw-ray ray color)\n\n"
+        "Draw a ray line"
+    },
     {NULL, NULL, NULL}
 };
