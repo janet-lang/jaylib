@@ -327,47 +327,173 @@ static Janet cfun_SetAudioStreamPitch(int32_t argc, Janet *argv) {
 */
 
 static JanetReg audio_cfuns[] = {
-    {"init-audio-device", cfun_InitAudioDevice, NULL},
-    {"close-audio-device", cfun_CloseAudioDevice, NULL},
-    {"audio-device-ready?", cfun_IsAudioDeviceReady, NULL},
-    {"set-master-volume", cfun_SetMasterVolume, NULL},
-    {"load-wave", cfun_LoadWave, NULL},
-    {"load-sound", cfun_LoadSound, NULL},
-    {"load-sound-from-wave", cfun_LoadSoundFromWave, NULL},
-    {"unload-wave", cfun_UnloadWave, NULL},
-    {"unload-sound", cfun_UnloadSound, NULL},
-    {"export-wave", cfun_ExportWave, NULL},
-    {"export-wave-as-code", cfun_ExportWaveAsCode, NULL},
-    {"play-sound", cfun_PlaySound, NULL},
-    {"stop-sound", cfun_StopSound, NULL},
-    {"resume-sound", cfun_ResumeSound, NULL},
-    {"pause-sound", cfun_PauseSound, NULL},
-    {"sound-playing?", cfun_IsSoundPlaying, NULL},
-    {"set-sound-volume", cfun_SetSoundVolume, NULL},
-    {"set-sound-pitch", cfun_SetSoundPitch, NULL},
-    {"wave-copy", cfun_WaveCopy, NULL},
-    {"load-music-stream", cfun_LoadMusicStream, NULL},
-    {"unload-music-stream", cfun_UnloadMusicStream, NULL},
-    {"play-music-stream", cfun_PlayMusicStream, NULL},
-    {"update-music-stream", cfun_UpdateMusicStream, NULL},
-    {"pause-music-stream", cfun_PauseMusicStream, NULL},
-    {"stop-music-stream", cfun_StopMusicStream, NULL},
-    {"resume-music-stream", cfun_ResumeMusicStream, NULL},
-    {"music-stream-playing?", cfun_IsMusicStreamPlaying, NULL},
-    {"set-music-volume", cfun_SetMusicVolume, NULL},
-    {"set-music-pitch", cfun_SetMusicPitch, NULL},
-    {"get-music-time-length", cfun_GetMusicTimeLength, NULL},
-    {"get-music-time-played", cfun_GetMusicTimePlayed, NULL},
-    {"load-audio-stream", cfun_LoadAudioStream, NULL},
-    {"update-audio-stream", cfun_UpdateAudioStream, NULL},
-    {"unload-audio-stream", cfun_UnloadAudioStream, NULL},
-    {"audio-stream-processed?", cfun_IsAudioStreamProcessed, NULL},
-    {"audio-stream-playing?", cfun_IsAudioStreamPlaying, NULL},
-    {"play-audio-stream", cfun_PlayAudioStream, NULL},
-    {"pause-audio-stream", cfun_PauseAudioStream, NULL},
-    {"stop-audio-stream", cfun_StopAudioStream, NULL},
-    {"resume-audio-stream", cfun_ResumeAudioStream, NULL},
-    {"set-audio-stream-volume", cfun_SetAudioStreamVolume, NULL},
-    {"set-audio-stream-pitch", cfun_SetAudioStreamPitch, NULL},
+    {"init-audio-device", cfun_InitAudioDevice, 
+        "(init-audio-device)\n\n"
+        "Initialize audio device and context"
+    },
+    {"close-audio-device", cfun_CloseAudioDevice, 
+        "(close-audio-device)\n\n"
+        "Close the audio device and context"
+    },
+    {"audio-device-ready?", cfun_IsAudioDeviceReady, 
+        "(audio-device-ready?)\n\n"
+        "Check if audio device has been initialized successfully"
+    },
+    {"set-master-volume", cfun_SetMasterVolume, 
+        "(set-master-volume volume)\n\n"
+        "Set master volume (listener)"
+    },
+    {"load-wave", cfun_LoadWave, 
+        "(load-wave file-name)\n\n"
+        "Load wave data from file"
+    },
+    {"load-sound", cfun_LoadSound, 
+        "(load-sound file-name)\n\n"
+        "Load sound from file"
+    },
+    {"load-sound-from-wave", cfun_LoadSoundFromWave, 
+        "(load-sound-from-wave wave)\n\n"
+        "Load sound from wave data"
+    },
+    {"unload-wave", cfun_UnloadWave, 
+        "(unload-wave wave)\n\n"
+        "Unload wave data"
+    },
+    {"unload-sound", cfun_UnloadSound, 
+        "(unload-sound sound)\n\n"
+        "Unload sound"
+    },
+    {"export-wave", cfun_ExportWave, 
+        "(export-wave wave file-name)\n\n"
+        "Export wave data to file, returns true on success"
+    },
+    {"export-wave-as-code", cfun_ExportWaveAsCode, 
+        "(export-wave-as-code wave file-name)\n\n"
+        "Export wave sample data to code (.h), returns true on success"
+    },
+    {"play-sound", cfun_PlaySound, 
+        "(play-sound sound)\n\n"
+        "Play a sound"
+    },
+    {"stop-sound", cfun_StopSound, 
+        "(stop-sound sound)\n\n"
+        "Stop playing a sound"
+    },
+    {"resume-sound", cfun_ResumeSound, 
+        "(resume-sound sound)\n\n"
+        "Resume a paused sound"
+    },
+    {"pause-sound", cfun_PauseSound, 
+        "(pause-sound sound)\n\n"
+        "Pause a sound"
+    },
+    {"sound-playing?", cfun_IsSoundPlaying, 
+        "(sound-playing? sound)\n\n"
+        "Check if a sound is currently playing"
+    },
+    {"set-sound-volume", cfun_SetSoundVolume, 
+        "(set-sound-volume sound volume)\n\n"
+        "Set volume for a sound (1.0 is max level)"
+    },
+    {"set-sound-pitch", cfun_SetSoundPitch, 
+        "(set-sound-pitch sound pitch)\n\n"
+        "Set pitch for a sound (1.0 is base level)"
+    },
+    {"wave-copy", cfun_WaveCopy, 
+        "(wave-copy wave)\n\n"
+        "Copy a wave to a new wave"
+    },
+    {"load-music-stream", cfun_LoadMusicStream, 
+        "(load-music-stream file-name)\n\n"
+        "Load music stream from file"
+    },
+    {"unload-music-stream", cfun_UnloadMusicStream, 
+        "(unload-music-stream music)\n\n"
+        "Unload music stream"
+    },
+    {"play-music-stream", cfun_PlayMusicStream, 
+        "(play-music-stream music)\n\n"
+        "Start music playing"
+    },
+    {"update-music-stream", cfun_UpdateMusicStream, 
+        "(update-music-stream music)\n\n"
+        "Updates buffers for music streaming"
+    },
+    {"pause-music-stream", cfun_PauseMusicStream, 
+        "(pause-music-stream music)\n\n"
+        "Pause music playing"
+    },
+    {"stop-music-stream", cfun_StopMusicStream, 
+        "(stop-music-stream music)\n\n"
+        "Stop music playing"
+    },
+    {"resume-music-stream", cfun_ResumeMusicStream, 
+        "(resume-music-stream music)\n\n"
+        "Resume playing paused music"
+    },
+    {"music-stream-playing?", cfun_IsMusicStreamPlaying, 
+        "(music-stream-playing? music)\n\n"
+        "Check if music is playing"
+    },
+    {"set-music-volume", cfun_SetMusicVolume, 
+        "(set-music-volume music volume)\n\n"
+        "Set volume for music (1.0 is max level)"
+    },
+    {"set-music-pitch", cfun_SetMusicPitch, 
+        "(set-music-pitch music pitch)\n\n"
+        "Set pitch for a music (1.0 is base level)"
+    },
+    {"get-music-time-length", cfun_GetMusicTimeLength, 
+        "(get-music-time-length music)\n\n"
+        "Get music time length (in seconds)"
+    },
+    {"get-music-time-played", cfun_GetMusicTimePlayed, 
+        "(get-music-time-played music)\n\n"
+        "Get current music time played (in seconds)"
+    },
+    {"load-audio-stream", cfun_LoadAudioStream, 
+        "(load-audio-stream sample-rate sample-size channels)\n\n"
+        "Init audio stream (to stream raw audio pcm data)"
+    },
+    {"update-audio-stream", cfun_UpdateAudioStream, 
+        "(update-audio-stream stream)\n\n"
+        "Update audio stream buffers with data"
+    },
+    {"unload-audio-stream", cfun_UnloadAudioStream, 
+        "(unload-audio-stream stream)\n\n"
+        "Close audio stream and free memory"
+    },
+    {"audio-stream-processed?", cfun_IsAudioStreamProcessed, 
+        "(audio-stream-processed? stream)\n\n"
+        "Check if any audio stream buffers requires refill"
+    },
+    {"audio-stream-playing?", cfun_IsAudioStreamPlaying, 
+        "(audio-stream-playing? stream)\n\n"
+        "Check if audio stream is playing"
+    },
+    {"play-audio-stream", cfun_PlayAudioStream, 
+        "(play-audio-stream stream)\n\n"
+        "Play audio stream"
+    },
+    {"pause-audio-stream", cfun_PauseAudioStream, 
+        "(pause-audio-stream stream)\n\n"
+        "Pause audio stream"
+    },
+    {"stop-audio-stream", cfun_StopAudioStream, 
+        "(stop-audio-stream stream)\n\n"
+        "Stop audio stream"
+    },
+    {"resume-audio-stream", cfun_ResumeAudioStream, 
+        "(resume-audio-stream stream)\n\n"
+        "Resume audio stream"
+    },
+    {"set-audio-stream-volume", cfun_SetAudioStreamVolume, 
+        "(set-audio-stream-volume stream volume)\n\n"
+        "Set volume for audio stream (1.0 is max level)"
+    },
+    {"set-audio-stream-pitch", cfun_SetAudioStreamPitch, 
+        "(set-audio-stream-pitch stream pitch)\n\n"
+        "Set pitch for audio stream (1.0 is base level)"
+    },
     {NULL, NULL, NULL}
 };
