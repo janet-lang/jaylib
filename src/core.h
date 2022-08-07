@@ -785,7 +785,7 @@ static Janet cfun_SetCamera2DOffset(int32_t argc, Janet *argv) {
 static Janet cfun_SetCamera2DRotation(int32_t argc, Janet *argv) {
   janet_fixarity(argc, 2);
   Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  float rotation = janet_get_number(argv, 1);
+  float rotation = janet_getnumber(argv, 1);
   camera->rotation = rotation;
   return janet_wrap_nil();
 }
@@ -793,7 +793,7 @@ static Janet cfun_SetCamera2DRotation(int32_t argc, Janet *argv) {
 static Janet cfun_SetCamera2DZoom(int32_t argc, Janet *argv) {
   janet_fixarity(argc, 2);
   Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  float zoom = janet_get_number(argv, 1);
+  float zoom = janet_getnumber(argv, 1);
   camera->zoom = zoom;
   return janet_wrap_nil();
 }
