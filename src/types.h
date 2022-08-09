@@ -323,8 +323,6 @@ static Vector2 jaylib_getvec2(const Janet *argv, int32_t n) {
     };
 }
 
-
-
 static Vector3 jaylib_getvec3(const Janet *argv, int32_t n) {
     JanetView idx = janet_getindexed(argv, n);
     return (Vector3) {
