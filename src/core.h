@@ -738,66 +738,6 @@ static Janet cfun_Camera2D(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(camera);
 }
 
-static Janet cfun_GetCamera2DTarget(int32_t argc, Janet *argv) {
-  janet_fixarity(argc, 1);
-  Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  Vector2 target = camera->target;
-  return jaylib_wrap_vec2(target);
-}
-
-static Janet cfun_GetCamera2DOffset(int32_t argc, Janet *argv) {
-  janet_fixarity(argc, 1);
-  Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  Vector2 offset = camera->offset;
-  return jaylib_wrap_vec2(offset);
-}
-
-static Janet cfun_GetCamera2DRotation(int32_t argc, Janet *argv) {
-  janet_fixarity(argc, 1);
-  Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  float rotation = camera->rotation;
-  return janet_wrap_number(rotation);
-}
-
-static Janet cfun_GetCamera2DZoom(int32_t argc, Janet *argv) {
-  janet_fixarity(argc, 1);
-  Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  float zoom = camera->zoom;
-  return janet_wrap_number(zoom);
-}
-
-static Janet cfun_SetCamera2DTarget(int32_t argc, Janet *argv) {
-  janet_fixarity(argc, 2);
-  Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  Vector2 target = jaylib_getvec2(argv, 1);
-  camera->target = target;
-  return janet_wrap_nil();
-}
-
-static Janet cfun_SetCamera2DOffset(int32_t argc, Janet *argv) {
-  janet_fixarity(argc, 2);
-  Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  Vector2 offset = jaylib_getvec2(argv, 1);
-  camera->offset = offset;
-  return janet_wrap_nil();
-}
-
-static Janet cfun_SetCamera2DRotation(int32_t argc, Janet *argv) {
-  janet_fixarity(argc, 2);
-  Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  float rotation = janet_getnumber(argv, 1);
-  camera->rotation = rotation;
-  return janet_wrap_nil();
-}
-
-static Janet cfun_SetCamera2DZoom(int32_t argc, Janet *argv) {
-  janet_fixarity(argc, 2);
-  Camera2D *camera = jaylib_getcamera2d(argv, 0);
-  float zoom = janet_getnumber(argv, 1);
-  camera->zoom = zoom;
-  return janet_wrap_nil();
-}
-
 static Janet cfun_Camera3D(int32_t argc, Janet *argv) {
     if ((argc & 1) != 0) {
         janet_panicf("expected even number of arguments, got %d", argc);
@@ -1007,14 +947,6 @@ static JanetReg core_cfuns[] = {
     {"begin-texture-mode", cfun_BeginTextureMode, NULL},
     {"end-texture-mode", cfun_EndTextureMode, NULL},
     {"camera-2d", cfun_Camera2D, NULL},
-    {"get-camera-2d-target", cfun_GetCamera2DTarget, NULL},
-    {"get-camera-2d-offset", cfun_GetCamera2DOffset, NULL},
-    {"get-camera-2d-rotation", cfun_GetCamera2DRotation, NULL},
-    {"get-camera-2d-zoom", cfun_GetCamera2DZoom, NULL},
-    {"set-camera-2d-target", cfun_SetCamera2DTarget, NULL},
-    {"set-camera-2d-offset", cfun_SetCamera2DOffset, NULL},
-    {"set-camera-2d-rotation", cfun_SetCamera2DRotation, NULL},
-    {"set-camera-2d-zoom", cfun_SetCamera2DZoom, NULL},
     {"camera-3d", cfun_Camera3D, NULL},
     {"set-camera-mode", cfun_SetCameraMode, NULL},
     {"update-camera", cfun_UpdateCamera, NULL},

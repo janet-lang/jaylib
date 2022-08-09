@@ -101,16 +101,16 @@ static const KeyDef key_defs[] = {
     {"kp--", KEY_KP_SUBTRACT},
     {"kp-.", KEY_KP_DECIMAL},
     {"kp-/", KEY_KP_DIVIDE},
-    {"kp-0", KEY_KP_0}, 
-    {"kp-1", KEY_KP_1}, 
-    {"kp-2", KEY_KP_2}, 
-    {"kp-3", KEY_KP_3}, 
-    {"kp-4", KEY_KP_4}, 
-    {"kp-5", KEY_KP_5}, 
-    {"kp-6", KEY_KP_6}, 
-    {"kp-7", KEY_KP_7}, 
-    {"kp-8", KEY_KP_8}, 
-    {"kp-9", KEY_KP_9}, 
+    {"kp-0", KEY_KP_0},
+    {"kp-1", KEY_KP_1},
+    {"kp-2", KEY_KP_2},
+    {"kp-3", KEY_KP_3},
+    {"kp-4", KEY_KP_4},
+    {"kp-5", KEY_KP_5},
+    {"kp-6", KEY_KP_6},
+    {"kp-7", KEY_KP_7},
+    {"kp-8", KEY_KP_8},
+    {"kp-9", KEY_KP_9},
     {"kp-=", KEY_KP_EQUAL},
     {"kp-enter", KEY_KP_ENTER},
     {"l", KEY_L},
@@ -323,6 +323,8 @@ static Vector2 jaylib_getvec2(const Janet *argv, int32_t n) {
     };
 }
 
+
+
 static Vector3 jaylib_getvec3(const Janet *argv, int32_t n) {
     JanetView idx = janet_getindexed(argv, n);
     return (Vector3) {
@@ -385,6 +387,13 @@ static Janet jaylib_wrap_vec2(Vector2 x) {
     tup[0] = janet_wrap_number(x.x);
     tup[1] = janet_wrap_number(x.y);
     return janet_wrap_tuple(janet_tuple_end(tup));
+}
+
+static Vector2 jaylib_unwrap_vec2(const Janet val) {
+  Janet *tup = janet_unwrap_tuple(val);
+  float x = janet_unwrap_number(tup[0]);
+  float y = janet_unwrap_number(tup[1]);
+  return (Vector2) { x, y };
 }
 
 static const JanetAbstractType AT_TextureCubemap = {
@@ -470,13 +479,87 @@ static RenderTexture *jaylib_getrendertexture(const Janet *argv, int32_t n) {
     return ((RenderTexture *)janet_getabstract(argv, n, &AT_RenderTexture));
 }
 
+int camera2d_get(void *p, Janet key, Janet *out);
+void camera2d_put(void *p, Janet key, Janet value);
+
 static const JanetAbstractType AT_Camera2D = {
     "jaylib/camera-2d",
+    NULL,
+    NULL,
+    camera2d_get,
+    camera2d_put,
     JANET_ATEND_NAME
 };
 
 static Camera2D *jaylib_getcamera2d(const Janet *argv, int32_t n) {
     return ((Camera2D *)janet_getabstract(argv, n, &AT_Camera2D));
+}
+
+int camera2d_get(void *p, Janet key, Janet *out) {
+  Camera2D *camera = (Camera2D *)p;
+
+  if (!janet_checktype(key, JANET_KEYWORD)) {
+    janet_panic("expected keyword");
+  }
+
+  const uint8_t *kw = janet_unwrap_keyword(key);
+
+  if (!janet_cstrcmp(kw, "target")) {
+    *out = jaylib_wrap_vec2(camera->target);
+    return 1;
+  }
+
+  if (!janet_cstrcmp(kw, "offset")) {
+    *out = jaylib_wrap_vec2(camera->offset);
+    return 1;
+  }
+
+  if (!janet_cstrcmp(kw, "rotation")) {
+    *out = janet_wrap_number(camera->rotation);
+    return 1;
+  }
+
+  if (!janet_cstrcmp(kw, "zoom")) {
+    *out = janet_wrap_number(camera->zoom);
+    return 1;
+  }
+
+  return 0;
+}
+
+
+void camera2d_put(void *p, Janet key, Janet value) {
+  Camera2D *camera = (Camera2D *)p;
+
+  if (!janet_checktype(key, JANET_KEYWORD)) {
+    janet_panic("expected keyword key");
+  }
+
+  const uint8_t *kw = janet_unwrap_keyword(key);
+
+  if (!janet_cstrcmp(kw, "target")) {
+    camera->target = jaylib_unwrap_vec2(value);
+  }
+
+  if (!janet_cstrcmp(kw, "offset")) {
+    camera->offset = jaylib_unwrap_vec2(value);
+  }
+
+  if (!janet_cstrcmp(kw, "rotation")) {
+    if (!janet_checktype(value, JANET_NUMBER)) {
+      janet_panic("expected number value");
+    }
+
+    camera->rotation = janet_unwrap_number(value);
+  }
+
+  if (!janet_cstrcmp(kw, "zoom")) {
+    if (!janet_checktype(value, JANET_NUMBER)) {
+      janet_panic("expected number value");
+    }
+
+    camera->zoom = janet_unwrap_number(value);
+  }
 }
 
 static const JanetAbstractType AT_Camera3D = {
