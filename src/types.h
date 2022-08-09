@@ -486,7 +486,7 @@ static const JanetAbstractType AT_Camera2D = {
     NULL,
     camera2d_get,
     camera2d_put,
-    JANET_ATEND_NAME
+    JANET_ATEND_PUT
 };
 
 static Camera2D *jaylib_getcamera2d(const Janet *argv, int32_t n) {
