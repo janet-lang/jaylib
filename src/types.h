@@ -544,18 +544,10 @@ void camera2d_put(void *p, Janet key, Janet value) {
   }
 
   if (!janet_cstrcmp(kw, "rotation")) {
-    if (!janet_checktype(value, JANET_NUMBER)) {
-      janet_panic("expected number value");
-    }
-
     camera->rotation = janet_unwrap_number(value);
   }
 
   if (!janet_cstrcmp(kw, "zoom")) {
-    if (!janet_checktype(value, JANET_NUMBER)) {
-      janet_panic("expected number value");
-    }
-
     camera->zoom = janet_unwrap_number(value);
   }
 }
