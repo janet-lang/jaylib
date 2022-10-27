@@ -388,9 +388,17 @@ static Janet jaylib_wrap_vec2(Vector2 x) {
 }
 
 static Vector2 jaylib_unwrap_vec2(const Janet val) {
-  Janet *tup = janet_unwrap_tuple(val);
-  float x = janet_unwrap_number(tup[0]);
-  float y = janet_unwrap_number(tup[1]);
+  JanetView view;
+  if (!janet_indexed_view(val, &view.items, &view.len)) {
+    janet_panic("expected vec to be an indexed type");
+  }
+
+  if (view.len != 2) {
+    janet_panic("vec must have exactly 2 elements");
+  }
+
+  float x = idx_getfloat(view, 0);
+  float y = idx_getfloat(view, 1);
   return (Vector2) { x, y };
 }
 
