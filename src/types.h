@@ -544,18 +544,10 @@ void camera2d_put(void *p, Janet key, Janet value) {
   const uint8_t *kw = janet_unwrap_keyword(key);
 
   if (janet_cstrcmp(kw, "target")) {
-    if (!janet_checktype(value, JANET_TUPLE)) {
-      janet_panic("expected tuple value");
-    }
-
     camera->target = jaylib_unwrap_vec2(value);
   }
 
   if (janet_cstrcmp(kw, "offset")) {
-    if (!janet_checktype(value, JANET_TUPLE)) {
-      janet_panic("expected tuple value");
-    }
-
     camera->offset = jaylib_unwrap_vec2(value);
   }
 
