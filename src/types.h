@@ -543,15 +543,15 @@ void camera2d_put(void *p, Janet key, Janet value) {
 
   const uint8_t *kw = janet_unwrap_keyword(key);
 
-  if (janet_cstrcmp(kw, "target")) {
+  if (!janet_cstrcmp(kw, "target")) {
     camera->target = jaylib_unwrap_vec2(value);
   }
 
-  if (janet_cstrcmp(kw, "offset")) {
+  if (!janet_cstrcmp(kw, "offset")) {
     camera->offset = jaylib_unwrap_vec2(value);
   }
 
-  if (janet_cstrcmp(kw, "rotation")) {
+  if (!janet_cstrcmp(kw, "rotation")) {
     if (!janet_checktype(value, JANET_NUMBER)) {
       janet_panic("expected number value");
     }
@@ -559,7 +559,7 @@ void camera2d_put(void *p, Janet key, Janet value) {
     camera->rotation = janet_unwrap_number(value);
   }
 
-  if (janet_cstrcmp(kw, "zoom")) {
+  if (!janet_cstrcmp(kw, "zoom")) {
     if (!janet_checktype(value, JANET_NUMBER)) {
       janet_panic("expected number value");
     }
