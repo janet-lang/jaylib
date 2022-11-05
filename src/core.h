@@ -861,98 +861,388 @@ static Janet cfun_SetCameraMoveControls(int32_t argc, Janet *argv) {
 }
 
 static JanetReg core_cfuns[] = {
-    {"init-window", cfun_InitWindow, NULL},
-    {"window-should-close", cfun_WindowShouldClose, NULL},
-    {"close-window", cfun_CloseWindow, NULL},
-    {"window-ready?", cfun_IsWindowReady, NULL},
-    {"window-minimized?", cfun_IsWindowMinimized, NULL},
-    {"window-resized?", cfun_IsWindowResized, NULL},
-    {"window-state?", cfun_IsWindowState, NULL},
-    {"set-window-state", cfun_SetWindowState, NULL},
-    {"clear-window-state", cfun_ClearWindowState, NULL},
-    {"toggle-fullscreen", cfun_ToggleFullscreen, NULL},
-    {"set-window-title", cfun_SetWindowTitle, NULL},
-    {"set-window-position", cfun_SetWindowPosition, NULL},
-    {"set-window-monitor", cfun_SetWindowMonitor, NULL},
-    {"set-window-min-size", cfun_SetWindowMinSize, NULL},
-    {"set-window-size", cfun_SetWindowSize, NULL},
-    {"get-window-handle", cfun_GetWindowHandle, NULL},
-    {"get-screen-width", cfun_GetScreenWidth, NULL},
-    {"get-screen-height", cfun_GetScreenHeight, NULL},
-    {"get-monitor-count", cfun_GetMonitorCount, NULL},
-    {"get-monitor-width", cfun_GetMonitorWidth, NULL},
-    {"get-monitor-height", cfun_GetMonitorHeight, NULL},
-    {"get-monitor-physical-width", cfun_GetMonitorPhysicalWidth, NULL},
-    {"get-monitor-physical-height", cfun_GetMonitorPhysicalHeight, NULL},
-    {"get-monitor-name", cfun_GetMonitorName, NULL},
-    {"get-clipboard-text", cfun_GetClipboardText, NULL},
-    {"set-clipboard-text", cfun_SetClipboardText, NULL},
-    {"show-cursor", cfun_ShowCursor, NULL},
-    {"hide-cursor", cfun_HideCursor, NULL},
-    {"cursor-hidden?", cfun_IsCursorHidden, NULL},
-    {"enable-cursor", cfun_EnableCursor, NULL},
-    {"disable-cursor", cfun_DisableCursor, NULL},
-    {"cursor-on-screen?", cfun_IsCursorOnScreen, NULL},
-    {"clear-background", cfun_ClearBackground, NULL},
-    {"begin-drawing", cfun_BeginDrawing, NULL},
-    {"end-drawing", cfun_EndDrawing, NULL},
-    {"begin-mode-2d", cfun_BeginMode2D, NULL},
-    {"end-mode-2d", cfun_EndMode2D, NULL},
-    {"set-target-fps", cfun_SetTargetFPS, NULL},
-    {"get-fps", cfun_GetFPS, NULL},
-    {"get-frame-time", cfun_GetFrameTime, NULL},
-    {"get-time", cfun_GetTime, NULL},
-    {"set-config-flags", cfun_SetConfigFlags, NULL},
-    {"set-trace-log-level", cfun_SetTraceLogLevel, NULL},
-    {"set-trace-log-callback", cfun_SetTraceLogCallback, NULL},
-    {"trace-log", cfun_TraceLog, NULL},
-    {"take-screenshot", cfun_TakeScreenshot, NULL},
-    {"key-pressed?", cfun_IsKeyPressed, NULL},
-    {"key-released?", cfun_IsKeyReleased, NULL},
-    {"key-up?", cfun_IsKeyUp, NULL},
-    {"key-down?", cfun_IsKeyDown, NULL},
-    {"get-key-pressed", cfun_GetKeyPressed, NULL},
-    {"set-exit-key", cfun_SetExitKey, NULL},
-    {"gamepad-available?", cfun_IsGamepadAvailable, NULL},
-    {"gamepad-button-down?", cfun_IsGamepadButtonDown, NULL},
-    {"gamepad-button-up?", cfun_IsGamepadButtonUp, NULL},
-    {"gamepad-button-pressed?", cfun_IsGamepadButtonPressed, NULL},
-    {"gamepad-button-released?", cfun_IsGamepadButtonReleased, NULL},
-    {"get-gamepad-button-pressed", cfun_GetGamepadButtonPressed, NULL},
-    {"get-gamepad-name", cfun_GetGamepadName, NULL},
-    {"get-gamepad-axis-count", cfun_GetGamepadAxisCount, NULL},
-    {"get-gamepad-axis-movement", cfun_GetGamepadAxisMovement, NULL},
-    {"mouse-button-pressed?", cfun_IsMouseButtonPressed, NULL},
-    {"mouse-button-up?", cfun_IsMouseButtonUp, NULL},
-    {"mouse-button-released?", cfun_IsMouseButtonReleased, NULL},
-    {"mouse-button-down?", cfun_IsMouseButtonDown, NULL},
-    {"get-mouse-x", cfun_GetMouseX, NULL},
-    {"get-mouse-y", cfun_GetMouseY, NULL},
-    {"get-mouse-position", cfun_GetMousePosition, NULL},
-    {"set-mouse-position", cfun_SetMousePosition, NULL},
-    {"set-mouse-offset", cfun_SetMouseOffset, NULL},
-    {"set-mouse-scale", cfun_SetMouseScale, NULL},
-    {"get-mouse-wheel-move", cfun_GetMouseWheelMove, NULL},
-    {"get-touch-x", cfun_GetTouchX, NULL},
-    {"get-touch-y", cfun_GetTouchY, NULL},
-    {"get-touch-position", cfun_GetTouchPosition, NULL},
-    {"get-dropped-files", cfun_GetDroppedFiles, NULL},
-    {"clear-dropped-files", cfun_ClearDroppedFiles, NULL},
-    {"save-storage-value", cfun_SaveStorageValue, NULL},
-    {"load-storage-value", cfun_LoadStorageValue, NULL},
-    {"open-url", cfun_OpenUrl, NULL},
-    {"set-window-icon", cfun_SetWindowIcon, NULL},
-    {"begin-mode-3d", cfun_BeginMode3D, NULL},
-    {"end-mode-3d", cfun_EndMode3D, NULL},
-    {"begin-texture-mode", cfun_BeginTextureMode, NULL},
-    {"end-texture-mode", cfun_EndTextureMode, NULL},
-    {"camera-2d", cfun_Camera2D, NULL},
-    {"camera-3d", cfun_Camera3D, NULL},
-    {"set-camera-mode", cfun_SetCameraMode, NULL},
-    {"update-camera", cfun_UpdateCamera, NULL},
-    {"set-camera-pan-control", cfun_SetCameraPanControl, NULL},
-    {"set-camera-alt-control", cfun_SetCameraAltControl, NULL},
-    {"set-camera-smooth-zoom-control", cfun_SetCameraSmoothZoomControl, NULL},
-    {"set-camera-move-controls", cfun_SetCameraMoveControls, NULL},
+    {"init-window", cfun_InitWindow, 
+        "(init-window width height title)\n\n" 
+        "Initialize window and OpenGL context"
+    },
+    {"window-should-close", cfun_WindowShouldClose, 
+        "(window-should-close)\n\n" 
+        "Check if KEY_ESCAPE pressed or Close icon pressed"
+    },
+    {"close-window", cfun_CloseWindow, 
+        "(close-window)\n\n" 
+        "Close window and unload OpenGL context"
+    },
+    {"window-ready?", cfun_IsWindowReady, 
+        "(window-ready?)\n\n" 
+        "Check if window has been initialized successfully"
+    },
+    {"window-minimized?", cfun_IsWindowMinimized, 
+        "(window-minimized?)\n\n" 
+        "Check if window is currently minimized"
+    },
+    {"window-resized?", cfun_IsWindowResized, 
+        "(window-resized?)\n\n" 
+        "Check if window has been resized last frame"
+    },
+    {"window-state?", cfun_IsWindowState, 
+        "(window-state? flag)\n\n" 
+        "Check if one specific window flag is enabled"
+    },
+    {"set-window-state", cfun_SetWindowState, 
+        "(set-window-state flags)\n\n" 
+        "Set window configuration state using flags"
+    },
+    {"clear-window-state", cfun_ClearWindowState, 
+        "(clear-window-state flags)\n\n" 
+        "Clear window configuration state flags"
+    },
+    {"toggle-fullscreen", cfun_ToggleFullscreen, 
+        "(toggle-fullscreen)\n\n" 
+        "Toggle window state: fullscreen/windowed"
+    },
+    {"set-window-title", cfun_SetWindowTitle, 
+        "(set-window-title title)\n\n" 
+        "Set title for window"
+    },
+    {"set-window-position", cfun_SetWindowPosition, 
+        "(set-window-position x y)\n\n" 
+        "Set window position on screen"
+    },
+    {"set-window-monitor", cfun_SetWindowMonitor, 
+        "(set-window-monitor monitor)\n\n" 
+        "Set monitor for the current window"
+    },
+    {"set-window-min-size", cfun_SetWindowMinSize, 
+        "(set-window-min-size width height)\n\n" 
+        "Set window minimum dimensions"
+    },
+    {"set-window-size", cfun_SetWindowSize, 
+        "(set-window-size width height)\n\n" 
+        "Set window dimensions"
+    },
+    {"get-window-handle", cfun_GetWindowHandle, 
+        "(get-window-handle)\n\n" 
+        "Get native window handle"
+    },
+    {"get-screen-width", cfun_GetScreenWidth, 
+        "(get-screen-width)\n\n" 
+        "Get current screen width"
+    },
+    {"get-screen-height", cfun_GetScreenHeight, 
+        "(get-screen-height)\n\n" 
+        "Get current screen height"
+    },
+    {"get-monitor-count", cfun_GetMonitorCount, 
+        "(get-monitor-count)\n\n" 
+        "Get number of connected monitors"
+    },
+    {"get-monitor-width", cfun_GetMonitorWidth, 
+        "(get-monitor-width monitor)\n\n" 
+        "Get specified monitor width (max available by monitor)"
+    },
+    {"get-monitor-height", cfun_GetMonitorHeight, 
+        "(get-monitor-height monitor)\n\n" 
+        "Get specified monitor height (max available by monitor)"
+    },
+    {"get-monitor-physical-width", cfun_GetMonitorPhysicalWidth, 
+        "(get-monitor-physical-width monitor)\n\n" 
+        "Get specified monitor physical width in millimetres"
+    },
+    {"get-monitor-physical-height", cfun_GetMonitorPhysicalHeight, 
+        "(get-monitor-physical-height monitor)\n\n" 
+        "Get specified monitor physical height in millimetres"
+    },
+    {"get-monitor-name", cfun_GetMonitorName, 
+        "(get-monitor-name monitor)\n\n" 
+        "Get the human-readable, UTF-8 encoded name of the primary monitor"
+    },
+    {"get-clipboard-text", cfun_GetClipboardText, 
+        "(get-clipboard-text)\n\n" 
+        "Get clipboard text content"
+    },
+    {"set-clipboard-text", cfun_SetClipboardText, 
+        "(set-clipboard-text text)\n\n" 
+        "Set clipboard text content"
+    },
+    {"show-cursor", cfun_ShowCursor, 
+        "(show-cursor)\n\n" 
+        "Shows cursor"
+    },
+    {"hide-cursor", cfun_HideCursor, 
+        "(hide-cursor)\n\n" 
+        "Hides cursor"
+    },
+    {"cursor-hidden?", cfun_IsCursorHidden, 
+        "(cursor-hidden?)\n\n" 
+        "Check if cursor is not visible"
+    },
+    {"enable-cursor", cfun_EnableCursor, 
+        "(enable-cursor)\n\n" 
+        "Enables cursor (unlock cursor)"
+    },
+    {"disable-cursor", cfun_DisableCursor, 
+        "(disable-cursor)\n\n" 
+        "Disables cursor (lock cursor)"
+    },
+    {"cursor-on-screen?", cfun_IsCursorOnScreen, 
+        "(cursor-on-screen?)\n\n" 
+        "Check if cursor is on the screen"
+    },
+    {"clear-background", cfun_ClearBackground, 
+        "(clear-background color)\n\n" 
+        "Set background color (framebuffer clear color)"
+    },
+    {"begin-drawing", cfun_BeginDrawing, 
+        "(begin-drawing)\n\n" 
+        "Setup canvas (framebuffer) to start drawing"
+    },
+    {"end-drawing", cfun_EndDrawing, 
+        "(end-drawing)\n\n" 
+        "End canvas drawing and swap buffers (double buffering)"
+    },
+    {"begin-mode-2d", cfun_BeginMode2D, 
+        "(begin-mode-2d camera)\n\n" 
+        "Begin 2D mode with custom camera (2D)"
+    },
+    {"end-mode-2d", cfun_EndMode2D, 
+        "(end-mode-2d)\n\n" 
+        "Ends 2D mode with custom camera"
+    },
+    {"set-target-fps", cfun_SetTargetFPS, 
+        "(set-target-fps fps)\n\n" 
+        "Set target FPS (maximum)"
+    },
+    {"get-fps", cfun_GetFPS, 
+        "(get-fps)\n\n" 
+        "Get current FPS"
+    },
+    {"get-frame-time", cfun_GetFrameTime, 
+        "(get-frame-time)\n\n" 
+        "Get time in seconds for last frame drawn (delta time)"
+    },
+    {"get-time", cfun_GetTime, 
+        "(get-time)\n\n" 
+        "Get elapsed time in seconds since InitWindow()"
+    },
+    {"set-config-flags", cfun_SetConfigFlags, 
+        "(set-config-flags flags)\n\n" 
+        "Setup init configuration flags (view FLAGS)"
+    },
+    {"set-trace-log-level", cfun_SetTraceLogLevel, 
+        "(set-trace-log-level log-level)\n\n" 
+        "Set the current threshold (minimum) log level"
+    },
+    {"set-trace-log-callback", cfun_SetTraceLogCallback, 
+        "(set-trace-log-callback callback)\n\n" 
+        "Set custom trace log"
+    },
+    {"trace-log", cfun_TraceLog, 
+        "(trace-log log-level text)\n\n" 
+        "Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)"
+    },
+    {"take-screenshot", cfun_TakeScreenshot, 
+        "(take-screenshot file-name)\n\n" 
+        "Takes a screenshot of current screen (filename extension defines format)"
+    },
+    {"key-pressed?", cfun_IsKeyPressed, 
+        "(key-pressed? key)\n\n" 
+        "Check if a key has been pressed once"
+    },
+    {"key-released?", cfun_IsKeyReleased, 
+        "(key-released? key)\n\n" 
+        "Check if a key has been released once"
+    },
+    {"key-up?", cfun_IsKeyUp, 
+        "(key-up? key)\n\n" 
+        "Check if a key is NOT being pressed"
+    },
+    {"key-down?", cfun_IsKeyDown, 
+        "(key-down? key)\n\n" 
+        "Check if a key is being pressed"
+    },
+    {"get-key-pressed", cfun_GetKeyPressed, 
+        "(get-key-pressed)\n\n" 
+        "Get key pressed (keycode), call it multiple times for keys "
+        "queued, returns 0 when the queue is empty"
+    },
+    {"set-exit-key", cfun_SetExitKey, 
+        "(set-exit-key key)\n\n" 
+        "Set a custom key to exit program (default is ESC)"
+    },
+    {"gamepad-available?", cfun_IsGamepadAvailable, 
+        "(gamepad-available? gamepad)\n\n" 
+        "Check if a gamepad is available"
+    },
+    {"gamepad-button-down?", cfun_IsGamepadButtonDown, 
+        "(gamepad-button-down? gamepad button)\n\n" 
+        "Check if a gamepad button is being pressed"
+    },
+    {"gamepad-button-up?", cfun_IsGamepadButtonUp, 
+        "(gamepad-button-up? gamepad button)\n\n" 
+        "Check if a gamepad button is NOT being pressed"
+    },
+    {"gamepad-button-pressed?", cfun_IsGamepadButtonPressed, 
+        "(gamepad-button-pressed? gamepad button)\n\n" 
+        "Check if a gamepad button has been pressed once"
+    },
+    {"gamepad-button-released?", cfun_IsGamepadButtonReleased, 
+        "(gamepad-button-released? gamepad button)\n\n" 
+        "Check if a gamepad button has been released once"
+    },
+    {"get-gamepad-button-pressed", cfun_GetGamepadButtonPressed, 
+        "(get-gamepad-button-pressed)\n\n" 
+        "Get the last gamepad button pressed"
+    },
+    {"get-gamepad-name", cfun_GetGamepadName, 
+        "(get-gamepad-name gamepad)\n\n" 
+        "Get gamepad internal name id"
+    },
+    {"get-gamepad-axis-count", cfun_GetGamepadAxisCount, 
+        "(get-gamepad-axis-count gamepad)\n\n" 
+        "Get gamepad axis count for a gamepad"
+    },
+    {"get-gamepad-axis-movement", cfun_GetGamepadAxisMovement, 
+        "(get-gamepad-axis-movement gamepad axis)\n\n" 
+        "Get axis movement value for a gamepad axis"
+    },
+    {"mouse-button-pressed?", cfun_IsMouseButtonPressed, 
+        "(mouse-button-pressed? button)\n\n" 
+        "Check if a mouse button has been pressed once"
+    },
+    {"mouse-button-up?", cfun_IsMouseButtonUp, 
+        "(mouse-button-up? button)\n\n" 
+        "Check if a mouse button is NOT being pressed"
+    },
+    {"mouse-button-released?", cfun_IsMouseButtonReleased, 
+        "(mouse-button-released? button)\n\n" 
+        "Check if a mouse button has been released once"
+    },
+    {"mouse-button-down?", cfun_IsMouseButtonDown, 
+        "(mouse-button-down? button)\n\n" 
+        "Check if a mouse button is being pressed"
+    },
+    {"get-mouse-x", cfun_GetMouseX, 
+        "(get-mouse-x)\n\n" 
+        "Get mouse position X"
+    },
+    {"get-mouse-y", cfun_GetMouseY, 
+        "(get-mouse-y)\n\n" 
+        "Get mouse position Y"
+    },
+    {"get-mouse-position", cfun_GetMousePosition, 
+        "(get-mouse-position)\n\n" 
+        "Get mouse position XY"
+    },
+    {"set-mouse-position", cfun_SetMousePosition, 
+        "(set-mouse-position x y)\n\n" 
+        "Set mouse position XY"
+    },
+    {"set-mouse-offset", cfun_SetMouseOffset, 
+        "(set-mouse-offset offset-x offset-y)\n\n" 
+        "Set mouse offset"
+    },
+    {"set-mouse-scale", cfun_SetMouseScale, 
+        "(set-mouse-scale scale-x scale-y)\n\n" 
+        "Set mouse scaling"
+    },
+    {"get-mouse-wheel-move", cfun_GetMouseWheelMove, 
+        "(get-mouse-wheel-move)\n\n" 
+        "Get mouse wheel movement Y"
+    },
+    {"get-touch-x", cfun_GetTouchX, 
+        "(get-touch-x)\n\n" 
+        "Get touch position X for touch point 0 (relative to screen size)"
+    },
+    {"get-touch-y", cfun_GetTouchY, 
+        "(get-touch-y)\n\n" 
+        "Get touch position Y for touch point 0 (relative to screen size)"
+    },
+    {"get-touch-position", cfun_GetTouchPosition, 
+        "(get-touch-position index)\n\n" 
+        "Get touch position XY for a touch point index (relative to screen size)"
+    },
+    {"get-dropped-files", cfun_GetDroppedFiles, 
+        "(get-dropped-files count)\n\n" 
+        "Get dropped files names (memory should be freed)"
+    },
+    {"clear-dropped-files", cfun_ClearDroppedFiles, 
+        "(clear-dropped-files)\n\n" 
+        "Clear dropped files paths buffer (free memory)"
+    },
+    {"save-storage-value", cfun_SaveStorageValue, 
+        "(save-storage-value position value)\n\n" 
+        "Save integer value to storage file (to defined position), "
+        "returns true on success"
+    },
+    {"load-storage-value", cfun_LoadStorageValue, 
+        "(load-storage-value position)\n\n" 
+        "Load integer value from storage file (from defined position)"
+    },
+    {"open-url", cfun_OpenUrl, 
+        "(open-url url)\n\n" 
+        "Open URL with default system browser (if available)"
+    },
+    {"set-window-icon", cfun_SetWindowIcon, 
+        "(set-window-icon image)\n\n" 
+        "Set icon for window"
+    },
+    {"begin-mode-3d", cfun_BeginMode3D, 
+        "(begin-mode-3d camera)\n\n" 
+        "Begin 3D mode with custom camera (3D)"
+    },
+    {"end-mode-3d", cfun_EndMode3D, 
+        "(end-mode-3d)\n\n" 
+        "Ends 3D mode and returns to default 2D orthographic mode"
+    },
+    {"begin-texture-mode", cfun_BeginTextureMode, 
+        "(begin-texture-mode target)\n\n" 
+        "Begin drawing to render texture"
+    },
+    {"end-texture-mode", cfun_EndTextureMode, 
+        "(end-texture-mode)\n\n" 
+        "Ends drawing to render texture"
+    },
+    {"camera-2d", cfun_Camera2D, 
+        "(camera-2d &opt :offset [x y] :target [x y] :rotation int :zoom float)\n\n" 
+        "Instantiate a Camera2D. \n"
+        " - :offset   = Camera offset (displacement from target) \n"
+        " - :target   = Camera target (rotation and zoom origin) \n"
+        " - :rotation = Camera rotation in degrees \n"
+        " - :zoom     = Camera zoom (scaling), should be 1.0f by default \n"
+    },
+    {"camera-3d", cfun_Camera3D, 
+        "(camera-3d :position [x y z] :target [x y z] :up [x y z] :fov-y float :projection int)\n\n" 
+        "Instantiate a Camera3D. \n"
+        " - :position   = Camera position \n"
+        " - :target     = Camera target it looks-at \n"
+        " - :up         = Camera up vector (rotation over its axis) \n"
+        " - :fov-y      = Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic \n"
+        " - :projection = Camera projection: CAMERA\\_PERSPECTIVE or CAMERA\\_ORTHOGRAPHIC \n"
+    },
+    {"set-camera-mode", cfun_SetCameraMode, 
+        "(set-camera-mode camera mode)\n\n" 
+        "Set camera mode (multiple camera modes available)"
+    },
+    {"update-camera", cfun_UpdateCamera, 
+        "(update-camera camera)\n\n" 
+        "Update camera position for selected mode"
+    },
+    {"set-camera-pan-control", cfun_SetCameraPanControl, 
+        "(set-camera-pan-control key-pan)\n\n" 
+        "Set camera pan key to combine with mouse movement (free camera)"
+    },
+    {"set-camera-alt-control", cfun_SetCameraAltControl, 
+        "(set-camera-alt-control key-alt)\n\n" 
+        "Set camera alt key to combine with mouse movement (free camera)"
+    },
+    {"set-camera-smooth-zoom-control", cfun_SetCameraSmoothZoomControl, 
+        "(set-camera-smooth-zoom-control key-smooth-zoom)\n\n" 
+        "Set camera smooth zoom key to combine with mouse (free camera)"
+    },
+    {"set-camera-move-controls", cfun_SetCameraMoveControls, 
+        "(set-camera-move-controls key-front key-back key-right key-left key-up key-down)\n\n" 
+        "Set camera move controls (1st person and 3rd person cameras)"
+    },
     {NULL, NULL, NULL}
 };

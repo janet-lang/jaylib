@@ -106,14 +106,41 @@ static Janet cfun_GetGesturePinchAngle(int32_t argc, Janet *argv) {
 }
 
 static JanetReg gesture_cfuns[] = {
-    {"set-gestures-enabled", cfun_SetGesturesEnabled, NULL},
-    {"gesture-detected?", cfun_IsGestureDetected, NULL},
-    {"get-gesture-detected", cfun_GetGestureDetected, NULL},
-    {"get-touch-point-count", cfun_GetTouchPointCount, NULL},
-    {"get-gesture-hold-duration", cfun_GetGestureHoldDuration, NULL},
-    {"get-gesture-drag-vector", cfun_GetGestureDragVector, NULL},
-    {"get-gesture-drag-angle", cfun_GetGestureDragAngle, NULL},
-    {"get-gesture-pinch-vector", cfun_GetGesturePinchVector, NULL},
-    {"get-gesture-pinch-angle", cfun_GetGesturePinchAngle, NULL},
+    {"set-gestures-enabled", cfun_SetGesturesEnabled, 
+        "(set-gestures-enabled flags)\n\n"
+        "Enable a set of gestures using flags"
+    },
+    {"gesture-detected?", cfun_IsGestureDetected, 
+        "(gesture-detected? gesture)\n\n"
+        "Check if a gesture have been detected"
+    },
+    {"get-gesture-detected", cfun_GetGestureDetected, 
+        "(get-gesture-detected)\n\n"
+        "Get latest detected gesture"
+    },
+    {"get-touch-point-count", cfun_GetTouchPointCount, 
+        "(get-touch-point-count)\n\n"
+        "Get number of touch points"
+    },
+    {"get-gesture-hold-duration", cfun_GetGestureHoldDuration, 
+        "(get-gesture-hold-duration)\n\n"
+        "Get gesture hold time in milliseconds"
+    },
+    {"get-gesture-drag-vector", cfun_GetGestureDragVector, 
+        "(get-gesture-drag-vector)\n\n"
+        "Get gesture drag vector"
+    },
+    {"get-gesture-drag-angle", cfun_GetGestureDragAngle, 
+        "(get-gesture-drag-angle)\n\n"
+        "Get gesture drag angle"
+    },
+    {"get-gesture-pinch-vector", cfun_GetGesturePinchVector, 
+        "(get-gesture-pinch-vector)\n\n"
+        "Get gesture pinch delta"
+    },
+    {"get-gesture-pinch-angle", cfun_GetGesturePinchAngle, 
+        "(get-gesture-pinch-angle)\n\n"
+        "Get gesture pinch angle"
+    },
     {NULL, NULL, NULL}
 };
