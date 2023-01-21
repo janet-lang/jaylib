@@ -220,6 +220,13 @@ static Janet cfun_GetMonitorPhysicalHeight(int32_t argc, Janet *argv) {
     return janet_wrap_integer(GetMonitorPhysicalHeight(monitor));
 }
 
+static Janet cfun_GetWindowScaleDPI(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    Vector2 scale = GetWindowScaleDPI();
+    return jaylib_wrap_vec2(scale);
+}
+
 static Janet cfun_GetMonitorName(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     int monitor = janet_getinteger(argv, 0);
@@ -500,6 +507,19 @@ static Janet cfun_GetKeyPressed(int32_t argc, Janet *argv) {
     (void) argv;
     janet_arity(argc, 0, 1);
     int key = GetKeyPressed();
+    if (argc == 0 || !janet_truthy(argv[1])) {
+        for (unsigned i = 0; i < (sizeof(key_defs) / sizeof(KeyDef)); i++) {
+            if (key_defs[i].key == key)
+                return janet_ckeywordv(key_defs[i].name);
+        }
+    }
+    return janet_wrap_integer(key);
+}
+
+static Janet cfun_GetCharPressed(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_arity(argc, 0, 1);
+    int key = GetCharPressed();
     if (argc == 0 || !janet_truthy(argv[1])) {
         for (unsigned i = 0; i < (sizeof(key_defs) / sizeof(KeyDef)); i++) {
             if (key_defs[i].key == key)
@@ -860,6 +880,23 @@ static Janet cfun_SetCameraMoveControls(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_BeginScissorMode(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    int x = janet_getinteger(argv, 0);
+    int y = janet_getinteger(argv, 1);
+    int w = janet_getinteger(argv, 2);
+    int h = janet_getinteger(argv, 3);
+    BeginScissorMode(x, y, w ,h);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_EndScissorMode(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    EndScissorMode();
+    return janet_wrap_nil();
+}
+
 static JanetReg core_cfuns[] = {
     {"init-window", cfun_InitWindow, 
         "(init-window width height title)\n\n" 
@@ -952,6 +989,10 @@ static JanetReg core_cfuns[] = {
     {"get-monitor-physical-height", cfun_GetMonitorPhysicalHeight, 
         "(get-monitor-physical-height monitor)\n\n" 
         "Get specified monitor physical height in millimetres"
+    },
+    {"get-window-scale-dpi", cfun_GetWindowScaleDPI,
+        "(get-window-scale-dpi)\n\n"
+        "Get window scale DPI factor"
     },
     {"get-monitor-name", cfun_GetMonitorName, 
         "(get-monitor-name monitor)\n\n" 
@@ -1064,6 +1105,11 @@ static JanetReg core_cfuns[] = {
     {"get-key-pressed", cfun_GetKeyPressed, 
         "(get-key-pressed)\n\n" 
         "Get key pressed (keycode), call it multiple times for keys "
+        "queued, returns 0 when the queue is empty"
+    },
+    {"get-char-pressed", cfun_GetCharPressed,
+        "(get-char-pressed)\n\n"
+        "Get char pressed (unicode), call it multiple times for chars "
         "queued, returns 0 when the queue is empty"
     },
     {"set-exit-key", cfun_SetExitKey, 
@@ -1243,6 +1289,15 @@ static JanetReg core_cfuns[] = {
     {"set-camera-move-controls", cfun_SetCameraMoveControls, 
         "(set-camera-move-controls key-front key-back key-right key-left key-up key-down)\n\n" 
         "Set camera move controls (1st person and 3rd person cameras)"
+    },
+    {"begin-scissor-mode", cfun_BeginScissorMode,
+        "(begin-scissor-mode x y w h)\n\n"
+        "Begins scissor mode, drawings outside the area will be cut off.\n"
+        "Arguments specifies the area."
+    },
+    {"end-scissor-mode", cfun_EndScissorMode,
+        "(end-scissor-mode)\n\n"
+        "Ends scissor mode. See `begin-scissor-mode`."
     },
     {NULL, NULL, NULL}
 };
