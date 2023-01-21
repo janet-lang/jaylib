@@ -26,7 +26,7 @@
 
   :cflags [;default-cflags ;cflags]
 
-  :defines {"PLATFORM_DESKTOP" true "_POSIX_C_SOURCE" "200809L"}
+  :defines {"PLATFORM_DESKTOP" true "_POSIX_C_SOURCE" "200809L" "_DARWIN_C_SOURCE" (if (= o :macos) "1" nil)}
 
   :source ["src/main.c"
 
