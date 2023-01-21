@@ -27,6 +27,11 @@
       [x (- y 10)]
       [x (+ y 10)]
       4 :sky-blue))
+  
+  (rl-push-matrix)
+  (rl-translatef 50 50 0)
+  (draw-rectangle 0 0 100 100 :red)
+  (rl-pop-matrix)
 
   (if (key-pressed? :space)
     (trace-log :info (string/repeat "BLAH" 1000)))
