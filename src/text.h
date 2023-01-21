@@ -46,6 +46,24 @@ static Janet cfun_LoadFontEx(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(font);
 }
 
+static Janet cfun_LoadFontFromMemory(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+
+    const char *fileType = janet_getcstring(argv, 0);
+    const unsigned char *fileData = jaylib_getunsignedcstring(argv, 1);
+    int dataSize = janet_getinteger(argv, 2);
+    int fontSize = janet_getinteger(argv, 3);
+    JanetView ints = janet_getindexed(argv, 4);
+    int *raw_ints = janet_smalloc(sizeof(int) * ints.len);
+    for (int32_t i = 0; i < ints.len; i++) {
+        raw_ints[i] = janet_getinteger(ints.items, i);
+    }
+    Font *font = janet_abstract(&AT_Font, sizeof(Font));
+    *font = LoadFontFromMemory(fileType, fileData, dataSize, fontSize, raw_ints, ints.len);
+    janet_sfree(raw_ints);
+    return janet_wrap_abstract(font);
+}
+
 static Janet cfun_UnloadFont(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Font font = *jaylib_getfont(argv, 0);
@@ -121,12 +139,16 @@ static JanetReg text_cfuns[] = {
         "Get the default Font"
     },
     {"load-font", cfun_LoadFont, 
-        "(load-font file-name)\n\n" 
+        "(load-font file-name)\n\n"
         "Load font from file into GPU memory (VRAM)"
     },
-    {"load-font-ex", cfun_LoadFontEx, 
-        "(load-font-ex file-name font-size font-chars glyph-count)\n\n" 
+    {"load-font-ex", cfun_LoadFontEx,
+        "(load-font-ex file-name font-size font-chars)\n\n"
         "Load font from file with extended parameters"
+    },
+    {"load-font-from-memory", cfun_LoadFontFromMemory,
+        "(load-font-from-memory file-type file-data data-size font-size font-chars)\n\n"
+        "Load font from memory"
     },
     {"unload-font", cfun_UnloadFont, 
         "(unload-font font)\n\n" 
