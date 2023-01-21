@@ -15,6 +15,16 @@ static const char *jaylib_getcstring(const Janet *argv, int32_t n) {
     return janet_getcstring(argv, n);
 }
 
+static const unsigned char *jaylib_getunsignedcstring(const Janet *argv, int32_t n) {
+    if (janet_checktype(argv[n], JANET_BUFFER)) {
+        JanetBuffer *buf = janet_unwrap_buffer(argv[n]);
+        janet_buffer_push_u8(buf, 0);
+        buf->count--;
+        return (const unsigned char *)buf->data;
+    }
+    return (const unsigned char *)janet_getcstring(argv, n);
+}
+
 static Janet cfun_GetFontDefault(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
