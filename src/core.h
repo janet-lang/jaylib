@@ -509,6 +509,19 @@ static Janet cfun_GetKeyPressed(int32_t argc, Janet *argv) {
     return janet_wrap_integer(key);
 }
 
+static Janet cfun_GetCharPressed(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_arity(argc, 0, 1);
+    int key = GetCharPressed();
+    if (argc == 0 || !janet_truthy(argv[1])) {
+        for (unsigned i = 0; i < (sizeof(key_defs) / sizeof(KeyDef)); i++) {
+            if (key_defs[i].key == key)
+                return janet_ckeywordv(key_defs[i].name);
+        }
+    }
+    return janet_wrap_integer(key);
+}
+
 static Janet cfun_SetExitKey(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     int key = jaylib_getkey(argv, 0);
@@ -1064,6 +1077,11 @@ static JanetReg core_cfuns[] = {
     {"get-key-pressed", cfun_GetKeyPressed, 
         "(get-key-pressed)\n\n" 
         "Get key pressed (keycode), call it multiple times for keys "
+        "queued, returns 0 when the queue is empty"
+    },
+    {"get-char-pressed", cfun_GetCharPressed,
+        "(get-char-pressed)\n\n"
+        "Get char pressed (unicode), call it multiple times for chars "
         "queued, returns 0 when the queue is empty"
     },
     {"set-exit-key", cfun_SetExitKey, 
