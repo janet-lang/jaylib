@@ -873,6 +873,23 @@ static Janet cfun_SetCameraMoveControls(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_BeginScissorMode(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    int x = janet_getinteger(argv, 0);
+    int y = janet_getinteger(argv, 1);
+    int w = janet_getinteger(argv, 2);
+    int h = janet_getinteger(argv, 3);
+    BeginScissorMode(x, y, w ,h);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_EndScissorMode(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    EndScissorMode();
+    return janet_wrap_nil();
+}
+
 static JanetReg core_cfuns[] = {
     {"init-window", cfun_InitWindow, 
         "(init-window width height title)\n\n" 
@@ -1261,6 +1278,15 @@ static JanetReg core_cfuns[] = {
     {"set-camera-move-controls", cfun_SetCameraMoveControls, 
         "(set-camera-move-controls key-front key-back key-right key-left key-up key-down)\n\n" 
         "Set camera move controls (1st person and 3rd person cameras)"
+    },
+    {"begin-scissor-mode", cfun_BeginScissorMode,
+        "(begin-scissor-mode x y w h)\n\n"
+        "Begins scissor mode, drawings outside the area will be cut off.\n"
+        "Arguments specifies the area."
+    },
+    {"end-scissor-mode", cfun_EndScissorMode,
+        "(end-scissor-mode)\n\n"
+        "Ends scissor mode. See `begin-scissor-mode`."
     },
     {NULL, NULL, NULL}
 };
