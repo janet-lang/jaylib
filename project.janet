@@ -11,7 +11,7 @@
     :macos '["-Iraylib/src" "-ObjC" "-Iraylib/src/external/glfw/include"]
     :windows ["-Iraylib/src" "-Iraylib/src/external/glfw/include" ]
     #default
-    '["-Iraylib/src"]))
+    '["-Iraylib/src" "-Iraylib/src/external/glfw/include"]))
 
 (def lflags
   (case o
