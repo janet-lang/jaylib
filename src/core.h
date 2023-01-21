@@ -220,6 +220,13 @@ static Janet cfun_GetMonitorPhysicalHeight(int32_t argc, Janet *argv) {
     return janet_wrap_integer(GetMonitorPhysicalHeight(monitor));
 }
 
+static Janet cfun_GetWindowScaleDPI(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    Vector2 scale = GetWindowScaleDPI();
+    return jaylib_wrap_vec2(scale);
+}
+
 static Janet cfun_GetMonitorName(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     int monitor = janet_getinteger(argv, 0);
@@ -982,6 +989,10 @@ static JanetReg core_cfuns[] = {
     {"get-monitor-physical-height", cfun_GetMonitorPhysicalHeight, 
         "(get-monitor-physical-height monitor)\n\n" 
         "Get specified monitor physical height in millimetres"
+    },
+    {"get-window-scale-dpi", cfun_GetWindowScaleDPI,
+        "(get-window-scale-dpi)\n\n"
+        "Get window scale DPI factor"
     },
     {"get-monitor-name", cfun_GetMonitorName, 
         "(get-monitor-name monitor)\n\n" 
