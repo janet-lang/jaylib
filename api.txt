@@ -335,14 +335,14 @@
 [ ] bool IsModelAnimationValid(Model model, ModelAnimation anim)
 
 // Mesh generation functions
-[ ] Mesh GenMeshPoly(int sides, float radius)
-[ ] Mesh GenMeshPlane(float width, float length, int resX, int resZ)
+[x] Mesh GenMeshPoly(int sides, float radius)
+[x] Mesh GenMeshPlane(float width, float length, int resX, int resZ)
 [x] Mesh GenMeshCube(float width, float height, float length)
-[ ] Mesh GenMeshSphere(float radius, int rings, int slices)
-[ ] Mesh GenMeshHemiSphere(float radius, int rings, int slices)
-[ ] Mesh GenMeshCylinder(float radius, float height, int slices)
-[ ] Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
-[ ] Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
+[x] Mesh GenMeshSphere(float radius, int rings, int slices)
+[x] Mesh GenMeshHemiSphere(float radius, int rings, int slices)
+[x] Mesh GenMeshCylinder(float radius, float height, int slices)
+[x] Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
+[x] Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
 [ ] Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
 [ ] Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
 

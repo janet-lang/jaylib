@@ -159,14 +159,96 @@ static Janet cfun_DrawMesh(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_GenMeshPoly(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    int sides = janet_getinteger(argv, 0);
+    float radius = (float) janet_getnumber(argv, 1);
+    Mesh *polyMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *polyMesh = GenMeshPoly(sides, radius);
+    return janet_wrap_abstract(polyMesh);
+}
+
+static Janet cfun_GenMeshPlane(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    float width = (float) janet_getnumber(argv, 0);
+    float length = (float) janet_getnumber(argv, 1);
+    int resX = janet_getinteger(argv, 2);
+    int resY = janet_getinteger(argv, 3);
+    Mesh *planeMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *planeMesh = GenMeshPlane(width, length, resX, resY);
+    return janet_wrap_abstract(planeMesh);
+}
+
 static Janet cfun_GenMeshCube(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
-    float width = janet_getnumber(argv, 0);
-    float height = janet_getnumber(argv, 1);
-    float length = janet_getnumber(argv, 2);
+    float width = (float) janet_getnumber(argv, 0);
+    float height = (float) janet_getnumber(argv, 1);
+    float length = (float) janet_getnumber(argv, 2);
     Mesh *cubeMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
     *cubeMesh = GenMeshCube(width, height, length);
     return janet_wrap_abstract(cubeMesh);
+}
+
+static Janet cfun_GenMeshSphere(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    float radius = (float) janet_getnumber(argv, 0);
+    int rings = janet_getinteger(argv, 1);
+    int slices = janet_getinteger(argv, 2);
+    Mesh *sphereMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *sphereMesh = GenMeshSphere(radius, rings, slices);
+    return janet_wrap_abstract(sphereMesh);
+}
+
+static Janet cfun_GenMeshHemiSphere(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    float radius = (float) janet_getnumber(argv, 0);
+    int rings = janet_getinteger(argv, 1);
+    int slices = janet_getinteger(argv, 2);
+    Mesh *sphereMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *sphereMesh = GenMeshHemiSphere(radius, rings, slices);
+    return janet_wrap_abstract(sphereMesh);
+}
+
+static Janet cfun_GenMeshCylinder(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    float radius = (float) janet_getnumber(argv, 0);
+    float height = (float) janet_getnumber(argv, 1);
+    int slices = janet_getinteger(argv, 2);
+    Mesh *cylinderMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *cylinderMesh = GenMeshCylinder(radius, height, slices);
+    return janet_wrap_abstract(cylinderMesh);
+}
+
+static Janet cfun_GenMeshCone(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    float radius = (float) janet_getnumber(argv, 0);
+    float height = (float) janet_getnumber(argv, 1);
+    int slices = janet_getinteger(argv, 2);
+    Mesh *coneMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *coneMesh = GenMeshCone(radius, height, slices);
+    return janet_wrap_abstract(coneMesh);
+}
+
+static Janet cfun_GenMeshTorus(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    float radius = (float) janet_getnumber(argv, 0);
+    float size = (float) janet_getnumber(argv, 1);
+    int radSeg = janet_getinteger(argv, 2);
+    int sides = janet_getinteger(argv, 3);
+    Mesh *torusMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *torusMesh = GenMeshTorus(radius, size, radSeg, sides);
+    return janet_wrap_abstract(torusMesh);
+}
+
+static Janet cfun_GenMeshKnot(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    float radius = (float) janet_getnumber(argv, 0);
+    float size = (float) janet_getnumber(argv, 1);
+    int radSeg = janet_getinteger(argv, 2);
+    int sides = janet_getinteger(argv, 3);
+    Mesh *knotMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *knotMesh = GenMeshKnot(radius, size, radSeg, sides);
+    return janet_wrap_abstract(knotMesh);
 }
 
 static Janet cfun_LoadMaterialDefault(int32_t argc, Janet *argv) {
@@ -245,9 +327,41 @@ static JanetReg threed_cfuns[] = {
         "(load-material-default)\n\n"
         "Load and return the default material"    
     },
+    {"gen-mesh-poly", cfun_GenMeshPoly,
+        "(gen-mesh-poly sides radius)\n\n"
+        "Generate a polygonal mesh with given number of sides and radius"    
+    },
+    {"gen-mesh-plane", cfun_GenMeshPlane,
+        "(gen-mesh-plane width length res-x res-y)\n\n"
+        "Generate a plane mesh with given dimensions and subdivisions"    
+    },
     {"gen-mesh-cube", cfun_GenMeshCube,
         "(gen-mesh-cube width height length)\n\n"
         "Generate a cube mesh with given dimensions"    
+    },
+    {"gen-mesh-sphere", cfun_GenMeshSphere,
+        "(gen-mesh-sphere radius rings slices)\n\n"
+        "Generate a sphere mesh with given dimensions"    
+    },
+    {"gen-mesh-hemisphere", cfun_GenMeshHemiSphere,
+        "(gen-mesh-hemisphere radius rings slices)\n\n"
+        "Generate a hemisphere mesh with given dimensions (no bottom cap)"    
+    },
+    {"gen-mesh-cylinder", cfun_GenMeshCylinder,
+        "(gen-mesh-cylinder radius height slices)\n\n"
+        "Generate a cylinder mesh with given dimensions"    
+    },
+    {"gen-mesh-cone", cfun_GenMeshCone,
+        "(gen-mesh-cone radius height slices)\n\n"
+        "Generate a cone mesh with given dimensions"    
+    },
+    {"gen-mesh-torus", cfun_GenMeshTorus,
+        "(gen-mesh-torus radius size rad-seg sides)\n\n"
+        "Generate a torus mesh with given dimensions"    
+    },
+    {"gen-mesh-knot", cfun_GenMeshKnot,
+        "(gen-mesh-knot radius size rad-seg sides)\n\n"
+        "Generate a trefoil knot mesh with given dimensions"    
     },
     {NULL, NULL, NULL}
 };
