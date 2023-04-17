@@ -319,10 +319,11 @@
 [ ] Mesh *LoadMeshes(const char *fileName, int *meshCount)
 [ ] void ExportMesh(Mesh mesh, const char *fileName)
 [ ] void UnloadMesh(Mesh *mesh)
+[x] void DrawMesh(Mesh mesh, Material material, Matrix transform)
 
 // Material loading/unloading functions
 [ ] Material *LoadMaterials(const char *fileName, int *materialCount)
-[ ] Material LoadMaterialDefault(void)
+[x] Material LoadMaterialDefault(void)
 [ ] void UnloadMaterial(Material material)
 [ ] void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
 [ ] void SetModelMeshMaterial(Model *model, int meshId, int materialId)
@@ -336,7 +337,7 @@
 // Mesh generation functions
 [ ] Mesh GenMeshPoly(int sides, float radius)
 [ ] Mesh GenMeshPlane(float width, float length, int resX, int resZ)
-[ ] Mesh GenMeshCube(float width, float height, float length)
+[x] Mesh GenMeshCube(float width, float height, float length)
 [ ] Mesh GenMeshSphere(float radius, int rings, int slices)
 [ ] Mesh GenMeshHemiSphere(float radius, int rings, int slices)
 [ ] Mesh GenMeshCylinder(float radius, float height, int slices)
