@@ -251,6 +251,24 @@ static Janet cfun_GenMeshKnot(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(knotMesh);
 }
 
+static Janet cfun_GenMeshHeightmap(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Image image = *jaylib_getimage(argv, 0);
+    Vector3 size = jaylib_getvec3(argv, 1);
+    Mesh *mapMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *mapMesh = GenMeshHeightmap(image, size);
+    return janet_wrap_abstract(mapMesh);
+}
+
+static Janet cfun_GenMeshCubicmap(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Image image = *jaylib_getimage(argv, 0);
+    Vector3 size = jaylib_getvec3(argv, 1);
+    Mesh *mapMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *mapMesh = GenMeshCubicmap(image, size);
+    return janet_wrap_abstract(mapMesh);
+}
+
 static Janet cfun_LoadMaterialDefault(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 0);
     Material *defaultMaterial = janet_abstract(&AT_Material, sizeof(Material));
@@ -362,6 +380,14 @@ static JanetReg threed_cfuns[] = {
     {"gen-mesh-knot", cfun_GenMeshKnot,
         "(gen-mesh-knot radius size rad-seg sides)\n\n"
         "Generate a trefoil knot mesh with given dimensions"    
+    },
+    {"gen-mesh-heightmap", cfun_GenMeshHeightmap,
+        "(gen-mesh-heightmap image size)\n\n"
+        "Generate a heightmap mesh from image data and size (vec3)"    
+    },
+    {"gen-mesh-cubicmap", cfun_GenMeshCubicmap,
+        "(gen-mesh-cubicmap image size)\n\n"
+        "Generate a cubicmap mesh from image data and size (vec3)"    
     },
     {NULL, NULL, NULL}
 };

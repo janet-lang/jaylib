@@ -343,8 +343,8 @@
 [x] Mesh GenMeshCylinder(float radius, float height, int slices)
 [x] Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
 [x] Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
-[ ] Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
-[ ] Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
+[x] Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
+[x] Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
 
 // Mesh manipulation functions
 [ ] BoundingBox MeshBoundingBox(Mesh mesh)

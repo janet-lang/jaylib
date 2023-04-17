@@ -6,6 +6,8 @@
 (init-window 800 600 "Mesh Stuff")
 (set-target-fps 60)
 
+(def lenna (load-image-1 "test/lenna.png"))
+
 (def meshes [(gen-mesh-poly 5 0.5)
              (gen-mesh-plane 1 1 10 10)
              (gen-mesh-cube 1 1 1)
@@ -14,7 +16,8 @@
              (gen-mesh-cylinder 0.5 1 10)
              (gen-mesh-cone 0.5 1 10)
              (gen-mesh-torus 0.25 1 10 10)
-             (gen-mesh-knot 0.25 1 100 100)])
+             (gen-mesh-knot 0.25 1 100 100)
+             (gen-mesh-heightmap lenna [1 1 1])])
 
 (def material (load-material-default))
 
@@ -24,7 +27,7 @@
   (def center (- (length meshes) 0.5))
   (camera-3d :target [center 0 0]
              :up [0 1 0]
-             :position [(+ center (* 5 (math/cos t))) 7 (* 5 (math/sin t))]
+             :position [(+ center (* 5 (math/cos t))) 10 (* 5 (math/sin t))]
              :type :perspective
              :fovy 60))
 
