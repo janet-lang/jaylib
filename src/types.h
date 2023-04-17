@@ -352,6 +352,28 @@ static Ray jaylib_getray(const Janet *argv, int32_t n) {
     return (Ray){ p, d };
 }
 
+static Matrix jaylib_getmatrix(const Janet *argv, int32_t n) {
+    JanetView idx = janet_getindexed(argv, n);
+    return (Matrix) {
+        idx_getfloat(idx, 0),
+        idx_getfloat(idx, 1),
+        idx_getfloat(idx, 2),
+        idx_getfloat(idx, 3),
+        idx_getfloat(idx, 4),
+        idx_getfloat(idx, 5),
+        idx_getfloat(idx, 6),
+        idx_getfloat(idx, 7),
+        idx_getfloat(idx, 8),
+        idx_getfloat(idx, 9),
+        idx_getfloat(idx, 10),
+        idx_getfloat(idx, 11),
+        idx_getfloat(idx, 12),
+        idx_getfloat(idx, 13),
+        idx_getfloat(idx, 14),
+        idx_getfloat(idx, 15),
+    };
+}
+
 static const KeyDef pixel_format_defs[] = {
     {"astc-4x4-rgba", PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA},
     {"astc-8x8-rgba", PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA},
@@ -575,4 +597,22 @@ static const JanetAbstractType AT_Camera3D = {
 
 static Camera3D *jaylib_getcamera3d(const Janet *argv, int32_t n) {
     return ((Camera3D *)janet_getabstract(argv, n, &AT_Camera3D));
+}
+
+static const JanetAbstractType AT_Mesh = {
+    "jaylib/mesh",
+    JANET_ATEND_NAME
+};
+
+static Mesh *jaylib_getmesh(const Janet *argv, int32_t n) {
+    return ((Mesh *)janet_getabstract(argv, n, &AT_Mesh));
+}
+
+static const JanetAbstractType AT_Material = {
+    "jaylib/material",
+    JANET_ATEND_NAME
+};
+
+static Material *jaylib_getmaterial(const Janet *argv, int32_t n) {
+    return ((Material *)janet_getabstract(argv, n, &AT_Material));
 }

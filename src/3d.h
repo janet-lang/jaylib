@@ -150,6 +150,32 @@ static Janet cfun_DrawRay(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawMesh(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    Mesh mesh = *jaylib_getmesh(argv, 0);
+    Material material = *jaylib_getmaterial(argv, 1);
+    Matrix transform = jaylib_getmatrix(argv, 2);
+    DrawMesh(mesh, material, transform);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_GenMeshCube(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    float width = janet_getnumber(argv, 0);
+    float height = janet_getnumber(argv, 1);
+    float length = janet_getnumber(argv, 2);
+    Mesh *cubeMesh = janet_abstract(&AT_Mesh, sizeof(Mesh));
+    *cubeMesh = GenMeshCube(width, height, length);
+    return janet_wrap_abstract(cubeMesh);
+}
+
+static Janet cfun_LoadMaterialDefault(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 0);
+    Material *defaultMaterial = janet_abstract(&AT_Material, sizeof(Material));
+    *defaultMaterial = LoadMaterialDefault();
+    return janet_wrap_abstract(defaultMaterial);
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -210,6 +236,18 @@ static JanetReg threed_cfuns[] = {
     {"draw-ray", cfun_DrawRay, 
         "(draw-ray ray color)\n\n"
         "Draw a ray line"
+    },
+    {"draw-mesh", cfun_DrawMesh,
+        "(draw-mesh mesh material transform)\n\n"
+        "Draw a mesh with material and transform"    
+    },
+    {"load-material-default", cfun_LoadMaterialDefault,
+        "(load-material-default)\n\n"
+        "Load and return the default material"    
+    },
+    {"gen-mesh-cube", cfun_GenMeshCube,
+        "(gen-mesh-cube width height length)\n\n"
+        "Generate a cube mesh with given dimensions"    
     },
     {NULL, NULL, NULL}
 };
