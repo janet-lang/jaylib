@@ -18,6 +18,7 @@
 
 (def material (load-material-default))
 
+# Spinning camera pointed at the center of the line of drawn meshes
 (defn camera
   [t]
   (def center (- (length meshes) 0.5))
@@ -27,6 +28,7 @@
              :type :perspective
              :fovy 60))
 
+# Transforms to lay out meshes in a line
 (defn make-transform
   [x]
   [1 0 0 (* 2 x)
@@ -34,6 +36,7 @@
    0 0 1 0
    0 0 0 1])
 
+# Runtime used to animate camera motion. Will eventually overflow.
 (var t 0)
 
 (while (not (window-should-close))
