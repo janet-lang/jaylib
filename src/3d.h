@@ -144,6 +144,18 @@ static Janet cfun_DrawCylinder(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawCylinderEx(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    Vector3 startPos = jaylib_getvec3(argv, 0);
+    Vector3 endPos = jaylib_getvec3(argv, 1);
+    float startRadius = (float) janet_getnumber(argv, 2);
+    float endRadius = (float) janet_getnumber(argv, 3);
+    int sides = janet_getinteger(argv, 4);
+    Color color = jaylib_getcolor(argv, 5);
+    DrawCylinderEx(startPos, endPos, startRadius, endRadius, sides, color);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_DrawCylinderWires(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 6);
     Vector3 position = jaylib_getvec3(argv, 0);
@@ -153,6 +165,18 @@ static Janet cfun_DrawCylinderWires(int32_t argc, Janet *argv) {
     int slices = janet_getinteger(argv, 4);
     Color color = jaylib_getcolor(argv, 5);
     DrawCylinderWires(position, radiusTop, radiusBottom, height, slices, color);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawCylinderWiresEx(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    Vector3 startPos = jaylib_getvec3(argv, 0);
+    Vector3 endPos = jaylib_getvec3(argv, 1);
+    float startRadius = (float) janet_getnumber(argv, 2);
+    float endRadius = (float) janet_getnumber(argv, 3);
+    int sides = janet_getinteger(argv, 4);
+    Color color = jaylib_getcolor(argv, 5);
+    DrawCylinderWiresEx(startPos, endPos, startRadius, endRadius, sides, color);
     return janet_wrap_nil();
 }
 
@@ -356,9 +380,17 @@ static JanetReg threed_cfuns[] = {
         "(draw-cylinder [center-x center-y center-z] radius-top radius-bottom height slices color)\n\n"
         "Draw a cylinder/cone"
     },
+    {"draw-cylinder-ex", cfun_DrawCylinderEx, 
+        "(draw-cylinder-ex start-pos end-pos start-radius end-radius sides color)\n\n"
+        "Draw a cylinder with base at startPos and top at endPos"
+    },
     {"draw-cylinder-wires", cfun_DrawCylinderWires, 
         "(draw-cylinder-wires [center-x center-y center-z] radius-top radius-bottom height slices color)\n\n"
         "Draw a cylinder/cone wires"
+    },
+    {"draw-cylinder-wires-ex", cfun_DrawCylinderWiresEx, 
+        "(draw-cylinder-wires-ex start-pos end-pos start-radius end-radius sides color)\n\n"
+        "Draw a cylinder wires with base at startPos and top at endPos"
     },
     {"draw-plane", cfun_DrawPlane, 
         "(draw-plane [center-x center-y center-z] [height width] color)\n\n"
