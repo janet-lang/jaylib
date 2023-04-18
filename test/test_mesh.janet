@@ -52,6 +52,8 @@
   (for i 0 (length meshes)
     (draw-mesh (meshes i) material (make-transform i)))
   
+  (draw-triangle-strip-3d [[0 0 2] [1 0 3] [1 0 2] [2 0 3]] :green)
+
   (end-mode-3d)
 
   (end-drawing))

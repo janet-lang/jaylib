@@ -296,8 +296,8 @@
 // Basic geometric 3D shapes drawing functions
 [x] void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color)
 [x] void DrawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color)
-[ ] void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
-[ ] void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
+[x] void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
+[x] void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
 [x] void DrawCube(Vector3 position, float width, float height, float length, Color color)
 [x] void DrawCubeV(Vector3 position, Vector3 size, Color color)
 [x] void DrawCubeWires(Vector3 position, float width, float height, float length, Color color)

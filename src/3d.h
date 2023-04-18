@@ -18,6 +18,29 @@ static Janet cfun_DrawCircle3D(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawTriangle3D(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    Vector3 v1 = jaylib_getvec3(argv, 0);
+    Vector3 v2 = jaylib_getvec3(argv, 1);
+    Vector3 v3 = jaylib_getvec3(argv, 2);
+    Color color = jaylib_getcolor(argv, 3);
+    DrawTriangle3D(v1, v2, v3, color);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawTriangleStrip3D(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    JanetView points = janet_getindexed(argv, 0);
+    Vector3 *raw_points = janet_smalloc(sizeof(Vector3) * points.len);
+    for (int32_t i = 0; i < points.len; i++) {
+        raw_points[i] = jaylib_getvec3(points.items, i);
+    }
+    Color color = jaylib_getcolor(argv, 1);
+    DrawTriangleStrip3D(raw_points, points.len, color);
+    janet_sfree(raw_points);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_DrawCube(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 5);
     Vector3 pos = jaylib_getvec3(argv, 0);
@@ -284,6 +307,14 @@ static JanetReg threed_cfuns[] = {
     {"draw-circle-3d", cfun_DrawCircle3D, 
         "(draw-circle-3d [center-x center-y center-z] radius [rot-x rot-y rot-z] rotation-angle color)\n\n"
         "Draw a circle in 3D world space"
+    },
+    {"draw-triangle-3d", cfun_DrawTriangle3D, 
+        "(draw-triangle-3d v1 v2 v3 color)\n\n"
+        "Draw a triangle in 3D world space"
+    },
+    {"draw-triangle-strip-3d", cfun_DrawTriangleStrip3D, 
+        "(draw-triangle-strip-3d points color)\n\n"
+        "Draw a triangle strip in 3D world space"
     },
     {"draw-cube", cfun_DrawCube, 
         "(draw-cube [center-x center-y center-z] width height length color)\n\n"
