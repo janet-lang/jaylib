@@ -58,4 +58,6 @@
 
   (end-drawing))
 
+(map unload-mesh meshes)
+
 (close-window)

@@ -206,6 +206,20 @@ static Janet cfun_DrawMesh(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawMeshInstanced(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    Mesh mesh = *jaylib_getmesh(argv, 0);
+    Material material = *jaylib_getmaterial(argv, 1);
+    JanetView transforms = janet_getindexed(argv, 2);
+    Matrix *raw_transforms = janet_smalloc(sizeof(Matrix) * transforms.len);
+    for (int32_t i = 0; i < transforms.len; i++) {
+        raw_transforms[i] = jaylib_getmatrix(transforms.items, i);
+    }
+    DrawMeshInstanced(mesh, material, raw_transforms, transforms.len);
+    janet_sfree(raw_transforms);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_GenMeshPoly(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int sides = janet_getinteger(argv, 0);
@@ -356,6 +370,29 @@ static Janet cfun_GetModelBoundingBox(int32_t argc, Janet *argv) {
     return janet_wrap_tuple(janet_tuple_end(tup));
 }
 
+static Janet cfun_ExportMesh(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Mesh *mesh = jaylib_getmesh(argv, 0);
+    const char *fileName = janet_getcstring(argv, 1);
+    bool success = ExportMesh(*mesh, fileName);
+    return janet_wrap_boolean(success);
+}
+
+static Janet cfun_UploadMesh(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Mesh *mesh = jaylib_getmesh(argv, 0);
+    bool dynamic = janet_getboolean(argv, 1);
+    UploadMesh(mesh, dynamic);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_UnloadMesh(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Mesh *mesh = jaylib_getmesh(argv, 0);
+    UnloadMesh(*mesh);
+    return janet_wrap_nil();
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -437,6 +474,10 @@ static JanetReg threed_cfuns[] = {
         "(draw-mesh mesh material transform)\n\n"
         "Draw a mesh with material and transform"    
     },
+    {"draw-mesh-instanced", cfun_DrawMeshInstanced,
+        "(draw-mesh-instanced mesh material transforms)\n\n"
+        "Draw multiple mesh instances with material and different transforms"    
+    },
     {"load-material-default", cfun_LoadMaterialDefault,
         "(load-material-default)\n\n"
         "Load and return the default material"    
@@ -500,6 +541,18 @@ static JanetReg threed_cfuns[] = {
     {"get-model-bounding-box", cfun_GetModelBoundingBox,
         "(get-model-bounding-box model)\n\n"
         "Compute model bounding box limits (considers all meshes). Returns [[min-x min-y min-z] [max-x max-y max-z]]"    
+    },
+    {"export-mesh", cfun_ExportMesh,
+        "(export-mesh mesh filename)\n\n"
+        "Export mesh data to file, returns true on success"    
+    },
+    {"upload-mesh", cfun_UploadMesh,
+        "(upload-mesh mesh dynamic)\n\n"
+        "Upload mesh vertex data in GPU and provide VAO/VBO ids"    
+    },
+    {"unload-mesh", cfun_UnloadMesh,
+        "(unload-mesh mesh)\n\n"
+        "Unload mesh data from CPU and GPU"    
     },
     {NULL, NULL, NULL}
 };

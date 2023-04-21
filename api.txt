@@ -321,11 +321,11 @@
 [x] BoundingBox GetModelBoundingBox(Model model)
 
 // Mesh loading/unloading functions
-[ ] void ExportMesh(Mesh mesh, const char *fileName)
-[ ] void UploadMesh(Mesh *mesh, bool dynamic)
-[ ] void UnloadMesh(Mesh *mesh)
+[x] void ExportMesh(Mesh mesh, const char *fileName)
+[x] void UploadMesh(Mesh *mesh, bool dynamic)
+[x] void UnloadMesh(Mesh *mesh)
 [x] void DrawMesh(Mesh mesh, Material material, Matrix transform)
-[ ] void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
+[x] void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
 
 // Material loading/unloading functions
 [ ] Material *LoadMaterials(const char *fileName, int *materialCount)
