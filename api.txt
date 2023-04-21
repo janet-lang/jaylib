@@ -316,9 +316,9 @@
 
 // Model loading/unloading functions
 [x] Model LoadModel(const char *fileName)
-[ ] Model LoadModelFromMesh(Mesh mesh)
-[ ] void UnloadModel(Model model)
-[ ] BoundingBox GetModelBoundingBox(Model model)
+[x] Model LoadModelFromMesh(Mesh mesh)
+[x] void UnloadModel(Model model)
+[x] BoundingBox GetModelBoundingBox(Model model)
 
 // Mesh loading/unloading functions
 [ ] Mesh *LoadMeshes(const char *fileName, int *meshCount)

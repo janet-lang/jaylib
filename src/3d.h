@@ -331,6 +331,31 @@ static Janet cfun_LoadModel(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(model);
 }
 
+static Janet cfun_LoadModelFromMesh(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Mesh *mesh = jaylib_getmesh(argv, 0);
+    Model *model = janet_abstract(&AT_Model, sizeof(Model));
+    *model = LoadModelFromMesh(*mesh);
+    return janet_wrap_abstract(model);
+}
+
+static Janet cfun_UnloadModel(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Model *model = jaylib_getmodel(argv, 0);
+    UnloadModel(*model);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_GetModelBoundingBox(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Model *model = jaylib_getmodel(argv, 0);
+    BoundingBox bbox = GetModelBoundingBox(*model);
+    Janet *tup = janet_tuple_begin(2);
+    tup[0] = jaylib_wrap_vec3(bbox.min);
+    tup[1] = jaylib_wrap_vec3(bbox.max);
+    return janet_wrap_tuple(janet_tuple_end(tup));
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -463,6 +488,18 @@ static JanetReg threed_cfuns[] = {
     {"load-model", cfun_LoadModel,
         "(load-model filename)\n\n"
         "Load model from files (meshes and materials)"    
+    },
+    {"load-model-from-mesh", cfun_LoadModelFromMesh,
+        "(load-model-from-mesh mesh)\n\n"
+        "Load model from generated mesh (default material)"    
+    },
+    {"unload-model", cfun_UnloadModel,
+        "(unload-model model)\n\n"
+        "Unload model (including meshes) from memory (RAM and/or VRAM)"    
+    },
+    {"get-model-bounding-box", cfun_GetModelBoundingBox,
+        "(get-model-bounding-box model)\n\n"
+        "Compute model bounding box limits (considers all meshes). Returns [[min-x min-y min-z] [max-x max-y max-z]]"    
     },
     {NULL, NULL, NULL}
 };
