@@ -633,3 +633,22 @@ static const JanetAbstractType AT_Model = {
 static Model *jaylib_getmodel(const Janet *argv, int32_t n) {
     return ((Model *)janet_getabstract(argv, n, &AT_Model));
 }
+
+static const KeyDef material_map_defs[] = {
+    {"albedo", MATERIAL_MAP_ALBEDO},
+    {"brdf", MATERIAL_MAP_BRDF},
+    {"cubemap", MATERIAL_MAP_CUBEMAP},
+    {"diffuse", MATERIAL_MAP_DIFFUSE},
+    {"emission", MATERIAL_MAP_EMISSION},
+    {"irradiance", MATERIAL_MAP_IRRADIANCE},
+    {"metalness", MATERIAL_MAP_METALNESS},
+    {"normal", MATERIAL_MAP_NORMAL},
+    {"occlusion", MATERIAL_MAP_OCCLUSION},
+    {"prefilter", MATERIAL_MAP_PREFILTER},
+    {"roughness", MATERIAL_MAP_ROUGHNESS},
+    {"specular", MATERIAL_MAP_SPECULAR},
+};
+
+static int jaylib_getmaterialmaptype(const Janet *argv, int32_t n) {
+    return jaylib_castdef(argv, n, material_map_defs, sizeof(material_map_defs) / sizeof(KeyDef));
+}

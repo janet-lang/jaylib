@@ -330,11 +330,56 @@ static Janet cfun_GenMeshCubicmap(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(mapMesh);
 }
 
+static Janet cfun_LoadMaterials(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    const char *fileName = janet_getcstring(argv, 0);
+    int materialCount;
+    Material *materials = LoadMaterials(fileName, &materialCount);
+    JanetArray *array = janet_array(materialCount);
+    array->count = materialCount;
+    // materials might be null, but only when materialCount is 0
+    // in which case we never dereference it
+    for (int i = 0; i < materialCount; i++) {
+        Material *material = janet_abstract(&AT_Material, sizeof(Material));
+        *material = materials[i];
+        array->data[i] = janet_wrap_abstract(material);
+    }
+    if (materials) {
+        MemFree(materials);
+    }
+    return janet_wrap_array(array);
+}
+
 static Janet cfun_LoadMaterialDefault(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 0);
     Material *defaultMaterial = janet_abstract(&AT_Material, sizeof(Material));
     *defaultMaterial = LoadMaterialDefault();
     return janet_wrap_abstract(defaultMaterial);
+}
+
+static Janet cfun_UnloadMaterial(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Material *material = jaylib_getmaterial(argv, 0);
+    UnloadMaterial(*material);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetMaterialTexture(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    Material *material = jaylib_getmaterial(argv, 0);
+    int mapType = jaylib_getmaterialmaptype(argv, 1);
+    Texture2D *texture = jaylib_gettexture2d(argv, 2);
+    SetMaterialTexture(material, mapType, *texture);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetModelMeshMaterial(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    Model *model = jaylib_getmodel(argv, 0);
+    int meshID = janet_getinteger(argv, 1);
+    int materialID = janet_getinteger(argv, 2);
+    SetModelMeshMaterial(model, meshID, materialID);
+    return janet_wrap_nil();
 }
 
 static Janet cfun_LoadModel(int32_t argc, Janet *argv) {
@@ -478,9 +523,25 @@ static JanetReg threed_cfuns[] = {
         "(draw-mesh-instanced mesh material transforms)\n\n"
         "Draw multiple mesh instances with material and different transforms"    
     },
+    {"load-materials", cfun_LoadMaterials,
+        "(load-materials filename)\n\n"
+        "Load materials from model file"
+    },
     {"load-material-default", cfun_LoadMaterialDefault,
         "(load-material-default)\n\n"
         "Load and return the default material"    
+    },
+    {"unload-material", cfun_UnloadMaterial,
+        "(unload-material material)\n\n"
+        "Unload material from GPU memory (VRAM)"    
+    },
+    {"set-material-texture", cfun_SetMaterialTexture,
+        "(set-material-texture material map-type texture)\n\n"
+        "Set texture for a material map type (:diffuse, :specular...)"    
+    },
+    {"set-model-mesh-material", cfun_SetModelMeshMaterial,
+        "(set-model-mesh-material model mesh-id material-id)\n\n"
+        "Set material for a mesh"    
     },
     {"gen-mesh-poly", cfun_GenMeshPoly,
         "(gen-mesh-poly sides radius)\n\n"

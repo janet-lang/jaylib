@@ -328,11 +328,11 @@
 [x] void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
 
 // Material loading/unloading functions
-[ ] Material *LoadMaterials(const char *fileName, int *materialCount)
+[x] Material *LoadMaterials(const char *fileName, int *materialCount)
 [x] Material LoadMaterialDefault(void)
-[ ] void UnloadMaterial(Material material)
-[ ] void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
-[ ] void SetModelMeshMaterial(Model *model, int meshId, int materialId)
+[x] void UnloadMaterial(Material material)
+[x] void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
+[x] void SetModelMeshMaterial(Model *model, int meshId, int materialId)
 
 // Model animations loading/unloading functions
 [ ] ModelAnimation *LoadModelAnimations(const char *fileName, int *animsCount)
