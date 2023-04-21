@@ -634,6 +634,15 @@ static Model *jaylib_getmodel(const Janet *argv, int32_t n) {
     return ((Model *)janet_getabstract(argv, n, &AT_Model));
 }
 
+static const JanetAbstractType AT_ModelAnimation = {
+    "jaylib/model-animation",
+    JANET_ATEND_NAME
+};
+
+static ModelAnimation *jaylib_getmodelanimation(const Janet *argv, int32_t n) {
+    return ((ModelAnimation *)janet_getabstract(argv, n, &AT_ModelAnimation));
+}
+
 static const KeyDef material_map_defs[] = {
     {"albedo", MATERIAL_MAP_ALBEDO},
     {"brdf", MATERIAL_MAP_BRDF},

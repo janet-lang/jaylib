@@ -335,11 +335,11 @@
 [x] void SetModelMeshMaterial(Model *model, int meshId, int materialId)
 
 // Model animations loading/unloading functions
-[ ] ModelAnimation *LoadModelAnimations(const char *fileName, int *animsCount)
-[ ] void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
-[ ] void UnloadModelAnimation(ModelAnimation anim)
-[ ] void UnloadModelAnimations(ModelAnimation *animations, unsigned int count)
-[ ] bool IsModelAnimationValid(Model model, ModelAnimation anim)
+[x] ModelAnimation *LoadModelAnimations(const char *fileName, int *animsCount)
+[x] void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
+[x] void UnloadModelAnimation(ModelAnimation anim)
+[x] void UnloadModelAnimations(ModelAnimation *animations, unsigned int count)
+[x] bool IsModelAnimationValid(Model model, ModelAnimation anim)
 
 // Mesh generation functions
 [x] Mesh GenMeshPoly(int sides, float radius)

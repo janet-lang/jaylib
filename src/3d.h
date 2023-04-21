@@ -438,6 +438,60 @@ static Janet cfun_UnloadMesh(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_LoadModelAnimations(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    const char *fileName = janet_getcstring(argv, 0);
+    int animCount;
+    ModelAnimation *anims = LoadModelAnimations(fileName, &animCount);
+    JanetArray *array = janet_array(animCount);
+    array->count = animCount;
+    for (int i = 0; i < animCount; i++) {
+        ModelAnimation *anim = janet_abstract(&AT_ModelAnimation, sizeof(ModelAnimation));
+        *anim = anims[i];
+        array->data[i] = janet_wrap_abstract(anim);
+    }
+    if (anims) {
+        MemFree(anims);
+    }
+    return janet_wrap_array(array);
+}
+
+static Janet cfun_UpdateModelAnimation(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    Model *model = jaylib_getmodel(argv, 0);
+    ModelAnimation *anim = jaylib_getmodelanimation(argv, 1);
+    int frame = janet_getinteger(argv, 2);
+    UpdateModelAnimation(*model, *anim, frame);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_UnloadModelAnimation(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    ModelAnimation *anim = jaylib_getmodelanimation(argv, 0);
+    UnloadModelAnimation(*anim);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_UnloadModelAnimations(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    JanetView anims = janet_getindexed(argv, 0);
+    ModelAnimation *raw_anims = janet_smalloc(sizeof(ModelAnimation) * anims.len);
+    for (int32_t i = 0; i < anims.len; i++) {
+        raw_anims[i] = *jaylib_getmodelanimation(anims.items, i);
+    }
+    UnloadModelAnimations(raw_anims, anims.len);
+    janet_sfree(raw_anims);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_IsModelAnimationValid(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Model *model = jaylib_getmodel(argv, 0);
+    ModelAnimation *anim = jaylib_getmodelanimation(argv, 1);
+    bool result = IsModelAnimationValid(*model, *anim);
+    return janet_wrap_boolean(result);
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -614,6 +668,26 @@ static JanetReg threed_cfuns[] = {
     {"unload-mesh", cfun_UnloadMesh,
         "(unload-mesh mesh)\n\n"
         "Unload mesh data from CPU and GPU"    
+    },
+    {"load-model-animations", cfun_LoadModelAnimations,
+        "(load-model-animations file-name)\n\n"
+        "Load model animations from file"    
+    },
+    {"update-model-animation", cfun_UpdateModelAnimation,
+        "(update-model-animation model anim frame)\n\n"
+        "Update model animation pose"    
+    },
+    {"unload-model-animation", cfun_UnloadModelAnimation,
+        "(unload-model-animation anim)\n\n"
+        "Unload animation data"    
+    },
+    {"unload-model-animations", cfun_UnloadModelAnimations,
+        "(unload-model-animations anims)\n\n"
+        "Unload animation array data"    
+    },
+    {"is-model-animation-valid", cfun_IsModelAnimationValid,
+        "(is-model-animation-valid model anim)\n\n"
+        "Check model animation skeleton match"    
     },
     {NULL, NULL, NULL}
 };
