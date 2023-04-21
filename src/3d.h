@@ -323,6 +323,14 @@ static Janet cfun_LoadMaterialDefault(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(defaultMaterial);
 }
 
+static Janet cfun_LoadModel(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    const char *fileName = janet_getcstring(argv, 0);
+    Model *model = janet_abstract(&AT_Model, sizeof(Model));
+    *model = LoadModel(fileName);
+    return janet_wrap_abstract(model);
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -451,6 +459,10 @@ static JanetReg threed_cfuns[] = {
     {"gen-mesh-cubicmap", cfun_GenMeshCubicmap,
         "(gen-mesh-cubicmap image size)\n\n"
         "Generate a cubicmap mesh from image data and size (vec3)"    
+    },
+    {"load-model", cfun_LoadModel,
+        "(load-model filename)\n\n"
+        "Load model from files (meshes and materials)"    
     },
     {NULL, NULL, NULL}
 };

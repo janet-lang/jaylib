@@ -616,3 +616,12 @@ static const JanetAbstractType AT_Material = {
 static Material *jaylib_getmaterial(const Janet *argv, int32_t n) {
     return ((Material *)janet_getabstract(argv, n, &AT_Material));
 }
+
+static const JanetAbstractType AT_Model = {
+    "jaylib/model",
+    JANET_ATEND_NAME
+};
+
+static Model *jaylib_getmodel(const Janet *argv, int32_t n) {
+    return ((Model *)janet_getabstract(argv, n, &AT_Model));
+}

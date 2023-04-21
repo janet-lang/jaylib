@@ -315,7 +315,7 @@
 [x] void DrawGrid(int slices, float spacing)
 
 // Model loading/unloading functions
-[ ] Model LoadModel(const char *fileName)
+[x] Model LoadModel(const char *fileName)
 [ ] Model LoadModelFromMesh(Mesh mesh)
 [ ] void UnloadModel(Model model)
 [ ] BoundingBox GetModelBoundingBox(Model model)
