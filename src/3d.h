@@ -516,6 +516,50 @@ static Janet cfun_GenMeshBinormals(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawModel(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    Model model = *jaylib_getmodel(argv, 0);
+    Vector3 position = jaylib_getvec3(argv, 1);
+    float scale = (float) janet_getnumber(argv, 2);
+    Color tint = jaylib_getcolor(argv, 3);
+    DrawModel(model, position, scale, tint);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawModelEx(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    Model model = *jaylib_getmodel(argv, 0);
+    Vector3 position = jaylib_getvec3(argv, 1);
+    Vector3 rotationAxis = jaylib_getvec3(argv, 2);
+    float rotationAngle = (float) janet_getnumber(argv, 3);
+    Vector3 scale = jaylib_getvec3(argv, 4);
+    Color tint = jaylib_getcolor(argv, 5);
+    DrawModelEx(model, position, rotationAxis, rotationAngle, scale, tint);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawModelWires(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    Model model = *jaylib_getmodel(argv, 0);
+    Vector3 position = jaylib_getvec3(argv, 1);
+    float scale = (float) janet_getnumber(argv, 2);
+    Color tint = jaylib_getcolor(argv, 3);
+    DrawModelWires(model, position, scale, tint);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawModelWiresEx(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    Model model = *jaylib_getmodel(argv, 0);
+    Vector3 position = jaylib_getvec3(argv, 1);
+    Vector3 rotationAxis = jaylib_getvec3(argv, 2);
+    float rotationAngle = (float) janet_getnumber(argv, 3);
+    Vector3 scale = jaylib_getvec3(argv, 4);
+    Color tint = jaylib_getcolor(argv, 5);
+    DrawModelWiresEx(model, position, rotationAxis, rotationAngle, scale, tint);
+    return janet_wrap_nil();
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -724,6 +768,22 @@ static JanetReg threed_cfuns[] = {
     {"gen-mesh-binormals", cfun_GenMeshBinormals,
         "(gen-mesh-binormals mesh)\n\n"
         "Compute mesh binormals"    
+    },
+    {"draw-model", cfun_DrawModel,
+        "(draw-model model position scale tint)\n\n"
+        "Draw a model (with texture if set)"    
+    },
+    {"draw-model-ex", cfun_DrawModelEx,
+        "(draw-model-ex model position rotation-axis rotation-angle scale tint)\n\n"
+        "Draw a model with extended parameters"    
+    },
+    {"draw-model-wires", cfun_DrawModelWires,
+        "(draw-model-wires model position scale tint)\n\n"
+        "Draw a model wires (with texture if set)"    
+    },
+    {"draw-model-wires-ex", cfun_DrawModelWiresEx,
+        "(draw-model-wires-ex model position rotation-axis rotation-angle scale tint)\n\n"
+        "Draw a model wires (with texture if set) with extended parameters"    
     },
     {NULL, NULL, NULL}
 };
