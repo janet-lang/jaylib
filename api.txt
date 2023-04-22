@@ -376,7 +376,7 @@
 [x] RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
 [x] RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
 [x] RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
-[ ] RayCollision GetRayCollisionModel(Ray ray, Model *model)
+[x] RayCollision GetRayCollisionModel(Ray ray, Model *model)
 [x] RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
 [ ] RayCollision GetRayCollisionGround(Ray ray, float groundHeight)
 

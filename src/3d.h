@@ -710,6 +710,17 @@ static Janet cfun_GetRayCollisionQuad(int32_t argc, Janet *argv) {
     return jaylib_wrap_raycollision(result);
 }
 
+static Janet cfun_GetRayCollisionModel(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    JanetView ray = janet_getindexed(argv, 0);
+    Ray raw_ray;
+    raw_ray.position = jaylib_getvec3(ray.items, 0);
+    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Model *model = jaylib_getmodel(argv, 1);
+    RayCollision result = GetRayCollisionModel(raw_ray, *model);
+    return jaylib_wrap_raycollision(result);
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -978,6 +989,10 @@ static JanetReg threed_cfuns[] = {
     {"get-ray-collision-quad", cfun_GetRayCollisionQuad,
         "(get-ray-collision-quad ray p1 p2 p3 p4)\n\n"
         "Get collision info between ray and quad"    
+    },
+    {"get-ray-collision-model", cfun_GetRayCollisionModel,
+        "(get-ray-collision-model ray model)\n\n"
+        "Get collision info between ray and model"    
     },
     {NULL, NULL, NULL}
 };
