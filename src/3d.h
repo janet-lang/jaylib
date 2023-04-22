@@ -560,6 +560,55 @@ static Janet cfun_DrawModelWiresEx(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawBoundingBox(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    JanetView bbox = janet_getindexed(argv, 0);
+    BoundingBox raw_bbox;
+    raw_bbox.min = jaylib_getvec3(bbox.items, 0);
+    raw_bbox.max = jaylib_getvec3(bbox.items, 1);
+    Color color = jaylib_getcolor(argv, 1);
+    DrawBoundingBox(raw_bbox, color);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawBillboard(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    Camera* camera = jaylib_getcamera3d(argv, 0);
+    Texture2D* texture = jaylib_gettexture2d(argv, 1);
+    Vector3 position = jaylib_getvec3(argv, 2);
+    float size = (float) janet_getnumber(argv, 3);
+    Color tint = jaylib_getcolor(argv, 4);
+    DrawBillboard(*camera, *texture, position, size, tint);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawBillboardRec(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    Camera* camera = jaylib_getcamera3d(argv, 0);
+    Texture2D* texture = jaylib_gettexture2d(argv, 1);
+    Rectangle source = jaylib_getrect(argv, 2);
+    Vector3 position = jaylib_getvec3(argv, 3);
+    Vector2 size = jaylib_getvec2(argv, 4);
+    Color tint = jaylib_getcolor(argv, 5);
+    DrawBillboardRec(*camera, *texture, source, position, size, tint);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawBillboardPro(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 9);
+    Camera* camera = jaylib_getcamera3d(argv, 0);
+    Texture2D* texture = jaylib_gettexture2d(argv, 1);
+    Rectangle source = jaylib_getrect(argv, 2);
+    Vector3 position = jaylib_getvec3(argv, 3);
+    Vector3 up = jaylib_getvec3(argv, 4);
+    Vector2 size = jaylib_getvec2(argv, 5);
+    Vector2 origin = jaylib_getvec2(argv, 6);
+    float rotation = (float) janet_getnumber(argv, 7);
+    Color tint = jaylib_getcolor(argv, 8);
+    DrawBillboardPro(*camera, *texture, source, position, up, size, origin, rotation, tint);
+    return janet_wrap_nil();
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -784,6 +833,18 @@ static JanetReg threed_cfuns[] = {
     {"draw-model-wires-ex", cfun_DrawModelWiresEx,
         "(draw-model-wires-ex model position rotation-axis rotation-angle scale tint)\n\n"
         "Draw a model wires (with texture if set) with extended parameters"    
+    },
+    {"draw-billboard", cfun_DrawBillboard,
+        "(draw-billboard camera texture position size tint)\n\n"
+        "Draw a billboard texture"    
+    },
+    {"draw-billboard-rec", cfun_DrawBillboardRec,
+        "(draw-billboard-rec camera texture source position size tint)\n\n"
+        "Draw a billboard texture defined by source"    
+    },
+    {"draw-billboard-pro", cfun_DrawBillboardPro,
+        "(draw-billboard-pro camera texture source position up size origin rotation tint)\n\n"
+        "Draw a billboard texture defined by source and rotation"    
     },
     {NULL, NULL, NULL}
 };
