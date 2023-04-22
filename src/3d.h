@@ -492,6 +492,30 @@ static Janet cfun_IsModelAnimationValid(int32_t argc, Janet *argv) {
     return janet_wrap_boolean(result);
 }
 
+static Janet cfun_GetMeshBoundingBox(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Mesh *mesh = jaylib_getmesh(argv, 0);
+    BoundingBox bbox = GetMeshBoundingBox(*mesh);
+    Janet *tup = janet_tuple_begin(2);
+    tup[0] = jaylib_wrap_vec3(bbox.min);
+    tup[1] = jaylib_wrap_vec3(bbox.max);
+    return janet_wrap_tuple(janet_tuple_end(tup));
+}
+
+static Janet cfun_GenMeshTangents(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Mesh *mesh = jaylib_getmesh(argv, 0);
+    GenMeshTangents(mesh);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_GenMeshBinormals(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Mesh *mesh = jaylib_getmesh(argv, 0);
+    GenMeshBinormals(mesh);
+    return janet_wrap_nil();
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -688,6 +712,18 @@ static JanetReg threed_cfuns[] = {
     {"is-model-animation-valid", cfun_IsModelAnimationValid,
         "(is-model-animation-valid model anim)\n\n"
         "Check model animation skeleton match"    
+    },
+    {"get-mesh-bounding-box", cfun_GetMeshBoundingBox,
+        "(get-mesh-bounding-box mesh)\n\n"
+        "Compute mesh bounding box limits. Returns [[min-x min-y min-z] [max-x max-y max-z]]"    
+    },
+    {"gen-mesh-tangents", cfun_GenMeshTangents,
+        "(gen-mesh-tangents mesh)\n\n"
+        "Compute mesh tangents"    
+    },
+    {"gen-mesh-binormals", cfun_GenMeshBinormals,
+        "(gen-mesh-binormals mesh)\n\n"
+        "Compute mesh binormals"    
     },
     {NULL, NULL, NULL}
 };

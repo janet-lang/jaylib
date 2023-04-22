@@ -354,9 +354,9 @@
 [x] Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
 
 // Mesh manipulation functions
-[ ] BoundingBox GetMeshBoundingBox(Mesh mesh)
-[ ] void GenMeshTangents(Mesh *mesh)
-[ ] void GenMeshBinormals(Mesh *mesh)
+[x] BoundingBox GetMeshBoundingBox(Mesh mesh)
+[x] void GenMeshTangents(Mesh *mesh)
+[x] void GenMeshBinormals(Mesh *mesh)
 
 // Model drawing functions
 [ ] void DrawModel(Model model, Vector3 position, float scale, Color tint)
