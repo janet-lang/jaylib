@@ -372,12 +372,12 @@
 [x] bool CheckCollisionSpheres(Vector3 centerA, float radiusA, Vector3 centerB, float radiusB)
 [x] bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
 [x] bool CheckCollisionBoxSphere(BoundingBox box, Vector3 centerSphere, float radiusSphere)
-[ ] RayCollision GetRayCollisionSphere(Ray ray, Vector3 spherePosition, float sphereRadius)
-[ ] RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
-[ ] RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
-[ ] RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
+[x] RayCollision GetRayCollisionSphere(Ray ray, Vector3 spherePosition, float sphereRadius)
+[x] RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
+[x] RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
+[x] RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
 [ ] RayCollision GetRayCollisionModel(Ray ray, Model *model)
-[ ] RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
+[x] RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
 [ ] RayCollision GetRayCollisionGround(Ray ray, float groundHeight)
 
 // Shader loading/unloading functions

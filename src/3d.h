@@ -645,6 +645,71 @@ static Janet cfun_CheckCollisionBoxSphere(int32_t argc, Janet *argv) {
     return janet_wrap_boolean(result);
 }
 
+static Janet cfun_GetRayCollisionSphere(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    JanetView ray = janet_getindexed(argv, 0);
+    Ray raw_ray;
+    raw_ray.position = jaylib_getvec3(ray.items, 0);
+    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Vector3 center = jaylib_getvec3(argv, 1);
+    float radius = (float) janet_getnumber(argv, 2);
+    RayCollision result = GetRayCollisionSphere(raw_ray, center, radius);
+    return jaylib_wrap_raycollision(result);
+}
+
+static Janet cfun_GetRayCollisionBox(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    JanetView ray = janet_getindexed(argv, 0);
+    Ray raw_ray;
+    raw_ray.position = jaylib_getvec3(ray.items, 0);
+    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    JanetView bbox = janet_getindexed(argv, 1);
+    BoundingBox raw_bbox;
+    raw_bbox.min = jaylib_getvec3(bbox.items, 0);
+    raw_bbox.max = jaylib_getvec3(bbox.items, 1);
+    RayCollision result = GetRayCollisionBox(raw_ray, raw_bbox);
+    return jaylib_wrap_raycollision(result);
+}
+
+static Janet cfun_GetRayCollisionMesh(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    JanetView ray = janet_getindexed(argv, 0);
+    Ray raw_ray;
+    raw_ray.position = jaylib_getvec3(ray.items, 0);
+    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Mesh *mesh = jaylib_getmesh(argv, 1);
+    Matrix transform = jaylib_getmatrix(argv, 2);
+    RayCollision result = GetRayCollisionMesh(raw_ray, *mesh, transform);
+    return jaylib_wrap_raycollision(result);
+}
+
+static Janet cfun_GetRayCollisionTriangle(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    JanetView ray = janet_getindexed(argv, 0);
+    Ray raw_ray;
+    raw_ray.position = jaylib_getvec3(ray.items, 0);
+    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Vector3 p1 = jaylib_getvec3(argv, 1);
+    Vector3 p2 = jaylib_getvec3(argv, 2);
+    Vector3 p3 = jaylib_getvec3(argv, 3);
+    RayCollision result = GetRayCollisionTriangle(raw_ray, p1, p2, p3);
+    return jaylib_wrap_raycollision(result);
+}
+
+static Janet cfun_GetRayCollisionQuad(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    JanetView ray = janet_getindexed(argv, 0);
+    Ray raw_ray;
+    raw_ray.position = jaylib_getvec3(ray.items, 0);
+    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Vector3 p1 = jaylib_getvec3(argv, 1);
+    Vector3 p2 = jaylib_getvec3(argv, 2);
+    Vector3 p3 = jaylib_getvec3(argv, 3);
+    Vector3 p4 = jaylib_getvec3(argv, 4);
+    RayCollision result = GetRayCollisionQuad(raw_ray, p1, p2, p3, p4);
+    return jaylib_wrap_raycollision(result);
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -893,6 +958,26 @@ static JanetReg threed_cfuns[] = {
     {"check-collision-box-sphere", cfun_CheckCollisionBoxSphere,
         "(check-collision-box-sphere box center radius)\n\n"
         "Check collision between box and sphere"    
+    },
+    {"get-ray-collision-sphere", cfun_GetRayCollisionSphere,
+        "(get-ray-collision-sphere ray center radius)\n\n"
+        "Get collision info between ray and sphere"    
+    },
+    {"get-ray-collision-box", cfun_GetRayCollisionBox,
+        "(get-ray-collision-box ray box)\n\n"
+        "Get collision info between ray and box"    
+    },
+    {"get-ray-collision-mesh", cfun_GetRayCollisionMesh,
+        "(get-ray-collision-mesh ray mesh transform)\n\n"
+        "Get collision info between ray and mesh"    
+    },
+    {"get-ray-collision-triangle", cfun_GetRayCollisionTriangle,
+        "(get-ray-collision-triangle ray p1 p2 p3)\n\n"
+        "Get collision info between ray and triangle"    
+    },
+    {"get-ray-collision-quad", cfun_GetRayCollisionQuad,
+        "(get-ray-collision-quad ray p1 p2 p3 p4)\n\n"
+        "Get collision info between ray and quad"    
     },
     {NULL, NULL, NULL}
 };
