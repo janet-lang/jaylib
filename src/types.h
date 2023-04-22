@@ -352,6 +352,28 @@ static Ray jaylib_getray(const Janet *argv, int32_t n) {
     return (Ray){ p, d };
 }
 
+static Matrix jaylib_getmatrix(const Janet *argv, int32_t n) {
+    JanetView idx = janet_getindexed(argv, n);
+    return (Matrix) {
+        idx_getfloat(idx, 0),
+        idx_getfloat(idx, 1),
+        idx_getfloat(idx, 2),
+        idx_getfloat(idx, 3),
+        idx_getfloat(idx, 4),
+        idx_getfloat(idx, 5),
+        idx_getfloat(idx, 6),
+        idx_getfloat(idx, 7),
+        idx_getfloat(idx, 8),
+        idx_getfloat(idx, 9),
+        idx_getfloat(idx, 10),
+        idx_getfloat(idx, 11),
+        idx_getfloat(idx, 12),
+        idx_getfloat(idx, 13),
+        idx_getfloat(idx, 14),
+        idx_getfloat(idx, 15),
+    };
+}
+
 static const KeyDef pixel_format_defs[] = {
     {"astc-4x4-rgba", PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA},
     {"astc-8x8-rgba", PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA},
@@ -400,6 +422,14 @@ static Vector2 jaylib_unwrap_vec2(const Janet val) {
   float x = idx_getfloat(view, 0);
   float y = idx_getfloat(view, 1);
   return (Vector2) { x, y };
+}
+
+static Janet jaylib_wrap_vec3(Vector3 x) {
+    Janet *tup = janet_tuple_begin(3);
+    tup[0] = janet_wrap_number(x.x);
+    tup[1] = janet_wrap_number(x.y);
+    tup[2] = janet_wrap_number(x.z);
+    return janet_wrap_tuple(janet_tuple_end(tup));
 }
 
 static const JanetAbstractType AT_TextureCubemap = {
@@ -575,4 +605,68 @@ static const JanetAbstractType AT_Camera3D = {
 
 static Camera3D *jaylib_getcamera3d(const Janet *argv, int32_t n) {
     return ((Camera3D *)janet_getabstract(argv, n, &AT_Camera3D));
+}
+
+static const JanetAbstractType AT_Mesh = {
+    "jaylib/mesh",
+    JANET_ATEND_NAME
+};
+
+static Mesh *jaylib_getmesh(const Janet *argv, int32_t n) {
+    return ((Mesh *)janet_getabstract(argv, n, &AT_Mesh));
+}
+
+static const JanetAbstractType AT_Material = {
+    "jaylib/material",
+    JANET_ATEND_NAME
+};
+
+static Material *jaylib_getmaterial(const Janet *argv, int32_t n) {
+    return ((Material *)janet_getabstract(argv, n, &AT_Material));
+}
+
+static const JanetAbstractType AT_Model = {
+    "jaylib/model",
+    JANET_ATEND_NAME
+};
+
+static Model *jaylib_getmodel(const Janet *argv, int32_t n) {
+    return ((Model *)janet_getabstract(argv, n, &AT_Model));
+}
+
+static const JanetAbstractType AT_ModelAnimation = {
+    "jaylib/model-animation",
+    JANET_ATEND_NAME
+};
+
+static ModelAnimation *jaylib_getmodelanimation(const Janet *argv, int32_t n) {
+    return ((ModelAnimation *)janet_getabstract(argv, n, &AT_ModelAnimation));
+}
+
+static const KeyDef material_map_defs[] = {
+    {"albedo", MATERIAL_MAP_ALBEDO},
+    {"brdf", MATERIAL_MAP_BRDF},
+    {"cubemap", MATERIAL_MAP_CUBEMAP},
+    {"diffuse", MATERIAL_MAP_DIFFUSE},
+    {"emission", MATERIAL_MAP_EMISSION},
+    {"irradiance", MATERIAL_MAP_IRRADIANCE},
+    {"metalness", MATERIAL_MAP_METALNESS},
+    {"normal", MATERIAL_MAP_NORMAL},
+    {"occlusion", MATERIAL_MAP_OCCLUSION},
+    {"prefilter", MATERIAL_MAP_PREFILTER},
+    {"roughness", MATERIAL_MAP_ROUGHNESS},
+    {"specular", MATERIAL_MAP_SPECULAR},
+};
+
+static int jaylib_getmaterialmaptype(const Janet *argv, int32_t n) {
+    return jaylib_castdef(argv, n, material_map_defs, sizeof(material_map_defs) / sizeof(KeyDef));
+}
+
+static Janet jaylib_wrap_raycollision(RayCollision rayCollision) {
+    JanetTable* table = janet_table(4);
+    janet_table_put(table, janet_wrap_keyword("hit"), janet_wrap_boolean(rayCollision.hit));
+    janet_table_put(table, janet_wrap_keyword("distance"), janet_wrap_number(rayCollision.distance));
+    janet_table_put(table, janet_wrap_keyword("point"), jaylib_wrap_vec3(rayCollision.point));
+    janet_table_put(table, janet_wrap_keyword("normal"), jaylib_wrap_vec3(rayCollision.normal));
+    return janet_wrap_table(table);
 }
