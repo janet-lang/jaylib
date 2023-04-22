@@ -647,77 +647,59 @@ static Janet cfun_CheckCollisionBoxSphere(int32_t argc, Janet *argv) {
 
 static Janet cfun_GetRayCollisionSphere(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
-    JanetView ray = janet_getindexed(argv, 0);
-    Ray raw_ray;
-    raw_ray.position = jaylib_getvec3(ray.items, 0);
-    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Ray ray = jaylib_getray(argv, 0);
     Vector3 center = jaylib_getvec3(argv, 1);
     float radius = (float) janet_getnumber(argv, 2);
-    RayCollision result = GetRayCollisionSphere(raw_ray, center, radius);
+    RayCollision result = GetRayCollisionSphere(ray, center, radius);
     return jaylib_wrap_raycollision(result);
 }
 
 static Janet cfun_GetRayCollisionBox(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    JanetView ray = janet_getindexed(argv, 0);
-    Ray raw_ray;
-    raw_ray.position = jaylib_getvec3(ray.items, 0);
-    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Ray ray = jaylib_getray(argv, 0);
     JanetView bbox = janet_getindexed(argv, 1);
     BoundingBox raw_bbox;
     raw_bbox.min = jaylib_getvec3(bbox.items, 0);
     raw_bbox.max = jaylib_getvec3(bbox.items, 1);
-    RayCollision result = GetRayCollisionBox(raw_ray, raw_bbox);
+    RayCollision result = GetRayCollisionBox(ray, raw_bbox);
     return jaylib_wrap_raycollision(result);
 }
 
 static Janet cfun_GetRayCollisionMesh(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
-    JanetView ray = janet_getindexed(argv, 0);
-    Ray raw_ray;
-    raw_ray.position = jaylib_getvec3(ray.items, 0);
-    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Ray ray = jaylib_getray(argv, 0);
     Mesh *mesh = jaylib_getmesh(argv, 1);
     Matrix transform = jaylib_getmatrix(argv, 2);
-    RayCollision result = GetRayCollisionMesh(raw_ray, *mesh, transform);
+    RayCollision result = GetRayCollisionMesh(ray, *mesh, transform);
     return jaylib_wrap_raycollision(result);
 }
 
 static Janet cfun_GetRayCollisionTriangle(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 4);
-    JanetView ray = janet_getindexed(argv, 0);
-    Ray raw_ray;
-    raw_ray.position = jaylib_getvec3(ray.items, 0);
-    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Ray ray = jaylib_getray(argv, 0);
     Vector3 p1 = jaylib_getvec3(argv, 1);
     Vector3 p2 = jaylib_getvec3(argv, 2);
     Vector3 p3 = jaylib_getvec3(argv, 3);
-    RayCollision result = GetRayCollisionTriangle(raw_ray, p1, p2, p3);
+    RayCollision result = GetRayCollisionTriangle(ray, p1, p2, p3);
     return jaylib_wrap_raycollision(result);
 }
 
 static Janet cfun_GetRayCollisionQuad(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 5);
-    JanetView ray = janet_getindexed(argv, 0);
-    Ray raw_ray;
-    raw_ray.position = jaylib_getvec3(ray.items, 0);
-    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Ray ray = jaylib_getray(argv, 0);
     Vector3 p1 = jaylib_getvec3(argv, 1);
     Vector3 p2 = jaylib_getvec3(argv, 2);
     Vector3 p3 = jaylib_getvec3(argv, 3);
     Vector3 p4 = jaylib_getvec3(argv, 4);
-    RayCollision result = GetRayCollisionQuad(raw_ray, p1, p2, p3, p4);
+    RayCollision result = GetRayCollisionQuad(ray, p1, p2, p3, p4);
     return jaylib_wrap_raycollision(result);
 }
 
 static Janet cfun_GetRayCollisionModel(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
-    JanetView ray = janet_getindexed(argv, 0);
-    Ray raw_ray;
-    raw_ray.position = jaylib_getvec3(ray.items, 0);
-    raw_ray.direction = jaylib_getvec3(ray.items, 1);
+    Ray ray = jaylib_getray(argv, 0);
     Model *model = jaylib_getmodel(argv, 1);
-    RayCollision result = GetRayCollisionModel(raw_ray, *model);
+    RayCollision result = GetRayCollisionModel(ray, *model);
     return jaylib_wrap_raycollision(result);
 }
 
