@@ -609,6 +609,42 @@ static Janet cfun_DrawBillboardPro(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_CheckCollisionSpheres(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    Vector3 center1 = jaylib_getvec3(argv, 0);
+    float radius1 = (float) janet_getnumber(argv, 1);
+    Vector3 center2 = jaylib_getvec3(argv, 2);
+    float radius2 = (float) janet_getnumber(argv, 3);
+    bool result = CheckCollisionSpheres(center1, radius1, center2, radius2);
+    return janet_wrap_boolean(result);
+}
+
+static Janet cfun_CheckCollisionBoxes(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    JanetView bbox1 = janet_getindexed(argv, 0);
+    BoundingBox raw_bbox1;
+    raw_bbox1.min = jaylib_getvec3(bbox1.items, 0);
+    raw_bbox1.max = jaylib_getvec3(bbox1.items, 1);
+    JanetView bbox2 = janet_getindexed(argv, 0);
+    BoundingBox raw_bbox2;
+    raw_bbox2.min = jaylib_getvec3(bbox2.items, 0);
+    raw_bbox2.max = jaylib_getvec3(bbox2.items, 1);
+    bool result = CheckCollisionBoxes(raw_bbox1, raw_bbox2);
+    return janet_wrap_boolean(result);
+}
+
+static Janet cfun_CheckCollisionBoxSphere(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    JanetView bbox = janet_getindexed(argv, 0);
+    BoundingBox raw_bbox;
+    raw_bbox.min = jaylib_getvec3(bbox.items, 0);
+    raw_bbox.max = jaylib_getvec3(bbox.items, 1);
+    Vector3 center = jaylib_getvec3(argv, 1);
+    float radius = (float) janet_getnumber(argv, 2);
+    bool result = CheckCollisionBoxSphere(raw_bbox, center, radius);
+    return janet_wrap_boolean(result);
+}
+
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -845,6 +881,18 @@ static JanetReg threed_cfuns[] = {
     {"draw-billboard-pro", cfun_DrawBillboardPro,
         "(draw-billboard-pro camera texture source position up size origin rotation tint)\n\n"
         "Draw a billboard texture defined by source and rotation"    
+    },
+    {"check-collision-spheres", cfun_CheckCollisionSpheres,
+        "(check-collision-spheres center1 radius1 center2 radius2)\n\n"
+        "Check collision between two spheres"    
+    },
+    {"check-collision-boxes", cfun_CheckCollisionBoxes,
+        "(check-collision-boxes box1 box2)\n\n"
+        "Check collision between two bounding boxes"    
+    },
+    {"check-collision-box-sphere", cfun_CheckCollisionBoxSphere,
+        "(check-collision-box-sphere box center radius)\n\n"
+        "Check collision between box and sphere"    
     },
     {NULL, NULL, NULL}
 };

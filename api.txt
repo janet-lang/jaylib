@@ -369,9 +369,9 @@
 [x] void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint)
 
 // Collision detection functions
-[ ] bool CheckCollisionSpheres(Vector3 centerA, float radiusA, Vector3 centerB, float radiusB)
-[ ] bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
-[ ] bool CheckCollisionBoxSphere(BoundingBox box, Vector3 centerSphere, float radiusSphere)
+[x] bool CheckCollisionSpheres(Vector3 centerA, float radiusA, Vector3 centerB, float radiusB)
+[x] bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
+[x] bool CheckCollisionBoxSphere(BoundingBox box, Vector3 centerSphere, float radiusSphere)
 [ ] RayCollision GetRayCollisionSphere(Ray ray, Vector3 spherePosition, float sphereRadius)
 [ ] RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
 [ ] RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
