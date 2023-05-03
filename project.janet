@@ -10,6 +10,9 @@
   (case o
     :macos '["-Iraylib/src" "-ObjC" "-Iraylib/src/external/glfw/include"]
     :windows ["-Iraylib/src" "-Iraylib/src/external/glfw/include" ]
+    # you might need to edit ./raylib/src/external/glfw/src/x11_init.c:1124
+    # to match /usr/X11R6/lib/libX11.so*
+    :openbsd '["-Iraylib/src" "-Iraylib/src/external/glfw/include" "-I/usr/X11R6/include" "-Du_char=unsigned char" "-Dalloca(x)=malloc(x)"]
     #default
     '["-Iraylib/src" "-Iraylib/src/external/glfw/include"]))
 
@@ -18,6 +21,7 @@
     :windows '["user32.lib" "gdi32.lib" "winmm.lib" "shell32.lib"]
     :macos '["-lpthread" "-framework" "Cocoa" "-framework" "CoreVideo" "-framework" "IOKit" "-framework" "OpenGL"]
     :linux '["-lpthread" "-lX11"]
+    :openbsd '["-lpthread" "-lX11" "-L/usr/X11R6/lib"]
     #default
     '["-lpthread"]))
 
@@ -29,7 +33,6 @@
   :defines {"PLATFORM_DESKTOP" true "_POSIX_C_SOURCE" "200809L" "_DARWIN_C_SOURCE" (if (= o :macos) "1" nil)}
 
   :source ["src/main.c"
-
            # raylib sources
            "raylib/src/rcore.c"
            "raylib/src/rmodels.c"
