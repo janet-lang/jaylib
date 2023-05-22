@@ -540,22 +540,22 @@ int camera2d_get(void *p, Janet key, Janet *out) {
 
   const uint8_t *kw = janet_unwrap_keyword(key);
 
-  if (janet_cstrcmp(kw, "target")) {
+  if (!janet_cstrcmp(kw, "target")) {
     *out = jaylib_wrap_vec2(camera->target);
     return 1;
   }
 
-  if (janet_cstrcmp(kw, "offset")) {
+  if (!janet_cstrcmp(kw, "offset")) {
     *out = jaylib_wrap_vec2(camera->offset);
     return 1;
   }
 
-  if (janet_cstrcmp(kw, "rotation")) {
+  if (!janet_cstrcmp(kw, "rotation")) {
     *out = janet_wrap_number(camera->rotation);
     return 1;
   }
 
-  if (janet_cstrcmp(kw, "zoom")) {
+  if (!janet_cstrcmp(kw, "zoom")) {
     *out = janet_wrap_number(camera->zoom);
     return 1;
   }
