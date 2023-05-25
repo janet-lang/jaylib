@@ -456,17 +456,6 @@ static Janet cfun_DrawTextureRec(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_DrawTextureQuad(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 5);
-    Texture2D texture = *jaylib_gettexture2d(argv, 0);
-    Vector2 tiling = jaylib_getvec2(argv, 1);
-    Vector2 offset = jaylib_getvec2(argv, 2);
-    Rectangle quad = jaylib_getrect(argv, 3);
-    Color color = jaylib_getcolor(argv, 3);
-    DrawTextureQuad(texture, tiling, offset, quad, color);
-    return janet_wrap_nil();
-}
-
 static Janet cfun_DrawTexturePro(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 6);
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
@@ -835,10 +824,6 @@ static const JanetReg image_cfuns[] = {
     {"draw-texture-pro", cfun_DrawTexturePro, 
         "(draw-texture-pro texture source dest origin rotation tint)\n\n"
         "Draw a part of a texture defined by a rectangle with 'pro' parameters"
-    },
-    {"draw-texture-quad", cfun_DrawTextureQuad, 
-        "(draw-texture-quad texture [t1 t2] [off-x off-y] quad tint)\n\n"
-        "Draw texture quad with tiling and offset parameters"
     },
     {"draw-texture-rec", cfun_DrawTextureRec, 
         "(draw-texture-rec texture source position tint)\n\n"

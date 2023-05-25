@@ -1,3 +1,4 @@
+#include "raylib.h"
 static Janet cfun_InitWindow(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     int32_t width = janet_getinteger(argv, 0);
@@ -687,38 +688,27 @@ static Janet cfun_GetTouchPosition(int32_t argc, Janet *argv) {
     return jaylib_wrap_vec2(pos);
 }
 
-static Janet cfun_GetDroppedFiles(int32_t argc, Janet *argv) {
+static Janet cfun_LoadDroppedFiles(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
-    int count;
-    /* Do we need to free this/these? */
-    char **results = GetDroppedFiles(&count);
+    FilePathList files = LoadDroppedFiles();
     JanetArray *array = janet_array(0);
-    for (int i = 0; i < count; i++) {
-        janet_array_push(array, janet_cstringv(results[i]));
+    for (int i = 0; i < files.count; i++) {
+        janet_array_push(array, janet_cstringv(files.paths[i]));
     }
-    return janet_wrap_array(results);
+    UnloadDroppedFiles(files);
+    return janet_wrap_array(array);
 }
 
-static Janet cfun_ClearDroppedFiles(int32_t argc, Janet *argv) {
+static Janet cfun_UnloadDroppedFiles(int32_t argc, Janet *argv) {
     (void) argv;
-    janet_fixarity(argc, 0);
-    ClearDroppedFiles();
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SaveStorageValue(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 2);
-    int32_t position = janet_getinteger(argv, 0);
-    int32_t value = janet_getinteger(argv, 1);
-    SaveStorageValue(position, value);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_LoadStorageValue(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int32_t position = janet_getinteger(argv, 0);
-    return janet_wrap_integer(LoadStorageValue(position));
+    // It may look weird, but in raylib 4.5 Load/UnloadDroppedFiles use local state.
+    // I see no point to keep the original FilePathList struct in memory between those calls, so
+    // raylib's original UnloadDroppedFiles is called immediately after we convert FilePathList to
+    // Janet array. I personally would delete this particular function at all, but I'm unaware yet
+    // about the policy if we want to replicate original calls as close as possible.
+    return janet_wrap_nil();
 }
 
 static Janet cfun_OpenUrl(int32_t argc, Janet *argv) {
@@ -818,7 +808,7 @@ static Janet cfun_EndTextureMode(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_SetCameraMode(int32_t argc, Janet *argv) {
+static Janet cfun_UpdateCamera(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     Camera3D *camera = jaylib_getcamera3d(argv, 0);
     const uint8_t *kw = janet_getkeyword(argv, 1);
@@ -836,47 +826,7 @@ static Janet cfun_SetCameraMode(int32_t argc, Janet *argv) {
     } else {
         janet_panicf("unknown camera mode %v", kw);
     }
-    SetCameraMode(*camera, mode);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_UpdateCamera(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    Camera3D *camera = jaylib_getcamera3d(argv, 0);
-    UpdateCamera(camera);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetCameraPanControl(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    int key = jaylib_getkey(argv, 0);
-    SetCameraPanControl(key);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetCameraAltControl(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    int key = jaylib_getkey(argv, 0);
-    SetCameraAltControl(key);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetCameraSmoothZoomControl(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    int key = jaylib_getkey(argv, 0);
-    SetCameraSmoothZoomControl(key);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetCameraMoveControls(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 6);
-    int k1 = jaylib_getkey(argv, 0);
-    int k2 = jaylib_getkey(argv, 1);
-    int k3 = jaylib_getkey(argv, 2);
-    int k4 = jaylib_getkey(argv, 3);
-    int k5 = jaylib_getkey(argv, 4);
-    int k6 = jaylib_getkey(argv, 5);
-    SetCameraMoveControls(k1, k2, k3, k4, k5, k6);
+    UpdateCamera(camera, mode);
     return janet_wrap_nil();
 }
 
@@ -1208,22 +1158,13 @@ static JanetReg core_cfuns[] = {
         "(get-touch-position index)\n\n" 
         "Get touch position XY for a touch point index (relative to screen size)"
     },
-    {"get-dropped-files", cfun_GetDroppedFiles, 
-        "(get-dropped-files count)\n\n" 
-        "Get dropped files names (memory should be freed)"
+    {"load-dropped-files", cfun_LoadDroppedFiles, 
+        "(load-dropped-files)\n\n" 
+        "Get dropped files names"
     },
-    {"clear-dropped-files", cfun_ClearDroppedFiles, 
-        "(clear-dropped-files)\n\n" 
-        "Clear dropped files paths buffer (free memory)"
-    },
-    {"save-storage-value", cfun_SaveStorageValue, 
-        "(save-storage-value position value)\n\n" 
-        "Save integer value to storage file (to defined position), "
-        "returns true on success"
-    },
-    {"load-storage-value", cfun_LoadStorageValue, 
-        "(load-storage-value position)\n\n" 
-        "Load integer value from storage file (from defined position)"
+    {"unload-dropped-files", cfun_UnloadDroppedFiles, 
+        "(unload-dropped-files path)\n\n" 
+        "Clear dropped files paths buffer"
     },
     {"open-url", cfun_OpenUrl, 
         "(open-url url)\n\n" 
@@ -1266,29 +1207,9 @@ static JanetReg core_cfuns[] = {
         " - :fov-y      = Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic \n"
         " - :projection = Camera projection: CAMERA\\_PERSPECTIVE or CAMERA\\_ORTHOGRAPHIC \n"
     },
-    {"set-camera-mode", cfun_SetCameraMode, 
-        "(set-camera-mode camera mode)\n\n" 
-        "Set camera mode (multiple camera modes available)"
-    },
     {"update-camera", cfun_UpdateCamera, 
-        "(update-camera camera)\n\n" 
+        "(update-camera camera mode)\n\n" 
         "Update camera position for selected mode"
-    },
-    {"set-camera-pan-control", cfun_SetCameraPanControl, 
-        "(set-camera-pan-control key-pan)\n\n" 
-        "Set camera pan key to combine with mouse movement (free camera)"
-    },
-    {"set-camera-alt-control", cfun_SetCameraAltControl, 
-        "(set-camera-alt-control key-alt)\n\n" 
-        "Set camera alt key to combine with mouse movement (free camera)"
-    },
-    {"set-camera-smooth-zoom-control", cfun_SetCameraSmoothZoomControl, 
-        "(set-camera-smooth-zoom-control key-smooth-zoom)\n\n" 
-        "Set camera smooth zoom key to combine with mouse (free camera)"
-    },
-    {"set-camera-move-controls", cfun_SetCameraMoveControls, 
-        "(set-camera-move-controls key-front key-back key-right key-left key-up key-down)\n\n" 
-        "Set camera move controls (1st person and 3rd person cameras)"
     },
     {"begin-scissor-mode", cfun_BeginScissorMode,
         "(begin-scissor-mode x y w h)\n\n"
