@@ -173,6 +173,13 @@ static Janet cfun_SetWindowSize(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_SetWindowOpacity(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    float opacity = (float) janet_getnumber(argv, 0);
+    SetWindowOpacity(opacity);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_GetWindowHandle(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
@@ -189,6 +196,18 @@ static Janet cfun_GetScreenHeight(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
     return janet_wrap_integer(GetScreenHeight());
+}
+
+static Janet cfun_GetRenderWidth(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    return janet_wrap_integer(GetRenderWidth());
+}
+
+static Janet cfun_GetRenderHeight(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    return janet_wrap_integer(GetRenderHeight());
 }
 
 static Janet cfun_GetMonitorCount(int32_t argc, Janet *argv) {
@@ -244,6 +263,20 @@ static Janet cfun_SetClipboardText(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     const char *text = janet_getcstring(argv, 0);
     SetClipboardText(text);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_EnableEventWaiting(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    EnableEventWaiting();
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DisableEventWaiting(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    DisableEventWaiting();
     return janet_wrap_nil();
 }
 
@@ -669,6 +702,13 @@ static Janet cfun_GetMouseWheelMove(int32_t argc, Janet *argv) {
     return janet_wrap_number(GetMouseWheelMove());
 }
 
+static Janet cfun_GetMouseWheelMoveV(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    Vector2 mov = GetMouseWheelMoveV();
+    return jaylib_wrap_vec2(mov);
+}
+
 static Janet cfun_GetTouchX(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
@@ -908,6 +948,10 @@ static JanetReg core_cfuns[] = {
         "(set-window-size width height)\n\n" 
         "Set window dimensions"
     },
+    {"set-window-opacity", cfun_SetWindowOpacity,
+        "(set-window-opacity opacity)\n\n"
+        "Set window opacity [0.0f..1.0f]"
+    },
     {"get-window-handle", cfun_GetWindowHandle, 
         "(get-window-handle)\n\n" 
         "Get native window handle"
@@ -919,6 +963,14 @@ static JanetReg core_cfuns[] = {
     {"get-screen-height", cfun_GetScreenHeight, 
         "(get-screen-height)\n\n" 
         "Get current screen height"
+    },
+    {"get-render-width", cfun_GetRenderWidth, 
+        "(get-render-width)\n\n" 
+        "Get current render width (it considers HiDPI)"
+    },
+    {"get-render-height", cfun_GetRenderHeight, 
+        "(get-render-height)\n\n" 
+        "Get current render height (it considers HiDPI)"
     },
     {"get-monitor-count", cfun_GetMonitorCount, 
         "(get-monitor-count)\n\n" 
@@ -955,6 +1007,14 @@ static JanetReg core_cfuns[] = {
     {"set-clipboard-text", cfun_SetClipboardText, 
         "(set-clipboard-text text)\n\n" 
         "Set clipboard text content"
+    },
+    {"enable-event-waiting", cfun_EnableEventWaiting, 
+        "(enable-event-waiting)\n\n" 
+        "Enable waiting for events on EndDrawing(), no automatic event polling"
+    },
+    {"disable-event-waiting", cfun_DisableEventWaiting, 
+        "(disable-event-waiting)\n\n" 
+        "Disable waiting for events on EndDrawing(), automatic events polling"
     },
     {"show-cursor", cfun_ShowCursor, 
         "(show-cursor)\n\n" 

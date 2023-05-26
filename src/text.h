@@ -112,6 +112,49 @@ static Janet cfun_DrawTextEx(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawTextPro(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 8);
+    Font font = *jaylib_getfont(argv, 0);
+    const char *text = jaylib_getcstring(argv, 1);
+    Vector2 position = jaylib_getvec2(argv, 2);
+    Vector2 origin = jaylib_getvec2(argv, 3);
+    float rotation = (float) janet_getnumber(argv, 4);
+    float fontSize = (float) janet_getnumber(argv, 5);
+    float spacing = (float) janet_getnumber(argv, 6);
+    Color tint = jaylib_getcolor(argv, 7);
+    DrawTextPro(font, text, position, origin, rotation, fontSize, spacing, tint);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawTextCodepoint(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    Font font = *jaylib_getfont(argv, 0);
+    int codepoint = janet_getinteger(argv, 1);
+    Vector2 position = jaylib_getvec2(argv, 2);
+    float fontSize = (float) janet_getnumber(argv, 3);
+    Color tint = jaylib_getcolor(argv, 4);
+    DrawTextCodepoint(font, codepoint, position, fontSize, tint);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DrawTextCodepoints(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    Font font = *jaylib_getfont(argv, 0);
+    JanetView ints = janet_getindexed(argv, 1);
+    int *raw_ints = janet_smalloc(sizeof(int) * ints.len);
+    for (int32_t i = 0; i < ints.len; i++) {
+        raw_ints[i] = janet_getinteger(ints.items, i);
+    }
+    Vector2 positin = jaylib_getvec2(argv, 2);
+    float fontSize = (float) janet_getnumber(argv, 3);
+    float spacing = (float) janet_getnumber(argv, 4);
+    Color tint = jaylib_getcolor(argv, 5);
+    DrawTextCodepoints(font, raw_ints, ints.len, position, fontSize, spacing, tint);
+    janet_sfree(raw_ints);
+    return janet_wrap_nil();
+}
+
+
 static Janet cfun_MeasureText(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     const char *text = jaylib_getcstring(argv, 0);
@@ -175,6 +218,18 @@ static JanetReg text_cfuns[] = {
     {"draw-text-ex", cfun_DrawTextEx, 
         "(draw-text-ex font text [pos-x pos-y] font-size spacing tint)\n\n" 
         "Draw text using font and additional parameters"
+    },
+    {"draw-text-pro", cfun_DrawTextPro,
+        "(draw-text-pro font text [pos-x pos-y] [origin-x origin-y] rotation font-size spacing tint)\n\n"
+        "Draw text using font and pro parameters (rotation)"
+    },
+    {"draw-text-codepoint", cfun_DrawTextCodepoint,
+        "(draw-text-codepoint font codepoint [pos-x pos-y] font-size tint)\n\n"
+        "Draw one character (codepoint)"
+    },
+    {"draw-text-codepoints", cfun_DrawTextCodepoints,
+        "(draw-text-codepoints font codepoints [pos-x pos-y] font-size spacing tint)\n\n"
+        "Draw multiple characters (codepoints)"
     },
     {"measure-text", cfun_MeasureText, 
         "(measure-text text font-size)\n\n" 
