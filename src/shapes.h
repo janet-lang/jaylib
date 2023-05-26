@@ -402,6 +402,24 @@ static Janet cfun_CheckCollisionPointTriangle(int32_t argc, Janet *argv) {
     }
 }
 
+static Janet cfun_CheckCollisionPointPoly(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector2 point = jaylib_getvec2(argv, 0);
+    JanetView polyPoints = janet_getindexed(argv, 1);
+    Vector2 *rawPolyPoints = janet_smalloc(sizeof(Vector2) * polyPoints.len);
+    for (int32_t i = 0; i < polyPoints.len; i++) {
+        rawPolyPoints[i] = jaylib_getvec2(polyPoints.items, i);
+    }
+    Janet result;
+    if (CheckCollisionPointPoly(point, rawPolyPoints, polyPoints.len)) {
+        result = janet_wrap_true();
+    } else {
+        result = janet_wrap_false();
+    }
+    janet_sfree(rawPolyPoints);
+    return result;
+}
+
 static Janet cfun_CheckCollisionLines(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 4);
     Vector2 startPos1 = jaylib_getvec2(argv, 0);
@@ -590,6 +608,10 @@ static JanetReg shapes_cfuns[] = {
     {"check-collision-point-triangle", cfun_CheckCollisionPointTriangle, 
         "(check-collision-point-triangle [px py] [x1 y1] [x2 y2] [x3 y3])\n\n"
         "Check if point is inside a triangle"
+    },
+    {"check-collision-point-poly", cfun_CheckCollisionPointPoly, 
+        "(check-collision-point-poly [x y] vertices)\n\n"
+        "Check if point is inside a polygon defined by the list of vertices"
     },
     {"check-collision-lines", cfun_CheckCollisionLines, 
         "(check-collision-lines [start-x1 start-y1] [end-x1 end-y1] [start-x2 start-y2] [end-x2 end-y2] [ret-x ret-y])\n\n"

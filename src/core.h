@@ -765,6 +765,18 @@ static Janet cfun_SetWindowIcon(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_SetWindowIcons(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    JanetView icons = janet_getindexed(argv, 0);
+    Image *raw_icons = janet_smalloc(sizeof(Image) * icons.len);
+    for (int32_t i = 0; i < icons.len; i++) {
+        raw_icons[i] = *jaylib_getimage(icons.items, i);
+    }
+    SetWindowIcons(raw_icons, icons.len);
+    janet_sfree(raw_icons);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_Camera2D(int32_t argc, Janet *argv) {
     if ((argc & 1) != 0) {
         janet_panicf("expected even number of arguments, got %d", argc);
@@ -867,6 +879,16 @@ static Janet cfun_UpdateCamera(int32_t argc, Janet *argv) {
         janet_panicf("unknown camera mode %v", kw);
     }
     UpdateCamera(camera, mode);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_UpdateCameraPro(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    Camera3D *camera = jaylib_getcamera3d(argv, 0);
+    Vector3 movement = jaylib_getvec3(argv, 1);
+    Vector3 rotation = jaylib_getvec3(argv, 2);
+    float zoom = (float) janet_getnumber(argv, 3);
+    UpdateCameraPro(camera, movement, rotation, zoom);
     return janet_wrap_nil();
 }
 
@@ -1234,6 +1256,10 @@ static JanetReg core_cfuns[] = {
         "(set-window-icon image)\n\n" 
         "Set icon for window"
     },
+    {"set-window-icons", cfun_SetWindowIcons, 
+        "(set-window-icons images)\n\n" 
+        "Set icon for window (multiple images for different resolutions)"
+    },
     {"begin-mode-3d", cfun_BeginMode3D, 
         "(begin-mode-3d camera)\n\n" 
         "Begin 3D mode with custom camera (3D)"
@@ -1269,7 +1295,12 @@ static JanetReg core_cfuns[] = {
     },
     {"update-camera", cfun_UpdateCamera, 
         "(update-camera camera mode)\n\n" 
-        "Update camera position for selected mode"
+        "Update camera position for selected mode."
+    },
+    {"update-camera-pro", cfun_UpdateCameraPro, 
+        "(update-camera-pro camera movement rotation zoom)\n\n" 
+        "Update camera movement/rotation.\n"
+        "Movement and rotation should be vec3."
     },
     {"begin-scissor-mode", cfun_BeginScissorMode,
         "(begin-scissor-mode x y w h)\n\n"

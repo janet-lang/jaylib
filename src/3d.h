@@ -345,6 +345,16 @@ static Janet cfun_LoadMaterialDefault(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(defaultMaterial);
 }
 
+static Janet cfun_IsMaterialReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Material material = *jaylib_getmaterial(argv, 0);
+    if (IsMaterialReady(material)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
+}
+
 static Janet cfun_UnloadMaterial(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Material *material = jaylib_getmaterial(argv, 0);
@@ -376,6 +386,16 @@ static Janet cfun_LoadModel(int32_t argc, Janet *argv) {
     Model *model = janet_abstract(&AT_Model, sizeof(Model));
     *model = LoadModel(fileName);
     return janet_wrap_abstract(model);
+}
+
+static Janet cfun_IsModelReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Model model = *jaylib_getmodel(argv, 0);
+    if (IsModelReady(model)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
 }
 
 static Janet cfun_LoadModelFromMesh(int32_t argc, Janet *argv) {
@@ -765,6 +785,10 @@ static JanetReg threed_cfuns[] = {
         "(load-material-default)\n\n"
         "Load and return the default material"    
     },
+    {"material-ready?", cfun_IsMaterialReady,
+        "(material-ready? material)\n\n"
+        "Checks if a material is ready"
+    },
     {"unload-material", cfun_UnloadMaterial,
         "(unload-material material)\n\n"
         "Unload material from GPU memory (VRAM)"    
@@ -824,6 +848,10 @@ static JanetReg threed_cfuns[] = {
     {"load-model", cfun_LoadModel,
         "(load-model filename)\n\n"
         "Load model from files (meshes and materials)"    
+    },
+    {"model-ready?", cfun_IsModelReady,
+        "(model-ready? model)\n\n"
+        "Checks if a model is ready"
     },
     {"load-model-from-mesh", cfun_LoadModelFromMesh,
         "(load-model-from-mesh mesh)\n\n"

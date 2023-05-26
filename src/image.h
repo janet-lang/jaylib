@@ -1,9 +1,20 @@
+#include "raylib.h"
 static Janet cfun_LoadImage(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     const char *fileName = janet_getcstring(argv, 0);
     Image *image = janet_abstract(&AT_Image, sizeof(Image));
     *image = LoadImage(fileName);
     return janet_wrap_abstract(image);
+}
+
+static Janet cfun_IsImageReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image image = *jaylib_getimage(argv, 0);
+    if (IsImageReady(image)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
 }
 
 static Janet cfun_ImageDimensions(int32_t argc, Janet *argv) {
@@ -35,6 +46,16 @@ static Janet cfun_LoadTexture(int32_t argc, Janet *argv) {
     Texture2D *texture = janet_abstract(&AT_Texture2D, sizeof(Texture2D));
     *texture = LoadTexture(fileName);
     return janet_wrap_abstract(texture);
+}
+
+static Janet cfun_IsTextureReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Texture2D texture = *jaylib_gettexture2d(argv, 0);
+    if (IsTextureReady(texture)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
 }
 
 static Janet cfun_LoadTextureFromImage(int32_t argc, Janet *argv) {
@@ -77,6 +98,16 @@ static Janet cfun_LoadRenderTexture(int32_t argc, Janet *argv) {
     RenderTexture *texture = janet_abstract(&AT_RenderTexture, sizeof(RenderTexture));
     *texture = LoadRenderTexture(width, height);
     return janet_wrap_abstract(texture);
+}
+
+static Janet cfun_IsRenderTextureReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    RenderTexture texture = *jaylib_getrendertexture(argv, 0);
+    if (IsRenderTextureReady(texture)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
 }
 
 static Janet cfun_UnloadImage(int32_t argc, Janet *argv) {
@@ -625,6 +656,10 @@ static const JanetReg image_cfuns[] = {
         "(load-image-1 file-name)\n\n"
         "Load image from file into CPU memory (RAM)"
     }, // load-image is janet core function, don't want to overwrite if we use (use jaylib)
+    {"image-ready?", cfun_IsImageReady,
+        "(image-ready? image)\n\n"
+        "Check if an image is ready"
+    },
     {"export-image", cfun_ExportImage, 
         "(export-image image file-name)\n\n"
         "Export image data to file, returns true on success"
@@ -637,6 +672,10 @@ static const JanetReg image_cfuns[] = {
         "(load-texture file-name)\n\n"
         "Load texture from file into GPU memory (VRAM)"
     },
+    {"texture-ready?", cfun_IsTextureReady,
+        "(texture-ready? texture)\n\n"
+        "Check if a texture is ready"
+    },
     {"load-texture-from-image", cfun_LoadTextureFromImage,  
         "(load-texture-from-image image)\n\n"
         "Load texture from image data"
@@ -648,6 +687,10 @@ static const JanetReg image_cfuns[] = {
     {"load-render-texture", cfun_LoadRenderTexture, 
         "(load-render-texture width height)\n\n"
         "Load texture for rendering (framebuffer)"
+    },
+    {"render-texture-ready?", cfun_IsRenderTextureReady,
+        "(render-texture-ready? texture)\n\n"
+        "Check if a render texture is ready"
     },
     {"unload-image", cfun_UnloadImage, 
         "(unload-image image)\n\n"
