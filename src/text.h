@@ -145,7 +145,7 @@ static Janet cfun_DrawTextCodepoints(int32_t argc, Janet *argv) {
     for (int32_t i = 0; i < ints.len; i++) {
         raw_ints[i] = janet_getinteger(ints.items, i);
     }
-    Vector2 positin = jaylib_getvec2(argv, 2);
+    Vector2 position = jaylib_getvec2(argv, 2);
     float fontSize = (float) janet_getnumber(argv, 3);
     float spacing = (float) janet_getnumber(argv, 4);
     Color tint = jaylib_getcolor(argv, 5);
