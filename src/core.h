@@ -1,3 +1,4 @@
+#include "raylib.h"
 static Janet cfun_InitWindow(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     int32_t width = janet_getinteger(argv, 0);
@@ -172,6 +173,13 @@ static Janet cfun_SetWindowSize(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_SetWindowOpacity(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    float opacity = (float) janet_getnumber(argv, 0);
+    SetWindowOpacity(opacity);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_GetWindowHandle(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
@@ -188,6 +196,18 @@ static Janet cfun_GetScreenHeight(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
     return janet_wrap_integer(GetScreenHeight());
+}
+
+static Janet cfun_GetRenderWidth(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    return janet_wrap_integer(GetRenderWidth());
+}
+
+static Janet cfun_GetRenderHeight(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    return janet_wrap_integer(GetRenderHeight());
 }
 
 static Janet cfun_GetMonitorCount(int32_t argc, Janet *argv) {
@@ -243,6 +263,20 @@ static Janet cfun_SetClipboardText(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     const char *text = janet_getcstring(argv, 0);
     SetClipboardText(text);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_EnableEventWaiting(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    EnableEventWaiting();
+    return janet_wrap_nil();
+}
+
+static Janet cfun_DisableEventWaiting(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    DisableEventWaiting();
     return janet_wrap_nil();
 }
 
@@ -668,6 +702,13 @@ static Janet cfun_GetMouseWheelMove(int32_t argc, Janet *argv) {
     return janet_wrap_number(GetMouseWheelMove());
 }
 
+static Janet cfun_GetMouseWheelMoveV(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    Vector2 mov = GetMouseWheelMoveV();
+    return jaylib_wrap_vec2(mov);
+}
+
 static Janet cfun_GetTouchX(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
@@ -687,38 +728,27 @@ static Janet cfun_GetTouchPosition(int32_t argc, Janet *argv) {
     return jaylib_wrap_vec2(pos);
 }
 
-static Janet cfun_GetDroppedFiles(int32_t argc, Janet *argv) {
+static Janet cfun_LoadDroppedFiles(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
-    int count;
-    /* Do we need to free this/these? */
-    char **results = GetDroppedFiles(&count);
+    FilePathList files = LoadDroppedFiles();
     JanetArray *array = janet_array(0);
-    for (int i = 0; i < count; i++) {
-        janet_array_push(array, janet_cstringv(results[i]));
+    for (int i = 0; i < files.count; i++) {
+        janet_array_push(array, janet_cstringv(files.paths[i]));
     }
-    return janet_wrap_array(results);
+    UnloadDroppedFiles(files);
+    return janet_wrap_array(array);
 }
 
-static Janet cfun_ClearDroppedFiles(int32_t argc, Janet *argv) {
+static Janet cfun_UnloadDroppedFiles(int32_t argc, Janet *argv) {
     (void) argv;
-    janet_fixarity(argc, 0);
-    ClearDroppedFiles();
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SaveStorageValue(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 2);
-    int32_t position = janet_getinteger(argv, 0);
-    int32_t value = janet_getinteger(argv, 1);
-    SaveStorageValue(position, value);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_LoadStorageValue(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
-    int32_t position = janet_getinteger(argv, 0);
-    return janet_wrap_integer(LoadStorageValue(position));
+    // It may look weird, but in raylib 4.5 Load/UnloadDroppedFiles use local state.
+    // I see no point to keep the original FilePathList struct in memory between those calls, so
+    // raylib's original UnloadDroppedFiles is called immediately after we convert FilePathList to
+    // Janet array. I personally would delete this particular function at all, but I'm unaware yet
+    // about the policy if we want to replicate original calls as close as possible.
+    return janet_wrap_nil();
 }
 
 static Janet cfun_OpenUrl(int32_t argc, Janet *argv) {
@@ -732,6 +762,18 @@ static Janet cfun_SetWindowIcon(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Image *image = jaylib_getimage(argv, 0);
     SetWindowIcon(*image);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_SetWindowIcons(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    JanetView icons = janet_getindexed(argv, 0);
+    Image *raw_icons = janet_smalloc(sizeof(Image) * icons.len);
+    for (int32_t i = 0; i < icons.len; i++) {
+        raw_icons[i] = *jaylib_getimage(icons.items, i);
+    }
+    SetWindowIcons(raw_icons, icons.len);
+    janet_sfree(raw_icons);
     return janet_wrap_nil();
 }
 
@@ -818,7 +860,7 @@ static Janet cfun_EndTextureMode(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_SetCameraMode(int32_t argc, Janet *argv) {
+static Janet cfun_UpdateCamera(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     Camera3D *camera = jaylib_getcamera3d(argv, 0);
     const uint8_t *kw = janet_getkeyword(argv, 1);
@@ -836,47 +878,17 @@ static Janet cfun_SetCameraMode(int32_t argc, Janet *argv) {
     } else {
         janet_panicf("unknown camera mode %v", kw);
     }
-    SetCameraMode(*camera, mode);
+    UpdateCamera(camera, mode);
     return janet_wrap_nil();
 }
 
-static Janet cfun_UpdateCamera(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
+static Janet cfun_UpdateCameraPro(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
     Camera3D *camera = jaylib_getcamera3d(argv, 0);
-    UpdateCamera(camera);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetCameraPanControl(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    int key = jaylib_getkey(argv, 0);
-    SetCameraPanControl(key);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetCameraAltControl(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    int key = jaylib_getkey(argv, 0);
-    SetCameraAltControl(key);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetCameraSmoothZoomControl(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    int key = jaylib_getkey(argv, 0);
-    SetCameraSmoothZoomControl(key);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_SetCameraMoveControls(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 6);
-    int k1 = jaylib_getkey(argv, 0);
-    int k2 = jaylib_getkey(argv, 1);
-    int k3 = jaylib_getkey(argv, 2);
-    int k4 = jaylib_getkey(argv, 3);
-    int k5 = jaylib_getkey(argv, 4);
-    int k6 = jaylib_getkey(argv, 5);
-    SetCameraMoveControls(k1, k2, k3, k4, k5, k6);
+    Vector3 movement = jaylib_getvec3(argv, 1);
+    Vector3 rotation = jaylib_getvec3(argv, 2);
+    float zoom = (float) janet_getnumber(argv, 3);
+    UpdateCameraPro(camera, movement, rotation, zoom);
     return janet_wrap_nil();
 }
 
@@ -958,6 +970,10 @@ static JanetReg core_cfuns[] = {
         "(set-window-size width height)\n\n" 
         "Set window dimensions"
     },
+    {"set-window-opacity", cfun_SetWindowOpacity,
+        "(set-window-opacity opacity)\n\n"
+        "Set window opacity [0.0f..1.0f]"
+    },
     {"get-window-handle", cfun_GetWindowHandle, 
         "(get-window-handle)\n\n" 
         "Get native window handle"
@@ -969,6 +985,14 @@ static JanetReg core_cfuns[] = {
     {"get-screen-height", cfun_GetScreenHeight, 
         "(get-screen-height)\n\n" 
         "Get current screen height"
+    },
+    {"get-render-width", cfun_GetRenderWidth, 
+        "(get-render-width)\n\n" 
+        "Get current render width (it considers HiDPI)"
+    },
+    {"get-render-height", cfun_GetRenderHeight, 
+        "(get-render-height)\n\n" 
+        "Get current render height (it considers HiDPI)"
     },
     {"get-monitor-count", cfun_GetMonitorCount, 
         "(get-monitor-count)\n\n" 
@@ -1005,6 +1029,14 @@ static JanetReg core_cfuns[] = {
     {"set-clipboard-text", cfun_SetClipboardText, 
         "(set-clipboard-text text)\n\n" 
         "Set clipboard text content"
+    },
+    {"enable-event-waiting", cfun_EnableEventWaiting, 
+        "(enable-event-waiting)\n\n" 
+        "Enable waiting for events on EndDrawing(), no automatic event polling"
+    },
+    {"disable-event-waiting", cfun_DisableEventWaiting, 
+        "(disable-event-waiting)\n\n" 
+        "Disable waiting for events on EndDrawing(), automatic events polling"
     },
     {"show-cursor", cfun_ShowCursor, 
         "(show-cursor)\n\n" 
@@ -1208,22 +1240,13 @@ static JanetReg core_cfuns[] = {
         "(get-touch-position index)\n\n" 
         "Get touch position XY for a touch point index (relative to screen size)"
     },
-    {"get-dropped-files", cfun_GetDroppedFiles, 
-        "(get-dropped-files count)\n\n" 
-        "Get dropped files names (memory should be freed)"
+    {"load-dropped-files", cfun_LoadDroppedFiles, 
+        "(load-dropped-files)\n\n" 
+        "Get dropped files names"
     },
-    {"clear-dropped-files", cfun_ClearDroppedFiles, 
-        "(clear-dropped-files)\n\n" 
-        "Clear dropped files paths buffer (free memory)"
-    },
-    {"save-storage-value", cfun_SaveStorageValue, 
-        "(save-storage-value position value)\n\n" 
-        "Save integer value to storage file (to defined position), "
-        "returns true on success"
-    },
-    {"load-storage-value", cfun_LoadStorageValue, 
-        "(load-storage-value position)\n\n" 
-        "Load integer value from storage file (from defined position)"
+    {"unload-dropped-files", cfun_UnloadDroppedFiles, 
+        "(unload-dropped-files path)\n\n" 
+        "Clear dropped files paths buffer"
     },
     {"open-url", cfun_OpenUrl, 
         "(open-url url)\n\n" 
@@ -1232,6 +1255,10 @@ static JanetReg core_cfuns[] = {
     {"set-window-icon", cfun_SetWindowIcon, 
         "(set-window-icon image)\n\n" 
         "Set icon for window"
+    },
+    {"set-window-icons", cfun_SetWindowIcons, 
+        "(set-window-icons images)\n\n" 
+        "Set icon for window (multiple images for different resolutions)"
     },
     {"begin-mode-3d", cfun_BeginMode3D, 
         "(begin-mode-3d camera)\n\n" 
@@ -1266,29 +1293,14 @@ static JanetReg core_cfuns[] = {
         " - :fov-y      = Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic \n"
         " - :projection = Camera projection: CAMERA\\_PERSPECTIVE or CAMERA\\_ORTHOGRAPHIC \n"
     },
-    {"set-camera-mode", cfun_SetCameraMode, 
-        "(set-camera-mode camera mode)\n\n" 
-        "Set camera mode (multiple camera modes available)"
-    },
     {"update-camera", cfun_UpdateCamera, 
-        "(update-camera camera)\n\n" 
-        "Update camera position for selected mode"
+        "(update-camera camera mode)\n\n" 
+        "Update camera position for selected mode."
     },
-    {"set-camera-pan-control", cfun_SetCameraPanControl, 
-        "(set-camera-pan-control key-pan)\n\n" 
-        "Set camera pan key to combine with mouse movement (free camera)"
-    },
-    {"set-camera-alt-control", cfun_SetCameraAltControl, 
-        "(set-camera-alt-control key-alt)\n\n" 
-        "Set camera alt key to combine with mouse movement (free camera)"
-    },
-    {"set-camera-smooth-zoom-control", cfun_SetCameraSmoothZoomControl, 
-        "(set-camera-smooth-zoom-control key-smooth-zoom)\n\n" 
-        "Set camera smooth zoom key to combine with mouse (free camera)"
-    },
-    {"set-camera-move-controls", cfun_SetCameraMoveControls, 
-        "(set-camera-move-controls key-front key-back key-right key-left key-up key-down)\n\n" 
-        "Set camera move controls (1st person and 3rd person cameras)"
+    {"update-camera-pro", cfun_UpdateCameraPro, 
+        "(update-camera-pro camera movement rotation zoom)\n\n" 
+        "Update camera movement/rotation.\n"
+        "Movement and rotation should be vec3."
     },
     {"begin-scissor-mode", cfun_BeginScissorMode,
         "(begin-scissor-mode x y w h)\n\n"

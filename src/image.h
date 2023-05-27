@@ -1,9 +1,20 @@
+#include "raylib.h"
 static Janet cfun_LoadImage(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     const char *fileName = janet_getcstring(argv, 0);
     Image *image = janet_abstract(&AT_Image, sizeof(Image));
     *image = LoadImage(fileName);
     return janet_wrap_abstract(image);
+}
+
+static Janet cfun_IsImageReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Image image = *jaylib_getimage(argv, 0);
+    if (IsImageReady(image)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
 }
 
 static Janet cfun_ImageDimensions(int32_t argc, Janet *argv) {
@@ -35,6 +46,16 @@ static Janet cfun_LoadTexture(int32_t argc, Janet *argv) {
     Texture2D *texture = janet_abstract(&AT_Texture2D, sizeof(Texture2D));
     *texture = LoadTexture(fileName);
     return janet_wrap_abstract(texture);
+}
+
+static Janet cfun_IsTextureReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Texture2D texture = *jaylib_gettexture2d(argv, 0);
+    if (IsTextureReady(texture)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
 }
 
 static Janet cfun_LoadTextureFromImage(int32_t argc, Janet *argv) {
@@ -77,6 +98,16 @@ static Janet cfun_LoadRenderTexture(int32_t argc, Janet *argv) {
     RenderTexture *texture = janet_abstract(&AT_RenderTexture, sizeof(RenderTexture));
     *texture = LoadRenderTexture(width, height);
     return janet_wrap_abstract(texture);
+}
+
+static Janet cfun_IsRenderTextureReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    RenderTexture texture = *jaylib_getrendertexture(argv, 0);
+    if (IsRenderTextureReady(texture)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
 }
 
 static Janet cfun_UnloadImage(int32_t argc, Janet *argv) {
@@ -456,17 +487,6 @@ static Janet cfun_DrawTextureRec(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_DrawTextureQuad(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 5);
-    Texture2D texture = *jaylib_gettexture2d(argv, 0);
-    Vector2 tiling = jaylib_getvec2(argv, 1);
-    Vector2 offset = jaylib_getvec2(argv, 2);
-    Rectangle quad = jaylib_getrect(argv, 3);
-    Color color = jaylib_getcolor(argv, 3);
-    DrawTextureQuad(texture, tiling, offset, quad, color);
-    return janet_wrap_nil();
-}
-
 static Janet cfun_DrawTexturePro(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 6);
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
@@ -636,6 +656,10 @@ static const JanetReg image_cfuns[] = {
         "(load-image-1 file-name)\n\n"
         "Load image from file into CPU memory (RAM)"
     }, // load-image is janet core function, don't want to overwrite if we use (use jaylib)
+    {"image-ready?", cfun_IsImageReady,
+        "(image-ready? image)\n\n"
+        "Check if an image is ready"
+    },
     {"export-image", cfun_ExportImage, 
         "(export-image image file-name)\n\n"
         "Export image data to file, returns true on success"
@@ -648,6 +672,10 @@ static const JanetReg image_cfuns[] = {
         "(load-texture file-name)\n\n"
         "Load texture from file into GPU memory (VRAM)"
     },
+    {"texture-ready?", cfun_IsTextureReady,
+        "(texture-ready? texture)\n\n"
+        "Check if a texture is ready"
+    },
     {"load-texture-from-image", cfun_LoadTextureFromImage,  
         "(load-texture-from-image image)\n\n"
         "Load texture from image data"
@@ -659,6 +687,10 @@ static const JanetReg image_cfuns[] = {
     {"load-render-texture", cfun_LoadRenderTexture, 
         "(load-render-texture width height)\n\n"
         "Load texture for rendering (framebuffer)"
+    },
+    {"render-texture-ready?", cfun_IsRenderTextureReady,
+        "(render-texture-ready? texture)\n\n"
+        "Check if a render texture is ready"
     },
     {"unload-image", cfun_UnloadImage, 
         "(unload-image image)\n\n"
@@ -835,10 +867,6 @@ static const JanetReg image_cfuns[] = {
     {"draw-texture-pro", cfun_DrawTexturePro, 
         "(draw-texture-pro texture source dest origin rotation tint)\n\n"
         "Draw a part of a texture defined by a rectangle with 'pro' parameters"
-    },
-    {"draw-texture-quad", cfun_DrawTextureQuad, 
-        "(draw-texture-quad texture [t1 t2] [off-x off-y] quad tint)\n\n"
-        "Draw texture quad with tiling and offset parameters"
     },
     {"draw-texture-rec", cfun_DrawTextureRec, 
         "(draw-texture-rec texture source position tint)\n\n"

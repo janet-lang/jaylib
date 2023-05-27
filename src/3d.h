@@ -52,18 +52,6 @@ static Janet cfun_DrawCube(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_DrawCubeTexture(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 6);
-    Texture2D *texture = jaylib_gettexture2d(argv, 0);
-    Vector3 position = jaylib_getvec3(argv, 1);
-    float width = (float) janet_getnumber(argv, 2);
-    float height = (float) janet_getnumber(argv, 3);
-    float length = (float) janet_getnumber(argv, 4);
-    Color color = jaylib_getcolor(argv, 5);
-    DrawCubeTexture(*texture, position, width, height, length, color);
-    return janet_wrap_nil();
-}
-
 static Janet cfun_DrawGrid(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int slices = janet_getinteger(argv, 0);
@@ -357,6 +345,16 @@ static Janet cfun_LoadMaterialDefault(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(defaultMaterial);
 }
 
+static Janet cfun_IsMaterialReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Material material = *jaylib_getmaterial(argv, 0);
+    if (IsMaterialReady(material)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
+}
+
 static Janet cfun_UnloadMaterial(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Material *material = jaylib_getmaterial(argv, 0);
@@ -388,6 +386,16 @@ static Janet cfun_LoadModel(int32_t argc, Janet *argv) {
     Model *model = janet_abstract(&AT_Model, sizeof(Model));
     *model = LoadModel(fileName);
     return janet_wrap_abstract(model);
+}
+
+static Janet cfun_IsModelReady(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Model model = *jaylib_getmodel(argv, 0);
+    if (IsModelReady(model)) {
+        return janet_wrap_true();
+    } else {
+        return janet_wrap_false();
+    }
 }
 
 static Janet cfun_LoadModelFromMesh(int32_t argc, Janet *argv) {
@@ -506,13 +514,6 @@ static Janet cfun_GenMeshTangents(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Mesh *mesh = jaylib_getmesh(argv, 0);
     GenMeshTangents(mesh);
-    return janet_wrap_nil();
-}
-
-static Janet cfun_GenMeshBinormals(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    Mesh *mesh = jaylib_getmesh(argv, 0);
-    GenMeshBinormals(mesh);
     return janet_wrap_nil();
 }
 
@@ -695,14 +696,6 @@ static Janet cfun_GetRayCollisionQuad(int32_t argc, Janet *argv) {
     return jaylib_wrap_raycollision(result);
 }
 
-static Janet cfun_GetRayCollisionModel(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 2);
-    Ray ray = jaylib_getray(argv, 0);
-    Model *model = jaylib_getmodel(argv, 1);
-    RayCollision result = GetRayCollisionModel(ray, *model);
-    return jaylib_wrap_raycollision(result);
-}
-
 static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
@@ -735,10 +728,6 @@ static JanetReg threed_cfuns[] = {
     {"draw-cube-wires-v", cfun_DrawCubeWiresV, 
         "(draw-cube-wires-v [center-x center-y center-z] [width height length] color)\n\n"
         "Draw cube wires (Vector version)"
-    },
-    {"draw-cube-texture", cfun_DrawCubeTexture, 
-        "(draw-cube-texture texture [center-x center-y center-z] width height length color)\n\n"
-        "Draw cube textured"
     },
     {"draw-grid", cfun_DrawGrid, 
         "(draw-grid slices spacing)\n\n"
@@ -795,6 +784,10 @@ static JanetReg threed_cfuns[] = {
     {"load-material-default", cfun_LoadMaterialDefault,
         "(load-material-default)\n\n"
         "Load and return the default material"    
+    },
+    {"material-ready?", cfun_IsMaterialReady,
+        "(material-ready? material)\n\n"
+        "Checks if a material is ready"
     },
     {"unload-material", cfun_UnloadMaterial,
         "(unload-material material)\n\n"
@@ -856,6 +849,10 @@ static JanetReg threed_cfuns[] = {
         "(load-model filename)\n\n"
         "Load model from files (meshes and materials)"    
     },
+    {"model-ready?", cfun_IsModelReady,
+        "(model-ready? model)\n\n"
+        "Checks if a model is ready"
+    },
     {"load-model-from-mesh", cfun_LoadModelFromMesh,
         "(load-model-from-mesh mesh)\n\n"
         "Load model from generated mesh (default material)"    
@@ -907,10 +904,6 @@ static JanetReg threed_cfuns[] = {
     {"gen-mesh-tangents", cfun_GenMeshTangents,
         "(gen-mesh-tangents mesh)\n\n"
         "Compute mesh tangents"    
-    },
-    {"gen-mesh-binormals", cfun_GenMeshBinormals,
-        "(gen-mesh-binormals mesh)\n\n"
-        "Compute mesh binormals"    
     },
     {"draw-model", cfun_DrawModel,
         "(draw-model model position scale tint)\n\n"
@@ -971,10 +964,6 @@ static JanetReg threed_cfuns[] = {
     {"get-ray-collision-quad", cfun_GetRayCollisionQuad,
         "(get-ray-collision-quad ray p1 p2 p3 p4)\n\n"
         "Get collision info between ray and quad"    
-    },
-    {"get-ray-collision-model", cfun_GetRayCollisionModel,
-        "(get-ray-collision-model ray model)\n\n"
-        "Get collision info between ray and model"    
     },
     {NULL, NULL, NULL}
 };
