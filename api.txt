@@ -381,16 +381,16 @@
 
 // Shader loading/unloading functions
 [ ] char *LoadText(const char *fileName)
-[ ] Shader LoadShader(const char *vsFileName, const char *fsFileName)
+[x] Shader LoadShader(const char *vsFileName, const char *fsFileName)
 [ ] Shader LoadShaderCode(char *vsCode, char *fsCode)
-[ ] void UnloadShader(Shader shader)
+[x] void UnloadShader(Shader shader)
 
 [ ] Shader GetShaderDefault(void)
 [ ] Texture2D GetTextureDefault(void)
 
 // Shader configuration functions
-[ ] int GetShaderLocation(Shader shader, const char *uniformName)
-[ ] void SetShaderValue(Shader shader, int uniformLoc, const void *value, int uniformType)
+[x] int GetShaderLocation(Shader shader, const char *uniformName)
+[x] void SetShaderValue(Shader shader, int uniformLoc, const void *value, int uniformType)
 [ ] void SetShaderValueV(Shader shader, int uniformLoc, const void *value, int uniformType, int count)
 [ ] void SetShaderValueMatrix(Shader shader, int uniformLoc, Matrix mat)
 [ ] void SetShaderValueTexture(Shader shader, int uniformLoc, Texture2D texture)
@@ -399,8 +399,8 @@
 [ ] Matrix GetMatrixModelview()
 
 // Shading begin/end functions
-[ ] void BeginShaderMode(Shader shader)
-[ ] void EndShaderMode(void)
+[x] void BeginShaderMode(Shader shader)
+[x] void EndShaderMode(void)
 [ ] void BeginBlendMode(int mode)
 [ ] void EndBlendMode(void)
 [ ] void BeginScissorMode(int x, int y, int width, int height)

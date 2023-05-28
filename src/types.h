@@ -188,6 +188,14 @@ static const KeyDef mouse_defs[] = {
     {"right", MOUSE_RIGHT_BUTTON}
 };
 
+static const KeyDef uniform_type_defs[] = {
+    {"float", SHADER_UNIFORM_FLOAT},
+    {"int", SHADER_UNIFORM_INT},
+    {"vec2", SHADER_UNIFORM_VEC2},
+    {"vec3", SHADER_UNIFORM_VEC3},
+    {"vec4", SHADER_UNIFORM_VEC4}
+};
+
 static int jaylib_castdef(const Janet *argv, int32_t n, const KeyDef *defs, int count) {
     if (janet_checkint(argv[n])) {
         return janet_unwrap_integer(argv[n]);
@@ -224,6 +232,10 @@ static int jaylib_getaxis(const Janet *argv, int32_t n) {
 
 static int jaylib_getmouse(const Janet *argv, int32_t n) {
     return jaylib_castdef(argv, n, mouse_defs, sizeof(mouse_defs) / sizeof(KeyDef));
+}
+
+static int jaylib_getuniformtype(const Janet *argv, int32_t n) {
+    return jaylib_castdef(argv, n, uniform_type_defs, sizeof(uniform_type_defs) / sizeof(KeyDef));
 }
 
 struct named_color {
@@ -329,6 +341,16 @@ static Vector3 jaylib_getvec3(const Janet *argv, int32_t n) {
         idx_getfloat(idx, 0),
         idx_getfloat(idx, 1),
         idx_getfloat(idx, 2)
+    };
+}
+
+static Vector4 jaylib_getvec4(const Janet *argv, int32_t n) {
+    JanetView idx = janet_getindexed(argv, n);
+    return (Vector4) {
+        idx_getfloat(idx, 0),
+        idx_getfloat(idx, 1),
+        idx_getfloat(idx, 2),
+        idx_getfloat(idx, 3)
     };
 }
 
@@ -442,6 +464,14 @@ static TextureCubemap *jaylib_gettexturecubemap(const Janet *argv, int32_t n) {
     return ((TextureCubemap *)janet_getabstract(argv, n, &AT_TextureCubemap));
 }
 */
+static const JanetAbstractType AT_Shader = {
+    "jaylib/shader",
+    JANET_ATEND_NAME
+};
+
+static Shader *jaylib_getshader(const Janet *argv, int32_t n) {
+    return ((Shader *)janet_getabstract(argv, n, &AT_Shader));
+};
 
 static const JanetAbstractType AT_Texture2D = {
     "jaylib/texture2d",
