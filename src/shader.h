@@ -53,25 +53,35 @@ static Janet cfun_SetShaderValue(int32_t argc, Janet *argv) {
     int uniformType = jaylib_getuniformtype(argv, 3);
     switch (uniformType) {
         case SHADER_UNIFORM_FLOAT:
+        {
             float valueFloat = (float) janet_getnumber(argv, 2);
             SetShaderValue(*shader, locIndex, (const void*) &valueFloat, uniformType);
             break;
+        }
         case SHADER_UNIFORM_INT:
+        {
             int valueInt = janet_getinteger(argv, 2);
             SetShaderValue(*shader, locIndex, (const void*) &valueInt, uniformType);
             break;
+        }
         case SHADER_UNIFORM_VEC2:
+        {
             Vector2 valueVec2 = jaylib_getvec2(argv, 2);
             SetShaderValue(*shader, locIndex, (const void*) &valueVec2, uniformType);
             break;
+        }
         case SHADER_UNIFORM_VEC3:
+        {
             Vector3 valueVec3 = jaylib_getvec3(argv, 2);
             SetShaderValue(*shader, locIndex, (const void*) &valueVec3, uniformType);
             break;
+        }
         case SHADER_UNIFORM_VEC4:
+        {
             Vector4 valueVec4 = jaylib_getvec4(argv, 2);
             SetShaderValue(*shader, locIndex, (const void*) &valueVec4, uniformType);
             break;
+        }
         default:
             janet_panicf("unknown uniform type %d", uniformType);
             break;
