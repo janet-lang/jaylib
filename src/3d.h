@@ -449,7 +449,7 @@ static Janet cfun_UnloadMesh(int32_t argc, Janet *argv) {
 static Janet cfun_LoadModelAnimations(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     const char *fileName = janet_getcstring(argv, 0);
-    int animCount;
+    unsigned int animCount;
     ModelAnimation *anims = LoadModelAnimations(fileName, &animCount);
     JanetArray *array = janet_array(animCount);
     array->count = animCount;
