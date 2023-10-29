@@ -33,6 +33,12 @@ static Janet cfun_IsWindowMinimized(int32_t argc, Janet *argv) {
     return janet_wrap_boolean(IsWindowMinimized());
 }
 
+static Janet cfun_IsWindowFocused(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    return janet_wrap_boolean(IsWindowFocused());
+}
+
 static Janet cfun_IsWindowResized(int32_t argc, Janet *argv) {
     (void) argv;
     janet_fixarity(argc, 0);
@@ -929,6 +935,10 @@ static JanetReg core_cfuns[] = {
     {"window-minimized?", cfun_IsWindowMinimized, 
         "(window-minimized?)\n\n" 
         "Check if window is currently minimized"
+    },
+    {"window-focused?", cfun_IsWindowFocused, 
+        "(window-focused?)\n\n" 
+        "Check if window is currently focused"
     },
     {"window-resized?", cfun_IsWindowResized, 
         "(window-resized?)\n\n" 
