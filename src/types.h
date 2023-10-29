@@ -700,3 +700,13 @@ static Janet jaylib_wrap_raycollision(RayCollision rayCollision) {
     janet_table_put(table, janet_wrap_keyword("normal"), jaylib_wrap_vec3(rayCollision.normal));
     return janet_wrap_table(table);
 }
+
+static const unsigned char *jaylib_getunsignedcstring(const Janet *argv, int32_t n) {
+    if (janet_checktype(argv[n], JANET_BUFFER)) {
+        JanetBuffer *buf = janet_unwrap_buffer(argv[n]);
+        janet_buffer_push_u8(buf, 0);
+        buf->count--;
+        return (const unsigned char *)buf->data;
+    }
+    return (const unsigned char *)janet_getcstring(argv, n);
+}

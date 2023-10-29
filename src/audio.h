@@ -178,6 +178,16 @@ static Janet cfun_LoadMusicStream(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(music);
 }
 
+static Janet cfun_LoadMusicStreamFromMemory(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    const char *fileType = janet_getcstring(argv, 0);
+    const unsigned char *data = jaylib_getunsignedcstring(argv, 1);
+    int dataSize = janet_getinteger(argv, 2);
+    Music *music = janet_abstract(&AT_Music, sizeof(Music));
+    *music = LoadMusicStreamFromMemory(fileType, data, dataSize);
+    return janet_wrap_abstract(music);
+}
+
 static Janet cfun_IsMusicReady(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Music music = *jaylib_getmusic(argv, 0);
@@ -445,6 +455,10 @@ static JanetReg audio_cfuns[] = {
     {"load-music-stream", cfun_LoadMusicStream, 
         "(load-music-stream file-name)\n\n"
         "Load music stream from file"
+    },
+    {"load-music-stream-from-memory", cfun_LoadMusicStreamFromMemory, 
+        "(load-music-stream-from-memory file-type data data-size)\n\n"
+        "Load music stream from data"
     },
     {"music-ready?", cfun_IsMusicReady,
         "(music-ready? wave)\n\n"
