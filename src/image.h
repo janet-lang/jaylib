@@ -509,25 +509,15 @@ static Janet cfun_GenImageColor(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(image);
 }
 
-static Janet cfun_GenImageGradientV(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 4);
+static Janet cfun_GenImageGradientLinear(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
     int width = janet_getinteger(argv, 0);
     int height = janet_getinteger(argv, 1);
-    Color c1 = jaylib_getcolor(argv, 2);
-    Color c2 = jaylib_getcolor(argv, 3);
+    int direction = janet_getinteger(argv, 2);
+    Color start = jaylib_getcolor(argv, 3);
+    Color end = jaylib_getcolor(argv, 4);
     Image *image = janet_abstract(&AT_Image, sizeof(Image));
-    *image = GenImageGradientV(width, height, c1, c2);
-    return janet_wrap_abstract(image);
-}
-
-static Janet cfun_GenImageGradientH(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 4);
-    int width = janet_getinteger(argv, 0);
-    int height = janet_getinteger(argv, 1);
-    Color c1 = jaylib_getcolor(argv, 2);
-    Color c2 = jaylib_getcolor(argv, 3);
-    Image *image = janet_abstract(&AT_Image, sizeof(Image));
-    *image = GenImageGradientH(width, height, c1, c2);
+    *image = GenImageGradientLinear(width, height, direction, start, end);
     return janet_wrap_abstract(image);
 }
 
@@ -540,6 +530,18 @@ static Janet cfun_GenImageGradientRadial(int32_t argc, Janet *argv) {
     Color outer = jaylib_getcolor(argv, 4);
     Image *image = janet_abstract(&AT_Image, sizeof(Image));
     *image = GenImageGradientRadial(width, height, density, inner, outer);
+    return janet_wrap_abstract(image);
+}
+
+static Janet cfun_GenImageGradientSquare(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 5);
+    int width = janet_getinteger(argv, 0);
+    int height = janet_getinteger(argv, 1);
+    float density = (float) janet_getnumber(argv, 2);
+    Color inner = jaylib_getcolor(argv, 3);
+    Color outer = jaylib_getcolor(argv, 4);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = GenImageGradientSquare(width, height, density, inner, outer);
     return janet_wrap_abstract(image);
 }
 
@@ -876,17 +878,17 @@ static const JanetReg image_cfuns[] = {
         "(gen-image-color width height color)\n\n"
         "Generate image: plain color"
     },
-    {"gen-image-gradient-v", cfun_GenImageGradientV, 
-        "(gen-image-gradient-v width height top bottom)\n\n"
-        "Generate image: vertical gradient"
-    },
-    {"gen-image-gradient-h", cfun_GenImageGradientH, 
-        "(gen-image-gradient-h width height left right)\n\n"
-        "Generate image: horizontal gradient"
+    {"gen-image-gradient-linear", cfun_GenImageGradientLinear, 
+        "(gen-image-gradient-linear width height direction start end)\n\n"
+        "Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient"
     },
     {"gen-image-gradient-radial", cfun_GenImageGradientRadial, 
         "(gen-image-gradient-radial width height density inner outer)\n\n"
         "Generate image: radial gradient"
+    },
+    {"gen-image-gradient-square", cfun_GenImageGradientSquare, 
+        "(gen-image-gradient-square width height density inner outer)\n\n"
+        "Generate image: square gradient"
     },
     {"gen-image-checked", cfun_GenImageChecked, 
         "(gen-image-checked width height checks-x checks-y color1 color2)\n\n"
