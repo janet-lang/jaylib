@@ -42,17 +42,21 @@ static Janet cfun_IsFontReady(int32_t argc, Janet *argv) {
 }
 
 static Janet cfun_LoadFontEx(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 3);
+    janet_arity(argc, 2, 3);
     const char *fileName = janet_getcstring(argv, 0);
     int fontSize = janet_getinteger(argv, 1);
-    JanetView ints = janet_getindexed(argv, 2);
-    int *raw_ints = janet_smalloc(sizeof(int) * ints.len);
-    for (int32_t i = 0; i < ints.len; i++) {
-        raw_ints[i] = janet_getinteger(ints.items, i);
-    }
     Font *font = janet_abstract(&AT_Font, sizeof(Font));
-    *font = LoadFontEx(fileName, fontSize, raw_ints, ints.len);
-    janet_sfree(raw_ints);
+    if (argc == 2) {
+        *font = LoadFontEx(fileName, fontSize, NULL, 0);
+    } else {
+        JanetView ints = janet_getindexed(argv, 2);
+        int *raw_ints = janet_smalloc(sizeof(int) * ints.len);
+        for (int32_t i = 0; i < ints.len; i++) {
+            raw_ints[i] = janet_getinteger(ints.items, i);
+        }
+        *font = LoadFontEx(fileName, fontSize, raw_ints, ints.len);
+        janet_sfree(raw_ints);
+    }
     return janet_wrap_abstract(font);
 }
 
