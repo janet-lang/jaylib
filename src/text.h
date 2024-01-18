@@ -204,7 +204,7 @@ static JanetReg text_cfuns[] = {
         "Check if a font is ready"
     },
     {"load-font-ex", cfun_LoadFontEx,
-        "(load-font-ex file-name font-size font-chars)\n\n"
+        "(load-font-ex file-name font-size &opt font-chars)\n\n"
         "Load font from file with extended parameters"
     },
     {"load-font-from-memory", cfun_LoadFontFromMemory,
