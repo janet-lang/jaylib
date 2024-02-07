@@ -487,6 +487,18 @@ static Janet cfun_DrawTextureRec(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawTextureNPatch(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 6);
+    Texture2D texture = *jaylib_gettexture2d(argv, 0);
+    NPatchInfo nPatchInfo = jaylib_getnpatchinfo(argv, 1);
+    Rectangle rect = jaylib_getrect(argv, 2);
+    Vector2 origin = jaylib_getvec2(argv, 3);
+    float rotation = (float)janet_getnumber(argv, 4);
+    Color color = jaylib_getcolor(argv, 5);
+    DrawTextureNPatch(texture, nPatchInfo, rect, origin, rotation, color);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_DrawTexturePro(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 6);
     Texture2D texture = *jaylib_gettexture2d(argv, 0);
@@ -873,6 +885,10 @@ static const JanetReg image_cfuns[] = {
     {"draw-texture-rec", cfun_DrawTextureRec, 
         "(draw-texture-rec texture source position tint)\n\n"
         "Draw a part of a texture defined by a rectangle"
+    },
+    {"draw-texture-n-patch", cfun_DrawTextureNPatch,
+        "(draw-texture-n-patch texture n-patch-info dest origin rotation tint)\n\n"
+        "Draw a texture (or part of it) that stretches or shrinks nicely"
     },
     {"gen-image-color", cfun_GenImageColor, 
         "(gen-image-color width height color)\n\n"
