@@ -396,6 +396,30 @@ static Matrix jaylib_getmatrix(const Janet *argv, int32_t n) {
     };
 }
 
+static const KeyDef nine_patch_layouts[] = {
+    {"npatch-nine-patch", NPATCH_NINE_PATCH},
+    {"npatch-three-patch-vertical", NPATCH_THREE_PATCH_VERTICAL},
+    {"npatch-three-patch-horizontal", NPATCH_THREE_PATCH_HORIZONTAL}
+};
+
+static int jaylib_getnpatchlayout(const Janet *argv, int32_t n) {
+    return jaylib_castdef(argv, n, nine_patch_layouts, sizeof(nine_patch_layouts) / sizeof(KeyDef));
+}
+
+static NPatchInfo jaylib_getnpatchinfo(const Janet *argv, int32_t n) {
+    JanetView idx = janet_getindexed(argv, n);
+    Rectangle rect = jaylib_getrect(idx.items, 0);
+
+    return (NPatchInfo){
+        rect,
+        janet_unwrap_integer(idx.items[1]),
+        janet_unwrap_integer(idx.items[2]),
+        janet_unwrap_integer(idx.items[3]),
+        janet_unwrap_integer(idx.items[4]),
+        jaylib_getnpatchlayout(idx.items, 5),
+    };
+}
+
 static const KeyDef pixel_format_defs[] = {
     {"astc-4x4-rgba", PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA},
     {"astc-8x8-rgba", PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA},
