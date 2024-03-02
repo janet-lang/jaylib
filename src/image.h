@@ -925,5 +925,9 @@ static const JanetReg image_cfuns[] = {
         "(set-texture-wrap texture wrap)\n\n"
         "Set texture wrapping mode"
     },
+    {"load-image-from-memory", cfun_LoadImageFromMemory,
+        "(load-image-from-memory filetype data size)\n\n"
+        "Load image from memory buffer, fileType refers to extension: i.e. '.png'"
+    },
     {NULL, NULL, NULL}
 };
