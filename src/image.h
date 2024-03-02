@@ -639,6 +639,17 @@ static Janet cfun_GetImageDimensions(int32_t argc, Janet *argv) {
     return jaylib_wrap_vec2(dim);
 }
 
+static Janet cfun_LoadImageFromMemory(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 3);
+    const char *fileType = janet_getcstring(argv, 0);
+    const unsigned char *fileData = janet_getcstring(argv, 0);
+    int dataSize = janet_getinteger(argv, 0);
+
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = LoadImageFromMemory(fileType, fileData, dataSize);
+    return janet_wrap_abstract(image);
+}
+
 /*
 // Image/Texture2D data loading/unloading/saving functions
 RLAPI Image LoadImagePro(void *data, int width, int height, int format);                                 // Load image from raw data with parameters
