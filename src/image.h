@@ -642,8 +642,8 @@ static Janet cfun_GetImageDimensions(int32_t argc, Janet *argv) {
 static Janet cfun_LoadImageFromMemory(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 3);
     const char *fileType = janet_getcstring(argv, 0);
-    const unsigned char *fileData = janet_getcstring(argv, 0);
-    int dataSize = janet_getinteger(argv, 0);
+    const unsigned char *fileData = janet_getbytes(argv, 1).bytes;
+    int dataSize = janet_getinteger(argv, 2);
 
     Image *image = janet_abstract(&AT_Image, sizeof(Image));
     *image = LoadImageFromMemory(fileType, fileData, dataSize);
