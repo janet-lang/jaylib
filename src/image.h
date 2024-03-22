@@ -16,6 +16,30 @@ static Janet cfun_LoadImageFromBuffer(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(image);
 }
 
+static Janet cfun_GetBitmapHeaderBuffer(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    int16_t sizeX = (int16_t)janet_getnumber(argv, 0);
+    int16_t sizeY = (int16_t)janet_getnumber(argv, 1);
+    const int32_t headerlength = 26;
+    const int32_t magicheadersize = 12;
+    const int16_t planes = 1;
+    const int16_t bpp = 24;
+    const int32_t filesize = headerlength + (sizeX * sizeY);
+
+    JanetBuffer* data = janet_buffer(filesize);
+    janet_buffer_push_cstring(data, "BM");
+    janet_buffer_push_u32(data, filesize);
+    janet_buffer_push_u32(data, 0); // should be two int16, reserved.
+    janet_buffer_push_u32(data, headerlength);
+    janet_buffer_push_u32(data, magicheadersize); // if 12 we can skip alot of complicated(?) stuff in the header
+    janet_buffer_push_u16(data, sizeX);
+    janet_buffer_push_u16(data, sizeY);
+    janet_buffer_push_u16(data, planes);
+    janet_buffer_push_u16(data, bpp);
+
+    return janet_wrap_buffer(data);
+}
+
 static Janet cfun_IsImageReady(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Image image = *jaylib_getimage(argv, 0);
@@ -670,6 +694,10 @@ static const JanetReg image_cfuns[] = {
     {"load-image-from-buffer", cfun_LoadImageFromBuffer, 
         "(load-image-from-buffer file-type buffer)\n\n"
         "Load buffer as image object"
+    },
+    {"get-bitmap-header-buffer", cfun_GetBitmapHeaderBuffer, 
+        "(get-bitmap-header-buffer dimx dimy)\n\n"
+        "returns a header for a 24bpp bitmap with dimensions dimx*dimy"
     },
     {"image-ready?", cfun_IsImageReady,
         "(image-ready? image)\n\n"
