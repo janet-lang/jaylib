@@ -7,6 +7,15 @@ static Janet cfun_LoadImage(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(image);
 }
 
+static Janet cfun_LoadImageFromBuffer(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    const char *fileType = janet_getcstring(argv, 0);
+    JanetBuffer* data = janet_getbuffer(argv, 1);
+    Image *image = janet_abstract(&AT_Image, sizeof(Image));
+    *image = LoadImageFromMemory(fileType, data->data, data->count);
+    return janet_wrap_abstract(image);
+}
+
 static Janet cfun_IsImageReady(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Image image = *jaylib_getimage(argv, 0);
@@ -658,6 +667,10 @@ static const JanetReg image_cfuns[] = {
         "(load-image-1 file-name)\n\n"
         "Load image from file into CPU memory (RAM)"
     }, // load-image is janet core function, don't want to overwrite if we use (use jaylib)
+    {"load-image-from-buffer", cfun_LoadImageFromBuffer, 
+        "(load-image-from-buffer file-type buffer)\n\n"
+        "Load buffer as image object"
+    },
     {"image-ready?", cfun_IsImageReady,
         "(image-ready? image)\n\n"
         "Check if an image is ready"
