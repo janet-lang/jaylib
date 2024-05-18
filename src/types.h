@@ -478,9 +478,9 @@ int texture2d_get(void* p, Janet key, Janet *out);
 static const JanetAbstractType AT_Texture2D = {
     "jaylib/texture2d",
     NULL,
-	NULL,
-	texture2d_get,
-    JANET_ATEND_GET,
+    NULL,
+    texture2d_get,
+    JANET_ATEND_GET
 };
 
 static Texture2D *jaylib_gettexture2d(const Janet *argv, int32_t n) {
