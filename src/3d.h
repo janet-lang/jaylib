@@ -7,6 +7,14 @@ static Janet cfun_DrawLine3D(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_DrawPoint3D(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector3 pos = jaylib_getvec3(argv, 0);
+    Color color = jaylib_getcolor(argv, 1);
+    DrawPoint3D(pos, color);
+    return janet_wrap_nil();
+}
+
 static Janet cfun_DrawCircle3D(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 5);
     Vector3 center = jaylib_getvec3(argv, 0);
@@ -700,6 +708,10 @@ static JanetReg threed_cfuns[] = {
     {"draw-line-3d", cfun_DrawLine3D, 
         "(draw-line-3d [start-x start-y start-z] [end-x end-y end-z] color)\n\n"
         "Draw a line in 3D world space"
+    },
+    {"draw-point-3d", cfun_DrawPoint3D, 
+        "(draw-point-3d [center-x center-y center-z] color)\n\n"
+        "Draw a point in 3D space, actually a small line"
     },
     {"draw-circle-3d", cfun_DrawCircle3D, 
         "(draw-circle-3d [center-x center-y center-z] radius [rot-x rot-y rot-z] rotation-angle color)\n\n"

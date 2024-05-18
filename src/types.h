@@ -497,13 +497,40 @@ static Shader *jaylib_getshader(const Janet *argv, int32_t n) {
     return ((Shader *)janet_getabstract(argv, n, &AT_Shader));
 };
 
+int texture2d_get(void* p, Janet key, Janet *out);
+
 static const JanetAbstractType AT_Texture2D = {
     "jaylib/texture2d",
-    JANET_ATEND_NAME
+    NULL,
+    NULL,
+    texture2d_get,
+    JANET_ATEND_GET
 };
 
 static Texture2D *jaylib_gettexture2d(const Janet *argv, int32_t n) {
     return ((Texture2D *)janet_getabstract(argv, n, &AT_Texture2D));
+}
+
+int texture2d_get(void* p, Janet key, Janet *out) {
+	Texture2D *texture = (Texture2D *) p;
+	
+	if (!janet_checktype(key, JANET_KEYWORD)) {
+		janet_panic("expected keyword");
+	}
+
+	const uint8_t *kw = janet_unwrap_keyword(key);
+
+	if (!janet_cstrcmp(kw, "width")) {
+		*out = janet_wrap_integer(texture->width);
+		return 1;
+	}
+	
+	if (!janet_cstrcmp(kw, "height")) {
+		*out = janet_wrap_integer(texture->height);
+		return 1;
+	}
+	
+	return 0;
 }
 
 static const JanetAbstractType AT_Image = {
