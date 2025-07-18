@@ -269,7 +269,7 @@
 [x] void DrawTextureRec(Texture2D texture, Rectangle sourceRec, Vector2 position, Color tint)
 [x] void DrawTextureQuad(Texture2D texture, Vector2 tiling, Vector2 offset, Rectangle quad, Color tint)
 [x] void DrawTexturePro(Texture2D texture, Rectangle sourceRec, Rectangle destRec, Vector2 origin, float rotation, Color tint)
-[ ] void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle destRec, Vector2 origin, float rotation, Color tint)
+[x] void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle destRec, Vector2 origin, float rotation, Color tint)
 
 // Font loading/unloading functions
 [x] Font GetFontDefault(void)
