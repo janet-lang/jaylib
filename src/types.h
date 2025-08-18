@@ -478,6 +478,15 @@ static Janet jaylib_wrap_vec3(Vector3 x) {
     return janet_wrap_tuple(janet_tuple_end(tup));
 }
 
+static Janet jaylib_wrap_vec4(Vector4 x) {
+    Janet *tup = janet_tuple_begin(3);
+    tup[0] = janet_wrap_number(x.x);
+    tup[1] = janet_wrap_number(x.y);
+    tup[2] = janet_wrap_number(x.z);
+    tup[3] = janet_wrap_number(x.w);
+    return janet_wrap_tuple(janet_tuple_end(tup));
+}
+
 static Janet jaylib_wrap_matrix(Matrix x) {
     Janet *tup = janet_tuple_begin(16);
     // First row

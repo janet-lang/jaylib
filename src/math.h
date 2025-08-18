@@ -1655,6 +1655,536 @@ static Janet cfun_MatrixToFloatV(int32_t argc, Janet *argv) {
   return janet_wrap_array(arr);
 }
 
+static Janet cfun_QuaternionAdd(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q1 = jaylib_getvec4(argv, 0);
+  Quaternion q2 = jaylib_getvec4(argv, 1);
+
+  Quaternion result = {q1.x + q2.x, q1.y + q2.y, q1.z + q2.z, q1.w + q2.w};
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionAddValue(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q = jaylib_getvec4(argv, 0);
+  float add = janet_getnumber(argv, 1);
+
+  Quaternion result = {q.x + add, q.y + add, q.z + add, q.w + add};
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionSubtract(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q1 = jaylib_getvec4(argv, 0);
+  Quaternion q2 = jaylib_getvec4(argv, 1);
+
+  Quaternion result = {q1.x - q2.x, q1.y - q2.y, q1.z - q2.z, q1.w - q2.w};
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionSubtractValue(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q = jaylib_getvec4(argv, 0);
+  float sub = janet_getnumber(argv, 1);
+
+  Quaternion result = {q.x - sub, q.y - sub, q.z - sub, q.w - sub};
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionIdentity(int32_t argc, Janet *argv) {
+  (void)argv;
+  janet_fixarity(argc, 0);
+
+  Quaternion result = {0.0f, 0.0f, 0.0f, 1.0f};
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionLength(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 1);
+  Quaternion q = jaylib_getvec4(argv, 0);
+
+  float result = sqrtf(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+
+  return janet_wrap_number(result);
+}
+
+static Janet cfun_QuaternionNormalize(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 1);
+  Quaternion q = jaylib_getvec4(argv, 0);
+
+  Quaternion result = {0};
+
+  float length = sqrtf(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+  if (length == 0.0f)
+    length = 1.0f;
+  float ilength = 1.0f / length;
+
+  result.x = q.x * ilength;
+  result.y = q.y * ilength;
+  result.z = q.z * ilength;
+  result.w = q.w * ilength;
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionInvert(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 1);
+  Quaternion q = jaylib_getvec4(argv, 0);
+
+  Quaternion result = q;
+
+  float lengthSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+
+  if (lengthSq != 0.0f) {
+    float invLength = 1.0f / lengthSq;
+
+    result.x *= -invLength;
+    result.y *= -invLength;
+    result.z *= -invLength;
+    result.w *= invLength;
+  }
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionMultiply(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q1 = jaylib_getvec4(argv, 0);
+  Quaternion q2 = jaylib_getvec4(argv, 1);
+
+  Quaternion result = {0};
+
+  float qax = q1.x, qay = q1.y, qaz = q1.z, qaw = q1.w;
+  float qbx = q2.x, qby = q2.y, qbz = q2.z, qbw = q2.w;
+
+  result.x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
+  result.y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
+  result.z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
+  result.w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionScale(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q = jaylib_getvec4(argv, 0);
+  float scalar = janet_getnumber(argv, 1);
+
+  Quaternion result = {0};
+
+  result.x = q.x * scalar;
+  result.y = q.y * scalar;
+  result.z = q.z * scalar;
+  result.w = q.w * scalar;
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionDivide(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q1 = jaylib_getvec4(argv, 0);
+  Quaternion q2 = jaylib_getvec4(argv, 1);
+
+  Quaternion result = {q1.x / q2.x, q1.y / q2.y, q1.z / q2.z, q1.w / q2.w};
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionLerp(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 3);
+  Quaternion q1 = jaylib_getvec4(argv, 0);
+  Quaternion q2 = jaylib_getvec4(argv, 1);
+  float amount = janet_getnumber(argv, 2);
+
+  Quaternion result = {0};
+
+  result.x = q1.x + amount * (q2.x - q1.x);
+  result.y = q1.y + amount * (q2.y - q1.y);
+  result.z = q1.z + amount * (q2.z - q1.z);
+  result.w = q1.w + amount * (q2.w - q1.w);
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionNlerp(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 3);
+  Quaternion q1 = jaylib_getvec4(argv, 0);
+  Quaternion q2 = jaylib_getvec4(argv, 1);
+  float amount = janet_getnumber(argv, 2);
+
+  Quaternion result = {0};
+
+  // QuaternionLerp(q1, q2, amount)
+  result.x = q1.x + amount * (q2.x - q1.x);
+  result.y = q1.y + amount * (q2.y - q1.y);
+  result.z = q1.z + amount * (q2.z - q1.z);
+  result.w = q1.w + amount * (q2.w - q1.w);
+
+  // QuaternionNormalize(q);
+  Quaternion q = result;
+  float length = sqrtf(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+  if (length == 0.0f)
+    length = 1.0f;
+  float ilength = 1.0f / length;
+
+  result.x = q.x * ilength;
+  result.y = q.y * ilength;
+  result.z = q.z * ilength;
+  result.w = q.w * ilength;
+
+  return jaylib_wrap_vec4(result);
+}
+
+// NOTE: Just here to help cdun_QuaternionSlerp below
+static Quaternion QuaternionNlerp(Quaternion q1, Quaternion q2, float amount) {
+  Quaternion result = {0};
+
+  // QuaternionLerp(q1, q2, amount)
+  result.x = q1.x + amount * (q2.x - q1.x);
+  result.y = q1.y + amount * (q2.y - q1.y);
+  result.z = q1.z + amount * (q2.z - q1.z);
+  result.w = q1.w + amount * (q2.w - q1.w);
+
+  // QuaternionNormalize(q);
+  Quaternion q = result;
+  float length = sqrtf(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+  if (length == 0.0f)
+    length = 1.0f;
+  float ilength = 1.0f / length;
+
+  result.x = q.x * ilength;
+  result.y = q.y * ilength;
+  result.z = q.z * ilength;
+  result.w = q.w * ilength;
+
+  return result;
+}
+
+static Janet cfun_QuaternionSlerp(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 3);
+  Quaternion q1 = jaylib_getvec4(argv, 0);
+  Quaternion q2 = jaylib_getvec4(argv, 1);
+  float amount = janet_getnumber(argv, 2);
+
+  Quaternion result = {0};
+
+#if !defined(EPSILON)
+#define EPSILON 0.000001f
+#endif
+
+  float cosHalfTheta = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+
+  if (cosHalfTheta < 0) {
+    q2.x = -q2.x;
+    q2.y = -q2.y;
+    q2.z = -q2.z;
+    q2.w = -q2.w;
+    cosHalfTheta = -cosHalfTheta;
+  }
+
+  if (fabsf(cosHalfTheta) >= 1.0f)
+    result = q1;
+  else if (cosHalfTheta > 0.95f)
+    result = QuaternionNlerp(q1, q2, amount);
+  else {
+    float halfTheta = acosf(cosHalfTheta);
+    float sinHalfTheta = sqrtf(1.0f - cosHalfTheta * cosHalfTheta);
+
+    if (fabsf(sinHalfTheta) < EPSILON) {
+      result.x = (q1.x * 0.5f + q2.x * 0.5f);
+      result.y = (q1.y * 0.5f + q2.y * 0.5f);
+      result.z = (q1.z * 0.5f + q2.z * 0.5f);
+      result.w = (q1.w * 0.5f + q2.w * 0.5f);
+    } else {
+      float ratioA = sinf((1 - amount) * halfTheta) / sinHalfTheta;
+      float ratioB = sinf(amount * halfTheta) / sinHalfTheta;
+
+      result.x = (q1.x * ratioA + q2.x * ratioB);
+      result.y = (q1.y * ratioA + q2.y * ratioB);
+      result.z = (q1.z * ratioA + q2.z * ratioB);
+      result.w = (q1.w * ratioA + q2.w * ratioB);
+    }
+  }
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionFromVector3ToVector3(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Vector3 from = jaylib_getvec3(argv, 0);
+  Vector3 to = jaylib_getvec3(argv, 1);
+
+  Quaternion result = {0};
+
+  // Vector3DotProduct(from, to)
+  float cos2Theta = (from.x * to.x + from.y * to.y + from.z * to.z);
+  // Vector3CrossProduct(from, to)
+  Vector3 cross = {from.y * to.z - from.z * to.y, from.z * to.x - from.x * to.z,
+                   from.x * to.y - from.y * to.x};
+
+  result.x = cross.x;
+  result.y = cross.y;
+  result.z = cross.z;
+  result.w = 1.0f + cos2Theta;
+
+  // QuaternionNormalize(q);
+  // NOTE: Normalize to essentially nlerp the original and identity to 0.5
+  Quaternion q = result;
+  float length = sqrtf(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+  if (length == 0.0f)
+    length = 1.0f;
+  float ilength = 1.0f / length;
+
+  result.x = q.x * ilength;
+  result.y = q.y * ilength;
+  result.z = q.z * ilength;
+  result.w = q.w * ilength;
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionFromMatrix(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 1);
+  Matrix mat = jaylib_getmatrix(argv, 0);
+
+  Quaternion result = {0};
+
+  float fourWSquaredMinus1 = mat.m0 + mat.m5 + mat.m10;
+  float fourXSquaredMinus1 = mat.m0 - mat.m5 - mat.m10;
+  float fourYSquaredMinus1 = mat.m5 - mat.m0 - mat.m10;
+  float fourZSquaredMinus1 = mat.m10 - mat.m0 - mat.m5;
+
+  int biggestIndex = 0;
+  float fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+  if (fourXSquaredMinus1 > fourBiggestSquaredMinus1) {
+    fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+    biggestIndex = 1;
+  }
+
+  if (fourYSquaredMinus1 > fourBiggestSquaredMinus1) {
+    fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+    biggestIndex = 2;
+  }
+
+  if (fourZSquaredMinus1 > fourBiggestSquaredMinus1) {
+    fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+    biggestIndex = 3;
+  }
+
+  float biggestVal = sqrtf(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
+  float mult = 0.25f / biggestVal;
+
+  switch (biggestIndex) {
+  case 0:
+    result.w = biggestVal;
+    result.x = (mat.m6 - mat.m9) * mult;
+    result.y = (mat.m8 - mat.m2) * mult;
+    result.z = (mat.m1 - mat.m4) * mult;
+    break;
+  case 1:
+    result.x = biggestVal;
+    result.w = (mat.m6 - mat.m9) * mult;
+    result.y = (mat.m1 + mat.m4) * mult;
+    result.z = (mat.m8 + mat.m2) * mult;
+    break;
+  case 2:
+    result.y = biggestVal;
+    result.w = (mat.m8 - mat.m2) * mult;
+    result.x = (mat.m1 + mat.m4) * mult;
+    result.z = (mat.m6 + mat.m9) * mult;
+    break;
+  case 3:
+    result.z = biggestVal;
+    result.w = (mat.m1 - mat.m4) * mult;
+    result.x = (mat.m8 + mat.m2) * mult;
+    result.y = (mat.m6 + mat.m9) * mult;
+    break;
+  }
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionToMatrix(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 1);
+  Quaternion q = jaylib_getvec4(argv, 0);
+
+  Matrix result = {
+      1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+      0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f}; // MatrixIdentity()
+
+  float a2 = q.x * q.x;
+  float b2 = q.y * q.y;
+  float c2 = q.z * q.z;
+  float ac = q.x * q.z;
+  float ab = q.x * q.y;
+  float bc = q.y * q.z;
+  float ad = q.w * q.x;
+  float bd = q.w * q.y;
+  float cd = q.w * q.z;
+
+  result.m0 = 1 - 2 * (b2 + c2);
+  result.m1 = 2 * (ab + cd);
+  result.m2 = 2 * (ac - bd);
+
+  result.m4 = 2 * (ab - cd);
+  result.m5 = 1 - 2 * (a2 + c2);
+  result.m6 = 2 * (bc + ad);
+
+  result.m8 = 2 * (ac + bd);
+  result.m9 = 2 * (bc - ad);
+  result.m10 = 1 - 2 * (a2 + b2);
+
+  return jaylib_wrap_matrix(result);
+}
+
+static Janet cfun_QuaternionFromAxisAngle(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Vector3 axis = jaylib_getvec3(argv, 0);
+  float angle = janet_getnumber(argv, 1);
+
+  Quaternion result = {0.0f, 0.0f, 0.0f, 1.0f};
+
+  float axisLength = sqrtf(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
+
+  if (axisLength != 0.0f) {
+    angle *= 0.5f;
+
+    float length = 0.0f;
+    float ilength = 0.0f;
+
+    // Vector3Normalize(axis)
+    Vector3 v = axis;
+    length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+    if (length == 0.0f)
+      length = 1.0f;
+    ilength = 1.0f / length;
+    axis.x *= ilength;
+    axis.y *= ilength;
+    axis.z *= ilength;
+
+    float sinres = sinf(angle);
+    float cosres = cosf(angle);
+
+    result.x = axis.x * sinres;
+    result.y = axis.y * sinres;
+    result.z = axis.z * sinres;
+    result.w = cosres;
+
+    // QuaternionNormalize(q);
+    Quaternion q = result;
+    length = sqrtf(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+    if (length == 0.0f)
+      length = 1.0f;
+    ilength = 1.0f / length;
+    result.x = q.x * ilength;
+    result.y = q.y * ilength;
+    result.z = q.z * ilength;
+    result.w = q.w * ilength;
+  }
+
+  return jaylib_wrap_vec4(result);
+}
+// TODO: Implement me
+static Janet cfun_QuaternionToAxisAngle(int32_t argc, Janet *argv) {
+  return janet_wrap_nil();
+}
+
+static Janet cfun_QuaternionFromEuler(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 3);
+  float pitch = janet_getnumber(argv, 0);
+  float yaw = janet_getnumber(argv, 1);
+  float roll = janet_getnumber(argv, 2);
+
+  Quaternion result = {0};
+
+  float x0 = cosf(pitch * 0.5f);
+  float x1 = sinf(pitch * 0.5f);
+  float y0 = cosf(yaw * 0.5f);
+  float y1 = sinf(yaw * 0.5f);
+  float z0 = cosf(roll * 0.5f);
+  float z1 = sinf(roll * 0.5f);
+
+  result.x = x1 * y0 * z0 - x0 * y1 * z1;
+  result.y = x0 * y1 * z0 + x1 * y0 * z1;
+  result.z = x0 * y0 * z1 - x1 * y1 * z0;
+  result.w = x0 * y0 * z0 + x1 * y1 * z1;
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionToEuler(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 1);
+  Quaternion q = jaylib_getvec4(argv, 0);
+
+  Vector3 result = {0};
+
+  // Roll (x-axis rotation)
+  float x0 = 2.0f * (q.w * q.x + q.y * q.z);
+  float x1 = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
+  result.x = atan2f(x0, x1);
+
+  // Pitch (y-axis rotation)
+  float y0 = 2.0f * (q.w * q.y - q.z * q.x);
+  y0 = y0 > 1.0f ? 1.0f : y0;
+  y0 = y0 < -1.0f ? -1.0f : y0;
+  result.y = asinf(y0);
+
+  // Yaw (z-axis rotation)
+  float z0 = 2.0f * (q.w * q.z + q.x * q.y);
+  float z1 = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
+  result.z = atan2f(z0, z1);
+
+  return jaylib_wrap_vec3(result);
+}
+
+static Janet cfun_QuaternionTransform(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q = jaylib_getvec4(argv, 0);
+  Matrix mat = jaylib_getmatrix(argv, 1);
+
+  Quaternion result = {0};
+
+  result.x = mat.m0 * q.x + mat.m4 * q.y + mat.m8 * q.z + mat.m12 * q.w;
+  result.y = mat.m1 * q.x + mat.m5 * q.y + mat.m9 * q.z + mat.m13 * q.w;
+  result.z = mat.m2 * q.x + mat.m6 * q.y + mat.m10 * q.z + mat.m14 * q.w;
+  result.w = mat.m3 * q.x + mat.m7 * q.y + mat.m11 * q.z + mat.m15 * q.w;
+
+  return jaylib_wrap_vec4(result);
+}
+
+static Janet cfun_QuaternionEquals(int32_t argc, Janet *argv) {
+  janet_fixarity(argc, 2);
+  Quaternion q = jaylib_getvec4(argv, 0);
+  Quaternion p = jaylib_getvec4(argv, 1);
+
+#if !defined(EPSILON)
+#define EPSILON 0.000001f
+#endif
+
+  int result = (((fabsf(p.x - q.x)) <=
+                 (EPSILON * fmaxf(1.0f, fmaxf(fabsf(p.x), fabsf(q.x))))) &&
+                ((fabsf(p.y - q.y)) <=
+                 (EPSILON * fmaxf(1.0f, fmaxf(fabsf(p.y), fabsf(q.y))))) &&
+                ((fabsf(p.z - q.z)) <=
+                 (EPSILON * fmaxf(1.0f, fmaxf(fabsf(p.z), fabsf(q.z))))) &&
+                ((fabsf(p.w - q.w)) <=
+                 (EPSILON * fmaxf(1.0f, fmaxf(fabsf(p.w), fabsf(q.w)))))) ||
+               (((fabsf(p.x + q.x)) <=
+                 (EPSILON * fmaxf(1.0f, fmaxf(fabsf(p.x), fabsf(q.x))))) &&
+                ((fabsf(p.y + q.y)) <=
+                 (EPSILON * fmaxf(1.0f, fmaxf(fabsf(p.y), fabsf(q.y))))) &&
+                ((fabsf(p.z + q.z)) <=
+                 (EPSILON * fmaxf(1.0f, fmaxf(fabsf(p.z), fabsf(q.z))))) &&
+                ((fabsf(p.w + q.w)) <=
+                 (EPSILON * fmaxf(1.0f, fmaxf(fabsf(p.w), fabsf(q.w))))));
+
+  return janet_wrap_boolean(result);
+}
 static const JanetReg math_cfuns[] = {
     // Utils
     {"utils/clamp", cfun_Clamp,
@@ -1939,12 +2469,12 @@ static const JanetReg math_cfuns[] = {
      "(matrix-rotate-xyz angle)\n\n"
      "Get xyz-rotation matrix"
      "\n"
-     "Angle must be a Vector3 and contain radians"},
+     "Angle must be a Vector3 containing radians"},
     {"matrix-rotate-zyx", cfun_MatrixRotateZYX,
      "(matrix-rotate-zyx angle)\n\n"
      "Get zyx-rotation matrix"
      "\n"
-     "Angle must be a Vector3 and contain radians"},
+     "Angle must be a Vector3 containing radians"},
     {"matrix-scale", cfun_MatrixScale,
      "(matrix-scale x y z)\n\n"
      "Get scaling matrix"},
@@ -1965,4 +2495,79 @@ static const JanetReg math_cfuns[] = {
     {"matrix-to-array", cfun_MatrixToFloatV,
      "(matrix-lookat m)\n\n"
      "Get m as an array of 16 numbers"},
+
+    // Quaternion
+    {"quaternion-add", cfun_QuaternionAdd,
+     "(quaternion-add q1 q2)\n\n"
+     "Add two quaternions"},
+    {"quaternion-add-val", cfun_QuaternionAddValue,
+     "(quaternion-add-val q x)\n\n"
+     "Add quaternion and number"},
+    {"quaternion-sub", cfun_QuaternionSubtract,
+     "(quaternion-sub q1 q2)\n\n"
+     "Subtract two quaternions"},
+    {"quaternion-sub-val", cfun_QuaternionSubtractValue,
+     "(quaternion-sub-val q x)\n\n"
+     "Subtract quaternion and number"},
+    {"quaternion-identity", cfun_QuaternionIdentity,
+     "(quaternion-identity)\n\n"
+     "Get identity quaternion"},
+    {"quaternion-length", cfun_QuaternionLength,
+     "(quaternion-length q)\n\n"
+     "Compute the length of quaternion"},
+    {"quaternion-normalize", cfun_QuaternionNormalize,
+     "(quaternion-normalize q)\n\n"
+     "Normalize quaternion"},
+    {"quaternion-invert", cfun_QuaternionInvert,
+     "(quaternion-invert q)\n\n"
+     "Invert quaternion"},
+    {"quaternion-multiply", cfun_QuaternionMultiply,
+     "(quaternion-multiply q1 q2)\n\n"
+     "Multiply two quaternions"},
+    {"quaternion-scale", cfun_QuaternionScale,
+     "(quaternion-scale q scalar)\n\n"
+     "Scale quaternion by scalar"},
+    {"quaternion-divide", cfun_QuaternionDivide,
+     "(quaternion-divide q1 q2)\n\n"
+     "Divide two quaternions"},
+    {"quaternion-lerp", cfun_QuaternionLerp,
+     "(quaternion-lerp q1 q2 amount)\n\n"
+     "Calculate linear interpolation between two quaternions"},
+    {"quaternion-nlerp", cfun_QuaternionNlerp,
+     "(quaternion-nlerp q1 q2 amount)\n\n"
+     "Calculate slerp-optimzed interpolation between two quaternions"},
+    {"quaternion-slerp", cfun_QuaternionSlerp,
+     "(quaternion-slerp q1 q2 amount)\n\n"
+     "Calculate spherical interpolation between two quaternions"},
+    {"quaternion-from-vec3s", cfun_QuaternionFromVector3ToVector3,
+     "(quaternion-from-vec3s v1 v2)\n\n"
+     "Create quaternion based on the rotation from the rotation from one vector to another"},
+    {"quaternion-from-matrix", cfun_QuaternionFromMatrix,
+     "(quaternion-from-matrix m)\n\n"
+     "Get a quaternion for a given rotation matrix"},
+    {"quaternion-to-matrix", cfun_QuaternionToMatrix,
+     "(quaternion-to-matrix q)\n\n"
+     "Get a matrix for a given quaternion"},
+    {"quaternion-from-axis", cfun_QuaternionFromAxisAngle,
+     "(quaternion-from-axis axis angle)\n\n"
+     "Get rotation quaternion for an angle and axis"
+     "\n"
+     "Angle must be provided in radians"},
+
+    {"quaternion-from-euler", cfun_QuaternionFromEuler,
+     "(quaternion-from-euler pitch yaw roll)\n\n"
+     "Get a quaternion equivalent to Euler angles"
+     "\n"
+     "Rotation order is ZYX"},
+    {"quaternion-to-euler", cfun_QuaternionToEuler,
+     "(quaternion-to-euler q)\n\n"
+     "Get a quaternion equivalent to Euler angles"
+     "\n"
+     "Angles are returned in a Vector3 in radians"},
+    {"quaternion-transform", cfun_QuaternionTransform,
+     "(quaternion-transform q m)\n\n"
+     "Transform a quaternion given a transformation matrix"},
+    {"quaternion-equals", cfun_QuaternionEquals,
+     "(quaternion-equals p q)\n\n"
+     "Check whether two given quaternions are almost equal"},
 };
