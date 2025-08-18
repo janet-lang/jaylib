@@ -57,7 +57,9 @@
             "src/shapes.h"
             "src/3d.h"
             "src/rlgl.h"
-            "src/shader.h"]
+            "src/shader.h"
+            "src/math.h"
+            "raylib/src/raymath.h"]
 
   :lflags [;default-lflags ;lflags])
 
