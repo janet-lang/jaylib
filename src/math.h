@@ -1923,27 +1923,27 @@ static const JanetReg math_cfuns[] = {
     {"matrix-rotate-x", cfun_MatrixRotateX,
      "(matrix-rotate-x angle)\n\n"
      "Get x-rotation matrix"
-     "\n",
+     "\n"
      "Angle must be provided in radians"},
     {"matrix-rotate-y", cfun_MatrixRotateY,
      "(matrix-rotate-y angle)\n\n"
      "Get y-rotation matrix"
-     "\n",
+     "\n"
      "Angle must be provided in radians"},
     {"matrix-rotate-z", cfun_MatrixRotateZ,
      "(matrix-rotate-z angle)\n\n"
      "Get z-rotation matrix"
-     "\n",
+     "\n"
      "Angle must be provided in radians"},
     {"matrix-rotate-xyz", cfun_MatrixRotateXYZ,
      "(matrix-rotate-xyz angle)\n\n"
      "Get xyz-rotation matrix"
-     "\n",
+     "\n"
      "Angle must be a Vector3 and contain radians"},
     {"matrix-rotate-zyx", cfun_MatrixRotateZYX,
      "(matrix-rotate-zyx angle)\n\n"
      "Get zyx-rotation matrix"
-     "\n",
+     "\n"
      "Angle must be a Vector3 and contain radians"},
     {"matrix-scale", cfun_MatrixScale,
      "(matrix-scale x y z)\n\n"
@@ -1954,7 +1954,7 @@ static const JanetReg math_cfuns[] = {
     {"matrix-perspective", cfun_MatrixPerspective,
      "(matrix-perspective fovy aspect near far)\n\n"
      "Get perspective projection matrix"
-     "\n",
+     "\n"
      "fovy angle must be provided in radians"},
     {"matrix-ortho", cfun_MatrixOrtho,
      "(matrix-ortho left right bottom top near far)\n\n"
