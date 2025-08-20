@@ -1212,8 +1212,8 @@ static const JanetReg math_cfuns[] = {
     {"matrix-invert", cfun_MatrixInvert,
      "(matrix-invert m)\n\n"
      "Invert provided matrix"},
-    {"matrix-identity", cfun_MatrixInvert,
-     "(matrix-invert)\n\n"
+    {"matrix-identity", cfun_MatrixIdentity,
+     "(matrix-identity)\n\n"
      "Get the identity matrix"},
     {"matrix-add", cfun_MatrixAdd,
      "(matrix-add m1 m2)\n\n"
