@@ -820,9 +820,9 @@ static Janet cfun_Camera3D(int32_t argc, Janet *argv) {
             camera->position = jaylib_getvec3(argv, i + 1);
         } else if (!janet_cstrcmp(kw, "up")) {
             camera->up = jaylib_getvec3(argv, i + 1);
-        } else if (!janet_cstrcmp(kw, "fovy")) {
+        } else if (!janet_cstrcmp(kw, "fov-y")) {
             camera->fovy = (float) janet_getnumber(argv, i + 1);
-        } else if (!janet_cstrcmp(kw, "type")) {
+        } else if (!janet_cstrcmp(kw, "projection")) {
             const uint8_t *cameraType = janet_getkeyword(argv, i + 1);
             if (!janet_cstrcmp(cameraType, "perspective")) {
                 camera->projection = CAMERA_PERSPECTIVE;
@@ -1301,7 +1301,7 @@ static JanetReg core_cfuns[] = {
         " - :target     = Camera target it looks-at \n"
         " - :up         = Camera up vector (rotation over its axis) \n"
         " - :fov-y      = Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic \n"
-        " - :projection = Camera projection: CAMERA\\_PERSPECTIVE or CAMERA\\_ORTHOGRAPHIC \n"
+        " - :projection = Camera projection: :perspective or :orthographic \n"
     },
     {"update-camera", cfun_UpdateCamera, 
         "(update-camera camera mode)\n\n" 
