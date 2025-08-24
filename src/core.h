@@ -686,6 +686,13 @@ static Janet cfun_SetMousePosition(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_GetMouseDelta(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    Vector2 delta = GetMouseDelta();
+    return jaylib_wrap_vec2(delta);
+}
+
 static Janet cfun_SetMouseOffset(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     int x = janet_getinteger(argv, 0);
@@ -1221,6 +1228,10 @@ static JanetReg core_cfuns[] = {
     {"get-mouse-position", cfun_GetMousePosition, 
         "(get-mouse-position)\n\n" 
         "Get mouse position XY"
+    },
+    {"get-mouse-delta", cfun_GetMouseDelta, 
+        "(get-mouse-delta)\n\n" 
+        "Get mouse delta between frames"
     },
     {"set-mouse-position", cfun_SetMousePosition, 
         "(set-mouse-position x y)\n\n" 
