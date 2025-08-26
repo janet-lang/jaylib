@@ -633,7 +633,7 @@ static Janet cfun_MatrixInvert(int32_t argc, Janet *argv) {
 
 static Janet cfun_MatrixIdentity(int32_t argc, Janet *argv) {
     (void)argv;
-    janet_fixarity(argc, 1);
+    janet_fixarity(argc, 0);
 
     return jaylib_wrap_matrix(MatrixIdentity());
 }
