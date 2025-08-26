@@ -1295,13 +1295,13 @@ static JanetReg core_cfuns[] = {
         " - :zoom     = Camera zoom (scaling), should be 1.0f by default \n"
     },
     {"camera-3d", cfun_Camera3D, 
-        "(camera-3d :position [x y z] :target [x y z] :up [x y z] :fov-y float :projection int)\n\n" 
+        "(camera-3d :position [x y z] :target [x y z] :up [x y z] :fovy float :type int)\n\n" 
         "Instantiate a Camera3D. \n"
         " - :position   = Camera position \n"
         " - :target     = Camera target it looks-at \n"
         " - :up         = Camera up vector (rotation over its axis) \n"
-        " - :fov-y      = Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic \n"
-        " - :projection = Camera projection: CAMERA\\_PERSPECTIVE or CAMERA\\_ORTHOGRAPHIC \n"
+        " - :fovy      = Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic \n"
+        " - :type = Camera projection: :perspective or :orthographic \n"
     },
     {"update-camera", cfun_UpdateCamera, 
         "(update-camera camera mode)\n\n" 
