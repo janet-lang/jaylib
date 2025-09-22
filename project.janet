@@ -61,7 +61,7 @@
             "src/math.h"
             "raylib/src/raymath.h"]
 
-  :lflags [;default-lflags ;lflags])
+  :ldflags [;default-lflags ;lflags])
 
 # `jpm run repl` to run a repl with access to jaylib
 (phony "repl" ["build"]

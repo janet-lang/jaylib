@@ -1576,4 +1576,5 @@ static const JanetReg math_cfuns[] = {
         "(quaternion-equals p q)\n\n"
         "Check whether two given quaternions are almost equal"
     },
+    { NULL, NULL, NULL }
 };
