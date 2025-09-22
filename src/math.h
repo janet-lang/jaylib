@@ -965,7 +965,7 @@ static Janet cfun_QuaternionEquals(int32_t argc, Janet *argv) {
 
     return janet_wrap_boolean(QuaternionEquals(p, q));
 }
-static const JanetReg math_cfuns[] = {
+static JanetReg math_cfuns[] = {
     // Utils
     {
         "utils/clamp", cfun_Clamp,
