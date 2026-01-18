@@ -16,6 +16,7 @@
 [x] void SetWindowMonitor(int monitor)
 [x] void SetWindowMinSize(int width, int height)
 [x] void SetWindowSize(int width, int height)
+[x] Vector2 GetWindowPosition()
 [x] void *GetWindowHandle(void)
 [x] int GetScreenWidth(void)
 [x] int GetScreenHeight(void)
