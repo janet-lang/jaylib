@@ -63,7 +63,7 @@
     (string
       "Press Space to change modes\n\n"
       "Press E to switch glow texture\n\n"
-      "Press WASD to move glow texture\n\n\n"
+      "Press WASD to move the glow texture\n\n\n"
       "mode: " mode "\n\n"
       "texture: " (if (= glow-tx glow-trans-tx) "transparent BG" "opaque BG") "\n\n"
       )
