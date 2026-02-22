@@ -407,8 +407,8 @@
 // Shading begin/end functions
 [x] void BeginShaderMode(Shader shader)
 [x] void EndShaderMode(void)
-[ ] void BeginBlendMode(int mode)
-[ ] void EndBlendMode(void)
+[x] void BeginBlendMode(int mode)
+[x] void EndBlendMode(void)
 [ ] void BeginScissorMode(int x, int y, int width, int height)
 [ ] void EndScissorMode(void)
 
