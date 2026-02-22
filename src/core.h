@@ -367,6 +367,40 @@ static Janet cfun_EndMode2D(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_GetWorldToScreen(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector3 position = jaylib_getvec3(argv, 0);
+    Camera cam = *jaylib_getcamera3d(argv, 1);
+    Vector2 ret = GetWorldToScreen(position, cam);
+    return jaylib_wrap_vec2(ret);
+}
+
+static Janet cfun_GetWorldToScreenEx(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    Vector3 position = jaylib_getvec3(argv, 0);
+    Camera cam = *jaylib_getcamera3d(argv, 1);
+    int32_t width = janet_getinteger(argv, 2);
+    int32_t height = janet_getinteger(argv, 3);
+    Vector2 ret = GetWorldToScreenEx(position, cam, width, height);
+    return jaylib_wrap_vec2(ret);
+}
+
+static Janet cfun_GetWorldToScreen2D(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector2 position = jaylib_getvec2(argv, 0);
+    Camera2D cam = *jaylib_getcamera2d(argv, 1);
+    Vector2 ret = GetWorldToScreen2D(position, cam);
+    return jaylib_wrap_vec2(ret);
+}
+
+static Janet cfun_GetScreenToWorld2D(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector2 position = jaylib_getvec2(argv, 0);
+    Camera2D cam = *jaylib_getcamera2d(argv, 1);
+    Vector2 ret = GetScreenToWorld2D(position, cam);
+    return jaylib_wrap_vec2(ret);
+}
+
 static Janet cfun_GetCameraMatrix(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Camera cam = *jaylib_getcamera3d(argv, 0);
@@ -1122,6 +1156,22 @@ static JanetReg core_cfuns[] = {
     {"end-mode-2d", cfun_EndMode2D, 
         "(end-mode-2d)\n\n" 
         "Ends 2D mode with custom camera"
+    },
+    {"get-world-to-screen", cfun_GetWorldToScreen, 
+        "(get-world-to-screen position camera)\n\n" 
+        "Get the screen space position for a 3d world space position"
+    },
+    {"get-world-to-screen-ex", cfun_GetWorldToScreenEx, 
+        "(get-world-to-screen-ex position camera width height)\n\n" 
+        "Get size position for a 3d world space position"
+    },
+    {"get-world-to-screen-2d", cfun_GetWorldToScreen2D, 
+        "(get-world-to-screen-2d position camera)\n\n" 
+        "Get the screen space position for a 2d camera world space position"
+    },
+    {"get-screen-to-world-2d", cfun_GetScreenToWorld2D, 
+        "(get-screen-to-world-2d position camera)\n\n" 
+        "Get the world space position for a 2d camera screen space position"
     },
     {"get-camera-matrix", cfun_GetCameraMatrix, 
         "(get-camera-matrix camera)\n\n" 
