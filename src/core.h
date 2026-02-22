@@ -367,6 +367,14 @@ static Janet cfun_EndMode2D(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_GetMouseRay(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector2 mousePosition = jaylib_getvec2(argv, 0);
+    Camera cam = *jaylib_getcamera3d(argv, 1);
+    Ray ray = GetMouseRay(mousePosition, cam);
+    return jaylib_wrap_ray(ray);
+}
+
 static Janet cfun_GetWorldToScreen(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     Vector3 position = jaylib_getvec3(argv, 0);
@@ -1157,6 +1165,10 @@ static JanetReg core_cfuns[] = {
     {"end-mode-2d", cfun_EndMode2D, 
         "(end-mode-2d)\n\n" 
         "Ends 2D mode with custom camera"
+    },
+    {"get-mouse-ray", cfun_GetMouseRay, 
+        "(get-mouse-ray mouse-position camera)\n\n" 
+        "Get a ray trace from mouse position"
     },
     {"get-world-to-screen", cfun_GetWorldToScreen, 
         "(get-world-to-screen position camera)\n\n" 
