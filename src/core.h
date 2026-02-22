@@ -367,6 +367,14 @@ static Janet cfun_EndMode2D(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static Janet cfun_GetMouseRay(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector2 mousePosition = jaylib_getvec2(argv, 0);
+    Camera cam = *jaylib_getcamera3d(argv, 1);
+    Ray ray = GetMouseRay(mousePosition, cam);
+    return jaylib_wrap_ray(ray);
+}
+
 static Janet cfun_SetTargetFPS(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     int fps = janet_getinteger(argv, 0);
