@@ -790,13 +790,6 @@ static Janet jaylib_wrap_raycollision(RayCollision rayCollision) {
     return janet_wrap_table(table);
 }
 
-static Janet jaylib_wrap_ray(Ray ray) {
-    JanetTable* table = janet_table(2);
-    janet_table_put(table, janet_wrap_keyword("position"), jaylib_wrap_vec3(ray.position));
-    janet_table_put(table, janet_wrap_keyword("direction"), jaylib_wrap_vec3(ray.direction));
-    return janet_wrap_table(table);
-}
-
 static const unsigned char *jaylib_getunsignedcstring(const Janet *argv, int32_t n) {
     if (janet_checktype(argv[n], JANET_BUFFER)) {
         JanetBuffer *buf = janet_unwrap_buffer(argv[n]);
