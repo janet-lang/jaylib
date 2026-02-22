@@ -49,9 +49,7 @@
 [x] void EndTextureMode(void)
 
 // Screen-space-related functions
-[ ] Ray GetMouseRay(Vector2 mousePosition, Camera camera)
-[ ] Ray GetScreenToWorldRay(Vector2 position, Camera camera)
-[ ] Ray GetScreenToWorldRayEx(Vector2 position, Camera camera, int width, int height)
+[x] Ray GetMouseRay(Vector2 mousePosition, Camera camera)
 [x] Vector2 GetWorldToScreen(Vector3 position, Camera camera)
 [x] Vector2 GetWorldToScreenEx(Vector3 position, Camera camera, int width, int height)
 [x] Vector2 GetWorldToScreen2D(Vector2 position, Camera2D camera)
