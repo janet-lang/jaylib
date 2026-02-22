@@ -89,6 +89,40 @@ static Janet cfun_SetShaderValue(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
+static const KeyDef blend_mode_defs[] = {
+    {"alpha", BLEND_ALPHA},
+    {"additive", BLEND_ADDITIVE},
+    {"multiplied", BLEND_MULTIPLIED},
+    {"add-colors", BLEND_ADD_COLORS},
+    {"subtract-colors", BLEND_SUBTRACT_COLORS},
+    {"alpha-premultiply", BLEND_ALPHA_PREMULTIPLY},
+    {"custom", BLEND_CUSTOM},
+    {"custom-separate", BLEND_CUSTOM_SEPARATE}
+};
+
+static int jaylib_getblendtype(const Janet *argv, int32_t n) {
+    const uint8_t *kw = janet_getkeyword(argv, n);
+    for (int i = 0; i <= BLEND_CUSTOM_SEPARATE; i++) {
+        if (!janet_cstrcmp(kw, blend_mode_defs[i].name))
+            return blend_mode_defs[i].key;
+    }
+    janet_panicf("unknown blend type %v", argv[n]);
+}
+
+static Janet cfun_BeginBlendMode(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    int blendMode = jaylib_getblendtype(argv, 0);
+    BeginBlendMode(blendMode);
+    return janet_wrap_nil();
+}
+
+static Janet cfun_EndBlendMode(int32_t argc, Janet *argv) {
+    (void) argv;
+    janet_fixarity(argc, 0);
+    EndBlendMode();
+    return janet_wrap_nil();
+}
+
 static JanetReg shader_cfuns[] = {
     {"load-shader", cfun_LoadShader,
         "(loader-shader vertex-shader fragment-shader)\n\n"
@@ -113,6 +147,14 @@ static JanetReg shader_cfuns[] = {
     {"set-shader-value", cfun_SetShaderValue,
         "(set-shader-value shader loc-index value uniform-type)\n\n"
         "Set shader uniform value"
+    },
+    {"begin-blend-mode", cfun_BeginBlendMode,
+        "(begin-blender-mode mode)\n\n"
+        "Begin blending mode (alpha, additive, multiplied, subtract, custom)"
+    },
+    {"end-blend-mode", cfun_EndBlendMode,
+        "(end-blend-mode)\n\n"
+        "End blending mode (reset to default: alpha blending)"
     },
     {NULL, NULL, NULL}
 };
