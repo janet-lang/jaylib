@@ -375,6 +375,24 @@ static Janet cfun_GetMouseRay(int32_t argc, Janet *argv) {
     return jaylib_wrap_ray(ray);
 }
 
+static Janet cfun_GetWorldToScreen(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector3 position = jaylib_getvec3(argv, 0);
+    Camera cam = *jaylib_getcamera3d(argv, 1);
+    Vector2 ret = GetWorldToScreen(position, cam);
+    return jaylib_wrap_vec2(ret);
+}
+
+static Janet cfun_GetWorldToScreenEx(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 4);
+    Vector3 position = jaylib_getvec3(argv, 0);
+    Camera cam = *jaylib_getcamera3d(argv, 1);
+    int32_t width = janet_getinteger(argv, 2);
+    int32_t height = janet_getinteger(argv, 3);
+    Vector2 ret = GetWorldToScreenEx(position, cam, width, height);
+    return jaylib_wrap_vec2(ret);
+}
+
 static Janet cfun_GetCameraMatrix(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 1);
     Camera cam = *jaylib_getcamera3d(argv, 0);
@@ -1135,6 +1153,14 @@ static JanetReg core_cfuns[] = {
     {"get-mouse-ray", cfun_GetMouseRay, 
         "(get-mouse-ray mouse-position camera)\n\n" 
         "Get a ray trace from mouse position"
+    },
+    {"get-world-to-screen", cfun_GetWorldToScreen, 
+        "(get-world-to-screen position camera)\n\n" 
+        "Get the screen space position for a 3d world space position"
+    },
+    {"get-world-to-screen-ex", cfun_GetWorldToScreenEx, 
+        "(get-world-to-screen-ex position camera width height)\n\n" 
+        "Get size position for a 3d world space position"
     },
     {"get-camera-matrix", cfun_GetCameraMatrix, 
         "(get-camera-matrix camera)\n\n" 
