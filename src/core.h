@@ -367,12 +367,6 @@ static Janet cfun_EndMode2D(int32_t argc, Janet *argv) {
     return janet_wrap_nil();
 }
 
-static Janet cfun_GetWorldToScreen2D(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 2);
-    Vector2 position = jaylib_getvec2(argv, 0);
-    Camera2D cam = *jaylib_getcamera2d(argv, 1);
-    Vector2 ret = GetWorldToScreen2D(position, cam);
-    return jaylib_wrap_vec2(ret);
 static Janet cfun_GetWorldToScreen(int32_t argc, Janet *argv) {
     janet_fixarity(argc, 2);
     Vector3 position = jaylib_getvec3(argv, 0);
@@ -391,11 +385,12 @@ static Janet cfun_GetWorldToScreenEx(int32_t argc, Janet *argv) {
     return jaylib_wrap_vec2(ret);
 }
 
-static Janet cfun_GetCameraMatrix(int32_t argc, Janet *argv) {
-    janet_fixarity(argc, 1);
-    Camera cam = *jaylib_getcamera3d(argv, 0);
-    Matrix matrix = GetCameraMatrix(cam);
-    return jaylib_wrap_matrix(matrix);
+static Janet cfun_GetWorldToScreen2D(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 2);
+    Vector2 position = jaylib_getvec2(argv, 0);
+    Camera2D cam = *jaylib_getcamera2d(argv, 1);
+    Vector2 ret = GetWorldToScreen2D(position, cam);
+    return jaylib_wrap_vec2(ret);
 }
 
 static Janet cfun_GetScreenToWorld2D(int32_t argc, Janet *argv) {
@@ -404,6 +399,20 @@ static Janet cfun_GetScreenToWorld2D(int32_t argc, Janet *argv) {
     Camera2D cam = *jaylib_getcamera2d(argv, 1);
     Vector2 ret = GetScreenToWorld2D(position, cam);
     return jaylib_wrap_vec2(ret);
+}
+
+static Janet cfun_GetCameraMatrix(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Camera cam = *jaylib_getcamera3d(argv, 0);
+    Matrix matrix = GetCameraMatrix(cam);
+    return jaylib_wrap_matrix(matrix);
+}
+
+static Janet cfun_GetCameraMatrix2D(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    Camera2D cam = *jaylib_getcamera2d(argv, 0);
+    Matrix matrix = GetCameraMatrix2D(cam);
+    return jaylib_wrap_matrix(matrix);
 }
 
 static Janet cfun_SetTargetFPS(int32_t argc, Janet *argv) {
@@ -1152,6 +1161,11 @@ static JanetReg core_cfuns[] = {
     {"get-world-to-screen-2d", cfun_GetWorldToScreen2D, 
         "(get-world-to-screen-2d position camera)\n\n" 
         "Get the screen space position for a 2d camera world space position"
+    },
+    {"get-screen-to-world-2d", cfun_GetScreenToWorld2D, 
+        "(get-screen-to-world-2d position camera)\n\n" 
+        "Get the world space position for a 2d camera screen space position"
+    },
     {"get-world-to-screen", cfun_GetWorldToScreen, 
         "(get-world-to-screen position camera)\n\n" 
         "Get the screen space position for a 3d world space position"
@@ -1164,9 +1178,9 @@ static JanetReg core_cfuns[] = {
         "(get-camera-matrix camera)\n\n" 
         "Get camera transform matrix (view matrix)"
     },
-    {"get-screen-to-world-2d", cfun_GetScreenToWorld2D, 
-        "(get-screen-to-world-2d position camera)\n\n" 
-        "Get the world space position for a 2d camera screen space position"
+    {"get-camera-matrix-2d", cfun_GetCameraMatrix2D, 
+        "(get-camera-matrix-2d camera)\n\n" 
+        "Get camera 2d transform matrix"
     },
     {"set-target-fps", cfun_SetTargetFPS, 
         "(set-target-fps fps)\n\n" 
